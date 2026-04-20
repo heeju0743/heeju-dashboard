@@ -211,26 +211,32 @@ textarea{resize:vertical;min-height:80px}
           <div style="font-weight:700;font-size:14px">🔥 습관 체크</div>
           <button class="btn btn-outline btn-sm" style="font-size:11px" onclick="openHabitStats()">📊 누적 통계</button>
         </div>
-        <div style="display:grid;grid-template-columns:1fr repeat(7,26px) 26px;gap:3px;align-items:center;padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:4px">
-          <div style="font-size:10px;color:var(--text2)">습관</div>
-          <div style="font-size:9px;color:var(--text2);text-align:center;font-weight:600">월</div>
-          <div style="font-size:9px;color:var(--text2);text-align:center;font-weight:600">화</div>
-          <div style="font-size:9px;color:var(--text2);text-align:center;font-weight:600">수</div>
-          <div style="font-size:9px;color:var(--text2);text-align:center;font-weight:600">목</div>
-          <div style="font-size:9px;color:var(--text2);text-align:center;font-weight:600">금</div>
-          <div style="font-size:9px;color:#5c7ae0;text-align:center;font-weight:600">토</div>
-          <div style="font-size:9px;color:#e05c5c;text-align:center;font-weight:600">일</div>
-          <div></div>
+        <div style="display:table;width:100%;border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:4px">
+          <div style="display:table-row">
+            <div style="display:table-cell;font-size:10px;color:var(--text2);vertical-align:middle;padding-right:4px">습관</div>
+            <div style="display:table-cell;font-size:9px;color:var(--text2);text-align:center;font-weight:600;width:26px">월</div>
+            <div style="display:table-cell;font-size:9px;color:var(--text2);text-align:center;font-weight:600;width:26px">화</div>
+            <div style="display:table-cell;font-size:9px;color:var(--text2);text-align:center;font-weight:600;width:26px">수</div>
+            <div style="display:table-cell;font-size:9px;color:var(--text2);text-align:center;font-weight:600;width:26px">목</div>
+            <div style="display:table-cell;font-size:9px;color:var(--text2);text-align:center;font-weight:600;width:26px">금</div>
+            <div style="display:table-cell;font-size:9px;color:#5c7ae0;text-align:center;font-weight:600;width:26px">토</div>
+            <div style="display:table-cell;font-size:9px;color:#e05c5c;text-align:center;font-weight:600;width:26px">일</div>
+            <div style="display:table-cell;width:26px"></div>
+          </div>
         </div>
-        <div id="habit-list"></div>
+        <div id="habit-list" style="display:table;width:100%"></div>
         <div style="display:flex;gap:6px;margin-top:10px">
           <input id="new-habit" placeholder="새 습관 추가...">
           <button class="btn btn-primary btn-sm" onclick="addHabit()">+</button>
         </div>
       </div>
       <div class="card">
-        <div style="font-weight:700;margin-bottom:10px;font-size:14px">🌙 하루 회고</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-weight:700;font-size:14px">🌙 하루 회고</div>
+          <button class="btn btn-primary btn-sm" onclick="saveReview()">💾 저장</button>
+        </div>
         <textarea id="p-review" placeholder="잘한 점, 개선할 점, 감사한 것..." style="min-height:80px"></textarea>
+        <div id="review-history" style="margin-top:12px"></div>
       </div>
     </div>
   </div>
@@ -656,12 +662,19 @@ function initPlanner(){
   if(state['p-mood-memo'])document.getElementById('p-mood-memo').value=state['p-mood-memo'];
   if(state['p-review'])document.getElementById('p-review').value=state['p-review'];
   if(state.plannerTimes)Object.entries(state.plannerTimes).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val;});
+  if(state.reviews&&state.reviews.length)renderReviewHistory();
   renderHabits();
 }
 function setMood(el){document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
 function renderHabits(){
   const hl=document.getElementById('habit-list');if(!hl)return;
-  hl.innerHTML=state.habits.length?state.habits.map((h,i)=>`<div class="habit-row"><span style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.name}</span>${h.checks.map((c,j)=>`<input type="checkbox" class="habit-check" ${c?'checked':''} onchange="toggleHabit(${i},${j},this)">`).join('')}<button class="habit-del-btn" onclick="delHabit(${i})">✕</button></div>`).join(''):'<p style="font-size:12px;color:var(--text2);padding:8px 0">아래에서 습관을 추가하세요</p>';
+  if(!state.habits.length){hl.innerHTML='<p style="font-size:12px;color:var(--text2);padding:8px 0">아래에서 습관을 추가하세요</p>';return;}
+  hl.innerHTML=state.habits.map((h,i)=>`
+    <div style="display:table-row">
+      <div style="display:table-cell;font-size:13px;vertical-align:middle;padding:6px 4px 6px 0;border-bottom:1px solid #f5ede0;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.name}</div>
+      ${h.checks.map((c,j)=>`<div style="display:table-cell;text-align:center;vertical-align:middle;width:26px;border-bottom:1px solid #f5ede0"><input type="checkbox" style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer" ${c?'checked':''} onchange="toggleHabit(${i},${j},this)"></div>`).join('')}
+      <div style="display:table-cell;text-align:center;vertical-align:middle;width:26px;border-bottom:1px solid #f5ede0"><button style="background:none;border:none;cursor:pointer;color:#ddd;font-size:12px;padding:2px 4px;border-radius:4px" onmouseover="this.style.color='#e05c5c'" onmouseout="this.style.color='#ddd'" onclick="delHabit(${i})">✕</button></div>
+    </div>`).join('');
 }
 function toggleHabit(i,j,el){
   state.habits[i].checks[j]=el.checked;
@@ -781,7 +794,31 @@ function delGratitude(i){state.gratitudes.splice(i,1);save();renderGratitudes();
 function renderDoodles(){const el=document.getElementById('doodle-list');if(!el)return;el.innerHTML=state.doodles.length?state.doodles.map((d,i)=>`<div class="journal-card"><div style="display:flex;justify-content:space-between"><div class="journal-date">${d.date}</div><button class="todo-del" onclick="delDoodle(${i})">✕</button></div><div style="font-weight:700;margin:4px 0">${d.title}</div><div style="font-size:13px;color:var(--text2);white-space:pre-wrap">${d.content.slice(0,120)}${d.content.length>120?'...':''}</div></div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">생각날 때마다 자유롭게 적어보세요 ✏️</div>';}
 function delDoodle(i){state.doodles.splice(i,1);save();renderDoodles();}
 
-function setPilTheme(el,theme){state.pilTheme=theme;document.querySelectorAll('#pil-themes .filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function saveReview(){
+  const txt=document.getElementById('p-review').value.trim();if(!txt)return;
+  const date=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+  if(!state.reviews)state.reviews=[];
+  // 같은 날짜면 덮어쓰기
+  const idx=state.reviews.findIndex(r=>r.date===date);
+  if(idx>=0)state.reviews[idx].text=txt;
+  else state.reviews.unshift({date,text:txt});
+  document.getElementById('p-review').value='';
+  state['p-review']='';
+  save();renderReviewHistory();
+}
+function renderReviewHistory(){
+  const el=document.getElementById('review-history');if(!el)return;
+  if(!state.reviews||!state.reviews.length){el.innerHTML='';return;}
+  el.innerHTML=`<div style="font-size:12px;color:var(--text2);font-weight:600;margin-bottom:6px">📝 저장된 회고</div>`+
+  state.reviews.slice(0,5).map((r,i)=>`<div class="journal-card" style="padding:10px 14px;margin-bottom:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:11px;color:var(--text2)">${r.date}</div>
+      <button class="todo-del" onclick="delReview(${i})">✕</button>
+    </div>
+    <div style="font-size:13px;margin-top:4px;white-space:pre-wrap">${r.text.slice(0,100)}${r.text.length>100?'...':''}</div>
+  </div>`).join('');
+}
+function delReview(i){state.reviews.splice(i,1);save();renderReviewHistory();}state.pilTheme=theme;document.querySelectorAll('#pil-themes .filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
 function savePil(){
   const txt=document.getElementById('pil-output').value.trim();if(!txt)return;
   state.pilHistory.unshift({date:new Date().toLocaleDateString('ko-KR'),theme:state.pilTheme,text:txt});
