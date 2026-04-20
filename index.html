@@ -1210,7 +1210,7 @@ function renderMassages(area){
 
 // ===== AI =====
 async function callAI(prompt){
-  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':'sk-ant-api03-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','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
   const d=await r.json();
   return d.content.map(c=>c.text||'').join('');
 }
