@@ -12,7 +12,7 @@
   --red:#e05c5c;--green:#5c9e6e;--blue:#5c7ae0;--purple:#8c5ce0;
 }
 body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
-#sidebar{width:220px;min-width:220px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;transition:.3s}
+#sidebar{width:220px;min-width:220px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
 .sb-header{padding:20px 16px 12px}
 .sb-title{font-size:17px;font-weight:700;color:var(--accent)}
 .sb-sub{font-size:10px;color:var(--text2);letter-spacing:1px;margin-top:2px}
@@ -41,18 +41,17 @@ body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(
 input,textarea,select{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:#fafaf7;font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:.15s}
 input:focus,textarea:focus,select:focus{border-color:var(--accent);background:#fff}
 textarea{resize:vertical;min-height:80px}
-/* DASHBOARD */
-.dash-greeting{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
-.dash-greeting h2{font-size:22px;font-weight:700}
-.dash-greeting h2 span{color:var(--accent)}
-#clock{font-size:22px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.ai-notice{background:#fff8ec;border:1px solid var(--accent2);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--text2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
 .stat-label{font-size:11px;color:var(--text2);margin-bottom:6px}
 .stat-val{font-size:28px;font-weight:700;color:var(--accent)}
 .stat-sub{font-size:11px;color:var(--text2);margin-top:2px}
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-/* TODO */
+.dash-greeting{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.dash-greeting h2{font-size:22px;font-weight:700}
+.dash-greeting h2 span{color:var(--accent)}
+#clock{font-size:22px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
 .todo-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .filter-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:#fff;font-size:12px;cursor:pointer;transition:.15s}
 .filter-btn.active,.filter-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -64,21 +63,17 @@ textarea{resize:vertical;min-height:80px}
 .badge-red{background:#fde8e8;color:var(--red)}.badge-green{background:#e8f5ee;color:var(--green)}.badge-blue{background:#e8ecfd;color:var(--blue)}
 .todo-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:14px;padding:2px 6px;border-radius:6px}
 .todo-del:hover{color:var(--red);background:#fde8e8}
-/* PLANNER */
 .planner-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .time-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #f5ede0}
-.time-label{font-size:12px;color:var(--text2);width:48px;min-width:48px;font-variant-numeric:tabular-nums}
+.time-label{font-size:12px;color:var(--text2);width:48px;min-width:48px}
 .time-input{flex:1;padding:6px 10px;font-size:12px}
 .mood-btns{display:flex;gap:10px;margin:8px 0}
 .mood-btn{font-size:22px;cursor:pointer;padding:4px 8px;border-radius:8px;border:2px solid transparent;transition:.1s}
 .mood-btn.active,.mood-btn:hover{border-color:var(--accent);background:var(--active)}
-/* HABIT */
-.habit-row{display:grid;grid-template-columns:1fr repeat(7,28px) 28px;gap:4px;align-items:center;padding:8px 0;border-bottom:1px solid #f5ede0}
-.habit-label{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.habit-row{display:grid;grid-template-columns:1fr repeat(7,26px) 26px;gap:3px;align-items:center;padding:8px 0;border-bottom:1px solid #f5ede0}
 .habit-check{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;justify-self:center}
 .habit-del-btn{background:none;border:none;cursor:pointer;color:#ddd;font-size:13px;justify-self:center;padding:2px;border-radius:4px}
 .habit-del-btn:hover{color:var(--red);background:#fde8e8}
-/* SCHEDULE */
 .cal-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:16px}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .cal-nav{background:none;border:none;cursor:pointer;font-size:16px;color:var(--text2);padding:4px 8px;border-radius:6px}
@@ -90,35 +85,28 @@ textarea{resize:vertical;min-height:80px}
 .cal-day:hover{background:var(--active)}
 .cal-day.today{border-color:var(--accent);font-weight:700;color:var(--accent)}
 .cal-day.other-month{color:#ccc}.cal-day.has-event{background:#fff3dc}
-/* BOOKS */
 .book-thumb{width:48px;height:64px;background:linear-gradient(135deg,#e8d5a3,#c9a84c);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .progress-bar{height:6px;background:#f0e8d8;border-radius:3px;margin:8px 0}
 .progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:.3s}
-/* STOCKS */
 .concept-card{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--card)}
 .concept-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;background:var(--active);color:var(--accent);font-weight:600;margin-bottom:6px}
-/* JOURNAL */
-.journal-card{border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;cursor:pointer;transition:.1s}
+.journal-card{border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;transition:.1s}
 .journal-card:hover{border-color:var(--accent);background:#fffdf8}
 .journal-date{font-size:11px;color:var(--text2);margin-bottom:4px}
 .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;background:#f0e8d8;color:var(--text2);margin:2px}
-/* FOOD */
 .cal-food-day{min-height:60px;padding:4px;border-radius:8px;border:1px solid #f0e8d8;cursor:pointer;font-size:11px;color:var(--text2);transition:.1s}
 .cal-food-day:hover{border-color:var(--accent);background:#fffdf8}
 .cal-food-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-/* RECIPE */
 .recipe-item{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--card)}
 .recipe-item summary{font-weight:600;font-size:14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
 .recipe-detail{padding-top:10px;font-size:13px;color:var(--text2);line-height:1.7}
-/* SAJU */
 .quarter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
 .q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
 .q-score{font-size:30px;font-weight:700;color:var(--accent)}
 .q-label{font-size:11px;color:var(--text2);margin-top:4px}
-/* AI */
-.ai-box{background:#fafaf7;border:1px solid var(--border);border-radius:12px;padding:16px;font-size:13px;line-height:1.8;color:var(--text);min-height:80px;white-space:pre-wrap}
-.ai-loading{color:var(--text2);font-style:italic}
-/* MODAL */
+.saved-box{background:#fafaf7;border:1px solid var(--border);border-radius:12px;padding:16px;font-size:13px;line-height:1.8;color:var(--text);min-height:80px;white-space:pre-wrap}
+.routine-card{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--card);display:flex;justify-content:space-between;align-items:flex-start}
+.stat-habit-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f5ede0;font-size:13px}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1000;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
 .modal{background:#fff;border-radius:18px;padding:28px;width:460px;max-width:95vw;max-height:88vh;overflow-y:auto}
@@ -126,10 +114,6 @@ textarea{resize:vertical;min-height:80px}
 .modal-row{margin-bottom:14px}
 .modal-row label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:600}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
-/* HABIT STATS */
-.stat-habit-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f5ede0;font-size:13px}
-/* ROUTINE */
-.routine-card{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--card);display:flex;justify-content:space-between;align-items:flex-start}
 @media(max-width:900px){
   #sidebar{width:56px;min-width:56px}.sb-item span,.sb-section,.sb-header .sb-sub,.sb-date-block,.sb-footer{display:none}
   #main{padding:20px 14px}.stat-grid{grid-template-columns:repeat(2,1fr)}.dash-grid,.planner-grid,.cal-wrap{grid-template-columns:1fr}
@@ -138,10 +122,9 @@ textarea{resize:vertical;min-height:80px}
 </style>
 </head>
 <body>
-
 <div id="sidebar">
   <div class="sb-header"><div class="sb-title">희주 대시보드</div><div class="sb-sub">MY PERSONAL SPACE</div></div>
-  <div class="sb-date-block"><div class="sb-day" id="sb-day">20</div><div class="sb-datestr" id="sb-datestr"></div></div>
+  <div class="sb-date-block"><div class="sb-day" id="sb-day"></div><div class="sb-datestr" id="sb-datestr"></div></div>
   <div class="sb-section">홈</div>
   <div class="sb-item active" onclick="nav('dash')"><span class="icon">🏠</span><span>대시보드</span></div>
   <div class="sb-section">플래너</div>
@@ -181,7 +164,7 @@ textarea{resize:vertical;min-height:80px}
   <div class="dash-grid">
     <div class="card">
       <div style="font-weight:700;margin-bottom:12px;font-size:14px">📝 오늘의 할 일</div>
-      <div id="dash-todos"><p style="color:var(--text2);font-size:13px;text-align:center;padding:12px">오늘 할 일이 없습니다 🎉</p></div>
+      <div id="dash-todos"></div>
       <div style="display:flex;gap:8px;margin-top:12px">
         <input id="dash-quick-todo" placeholder="빠른 할 일 추가...">
         <button class="btn btn-primary btn-sm" onclick="dashAddTodo()">추가</button>
@@ -189,7 +172,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="card">
       <div style="font-weight:700;margin-bottom:12px;font-size:14px">📅 오늘의 일정</div>
-      <div id="dash-events"><p style="color:var(--text2);font-size:13px;text-align:center;padding:12px">오늘 일정이 없습니다</p></div>
+      <div id="dash-events"></div>
       <button class="btn btn-outline btn-sm" onclick="nav('schedule')" style="margin-top:8px;width:100%">+ 스케쥴러 바로가기</button>
     </div>
   </div>
@@ -224,12 +207,10 @@ textarea{resize:vertical;min-height:80px}
         <textarea id="p-mood-memo" placeholder="기분 메모..." style="min-height:60px"></textarea>
       </div>
       <div class="card">
-        <!-- 습관 헤더 -->
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <div style="font-weight:700;font-size:14px">🔥 습관 체크</div>
           <button class="btn btn-outline btn-sm" style="font-size:11px" onclick="openHabitStats()">📊 누적 통계</button>
         </div>
-        <!-- 요일 헤더 -->
         <div style="display:grid;grid-template-columns:1fr repeat(7,26px) 26px;gap:3px;align-items:center;padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:4px">
           <div style="font-size:10px;color:var(--text2)">습관</div>
           <div style="font-size:9px;color:var(--text2);text-align:center;font-weight:600">월</div>
@@ -298,9 +279,10 @@ textarea{resize:vertical;min-height:80px}
 <!-- 필사 생성기 -->
 <div id="page-pil" class="page">
   <div class="page-title">✍️ 필사 생성기</div>
+  <div class="ai-notice">✨ Claude.ai에서 필사 생성 → 복사 → 아래에 붙여넣고 저장하세요</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
     <div class="card">
-      <div style="font-weight:700;margin-bottom:12px;font-size:14px">테마 선택</div>
+      <div style="font-weight:700;margin-bottom:12px;font-size:14px">테마 선택 (메모용)</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px" id="pil-themes">
         <button class="filter-btn active" onclick="setPilTheme(this,'풍요와 감사')">풍요와 감사</button>
         <button class="filter-btn" onclick="setPilTheme(this,'회복력과 용기')">회복력과 용기</button>
@@ -312,16 +294,14 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
     <div class="card">
-      <div style="font-weight:700;margin-bottom:10px;font-size:14px">오늘의 의도</div>
-      <input id="pil-intent" placeholder="오늘 집중하고 싶은 의도 (선택)" style="margin-bottom:12px">
-      <button class="btn btn-primary" style="width:100%" onclick="genPil()">✨ 필사 문장 생성하기</button>
+      <div style="font-weight:700;margin-bottom:10px;font-size:14px">오늘의 의도 (메모용)</div>
+      <input id="pil-intent" placeholder="오늘 집중하고 싶은 의도...">
     </div>
   </div>
   <div class="card">
-    <div style="font-weight:700;margin-bottom:12px;font-size:14px">오늘의 필사 ✦</div>
-    <div class="ai-box" id="pil-output">테마를 선택하고 생성 버튼을 눌러보세요.<br><br>매일의 필사는 당신의 마음에 깊은 씨앗을 심습니다.</div>
+    <div style="font-weight:700;margin-bottom:12px;font-size:14px">오늘의 필사 ✦ <span style="font-size:11px;color:var(--text2);font-weight:400">Claude.ai에서 생성 후 붙여넣기</span></div>
+    <textarea id="pil-output" placeholder="Claude.ai에서 생성한 필사 내용을 여기에 붙여넣으세요..." style="min-height:180px"></textarea>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-      <button class="btn btn-outline btn-sm" onclick="copyPil()">📋 복사</button>
       <button class="btn btn-primary btn-sm" onclick="savePil()">💾 저장</button>
     </div>
   </div>
@@ -338,64 +318,30 @@ textarea{resize:vertical;min-height:80px}
     <button class="btn btn-primary btn-sm" onclick="openBookModal()">+ 책 추가</button>
   </div>
   <div id="book-list"></div>
-  <div class="card" id="book-ai-section" style="display:none">
-    <div style="font-weight:700;margin-bottom:12px;font-size:14px">💬 독서 AI 질답</div>
-    <div style="display:flex;gap:8px;margin-bottom:10px">
-      <input id="book-q" placeholder="책에 대해 질문하세요..." style="flex:1">
-      <button class="btn btn-primary btn-sm" onclick="askBook()">AI에게 묻기</button>
-    </div>
-    <div class="ai-box" id="book-ai-out">책에 대한 질문을 입력하면 AI가 답변해드립니다.</div>
-  </div>
 </div>
 
 <!-- 조건검색식 -->
 <div id="page-cond" class="page">
   <div class="page-title">🔍 조건검색식 도우미</div>
+  <div class="ai-notice">🔥 Claude.ai에서 조건식 생성 → 복사 → 아래에 붙여넣고 저장하세요</div>
   <div class="tabs">
-    <div class="tab active" onclick="switchTab(this,'cond-design')">🎯 조건식 설계</div>
-    <div class="tab" onclick="switchTab(this,'cond-saved')">📋 저장된 조건식</div>
+    <div class="tab active" onclick="switchTab(this,'cond-saved')">📋 저장된 조건식</div>
+    <div class="tab" onclick="switchTab(this,'cond-new')">➕ 새 조건식 저장</div>
     <div class="tab" onclick="switchTab(this,'cond-history')">📈 성과 기록</div>
     <div class="tab" onclick="switchTab(this,'cond-ref')">📖 HTS 문법 참고</div>
   </div>
-  <div id="cond-design" class="tab-content active">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:12px;font-size:14px">⚡ 전략 선택</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px" id="cond-strats">
-          <button class="filter-btn active" onclick="setCondStrat(this,'5분봉 눌림목')">5분봉 눌림목</button>
-          <button class="filter-btn" onclick="setCondStrat(this,'갭 상승 눌림')">갭 상승 눌림</button>
-          <button class="filter-btn" onclick="setCondStrat(this,'거래량 급등')">거래량 급등</button>
-          <button class="filter-btn" onclick="setCondStrat(this,'이평선 돌파')">이평선 돌파</button>
-          <button class="filter-btn" onclick="setCondStrat(this,'직접 입력')">직접 입력</button>
-        </div>
-        <textarea id="cond-desc" placeholder="예: 5분봉 기준, 거래량이 직전 5분 평균 대비 150% 이상이고..." style="min-height:100px;margin-bottom:12px"></textarea>
-        <button class="btn btn-primary" style="width:100%" onclick="genCond()">🔥 AI 조건식 생성하기</button>
-      </div>
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:12px;font-size:14px">⚙️ 조건 파라미터</div>
-        <div class="modal-row"><label>봉 단위</label><select id="cond-unit"><option>5분봉</option><option>1분봉</option><option>10분봉</option><option>일봉</option></select></div>
-        <div class="modal-row"><label>거래대금 최소 (억)</label><input id="cond-vol" type="number" value="50"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div class="modal-row"><label>주가 하한</label><input id="cond-low" type="number" value="3000"></div>
-          <div class="modal-row"><label>주가 상한</label><input id="cond-high" type="number" value="100000"></div>
-        </div>
-        <div class="modal-row"><label>제외 종목</label><input id="cond-exc" placeholder="예: 관리종목, ETF, 스팩, 우선주"></div>
-      </div>
-    </div>
+  <div id="cond-saved" class="tab-content active">
+    <div class="card"><div id="cond-saved-list"><p style="color:var(--text2);font-size:13px">저장된 조건식이 없습니다</p></div></div>
+  </div>
+  <div id="cond-new" class="tab-content">
     <div class="card">
-      <div style="font-weight:700;margin-bottom:10px;font-size:14px">🤖 AI 생성 조건식</div>
-      <div class="ai-box" id="cond-out">전략을 선택하고 생성 버튼을 눌러보세요.</div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-        <button class="btn btn-outline btn-sm" onclick="copyCond()">📋 복사</button>
-        <button class="btn btn-primary btn-sm" onclick="saveCond()">💾 저장</button>
-      </div>
-    </div>
-    <div class="card">
-      <div style="font-weight:700;margin-bottom:8px;font-size:14px">💡 조건식 해설 & 주의사항</div>
-      <div id="cond-note" style="font-size:13px;color:var(--text2)">생성 후 자동으로 표시됩니다.</div>
+      <div style="font-weight:700;margin-bottom:12px;font-size:14px">조건식 저장</div>
+      <div class="modal-row"><label>전략명</label><input id="cond-strat-name" placeholder="예: 5분봉 눌림목"></div>
+      <div class="modal-row"><label>조건식 코드</label><textarea id="cond-code" placeholder="Claude.ai에서 생성한 조건식을 붙여넣으세요..." style="min-height:120px;font-family:monospace"></textarea></div>
+      <div class="modal-row"><label>해설 / 메모</label><textarea id="cond-memo" placeholder="조건식 설명, 주의사항..." style="min-height:80px"></textarea></div>
+      <button class="btn btn-primary" onclick="saveCond()">💾 저장</button>
     </div>
   </div>
-  <div id="cond-saved" class="tab-content"><div class="card"><div id="cond-saved-list"><p style="color:var(--text2);font-size:13px">저장된 조건식이 없습니다</p></div></div></div>
   <div id="cond-history" class="tab-content"><div class="card"><p style="color:var(--text2);font-size:13px">성과 기록을 추가해보세요</p></div></div>
   <div id="cond-ref" class="tab-content">
     <div class="card">
@@ -421,7 +367,6 @@ textarea{resize:vertical;min-height:80px}
     <div class="tab" onclick="switchTab(this,'stock-trades')">✅ 매매 기록</div>
     <div class="tab" onclick="switchTab(this,'stock-rules')">📌 매매 원칙</div>
   </div>
-  <!-- 핵심 개념 -->
   <div id="stock-concepts" class="tab-content active">
     <div id="stock-concepts-list"></div>
     <div class="card" style="border-style:dashed">
@@ -432,18 +377,16 @@ textarea{resize:vertical;min-height:80px}
       <button class="btn btn-primary" onclick="addStockConcept()">📚 개념 저장</button>
     </div>
   </div>
-  <!-- 패턴 노트 -->
   <div id="stock-patterns" class="tab-content">
     <div id="stock-patterns-list"></div>
     <div class="card" style="border-style:dashed">
       <div style="font-weight:700;margin-bottom:12px;font-size:14px">+ 패턴 추가</div>
       <div class="modal-row"><label>패턴명</label><input id="sp-name" placeholder="예: 쌍바닥 패턴"></div>
-      <div class="modal-row"><label>설명</label><textarea id="sp-desc" placeholder="패턴 설명, 진입 조건, 주의사항..." style="min-height:80px"></textarea></div>
-      <div class="modal-row"><label>태그</label><input id="sp-tag" placeholder="예: 반전, 상승, 5분봉"></div>
+      <div class="modal-row"><label>설명</label><textarea id="sp-desc" placeholder="패턴 설명..." style="min-height:80px"></textarea></div>
+      <div class="modal-row"><label>태그</label><input id="sp-tag" placeholder="예: 반전, 상승"></div>
       <button class="btn btn-primary" onclick="addStockPattern()">📈 패턴 저장</button>
     </div>
   </div>
-  <!-- 매매 기록 -->
   <div id="stock-trades" class="tab-content">
     <div id="stock-trades-list"></div>
     <div class="card" style="border-style:dashed">
@@ -460,7 +403,6 @@ textarea{resize:vertical;min-height:80px}
       <button class="btn btn-primary" onclick="addStockTrade()">✅ 매매 기록 저장</button>
     </div>
   </div>
-  <!-- 매매 원칙 -->
   <div id="stock-rules" class="tab-content">
     <div class="card"><textarea id="stock-rules-text" placeholder="나만의 매매 원칙을 기록하세요..." style="min-height:300px"></textarea></div>
   </div>
@@ -472,12 +414,13 @@ textarea{resize:vertical;min-height:80px}
     <div class="page-title" style="margin:0">💹 투자 일지</div>
     <button class="btn btn-primary btn-sm" onclick="openJournalModal()">+ 일지 작성</button>
   </div>
-  <div id="journal-list"><div class="card" style="text-align:center;color:var(--text2);font-size:13px">첫 투자 일지를 기록해 보세요.<br>기록이 실력이 됩니다 📈</div></div>
+  <div id="journal-list"></div>
 </div>
 
 <!-- 사주/운세 -->
 <div id="page-saju" class="page">
-  <div class="page-title">🔮 사주 / 운세 분석</div>
+  <div class="page-title">🔮 사주 / 운세</div>
+  <div class="ai-notice">🔮 Claude.ai에서 운세 분석 → 복사 → 아래에 붙여넣고 저장하세요</div>
   <div class="tabs">
     <div class="tab active" onclick="switchTab(this,'saju-today')">🌅 오늘의 운세</div>
     <div class="tab" onclick="switchTab(this,'saju-quarter')">📊 2026 분기별</div>
@@ -487,17 +430,18 @@ textarea{resize:vertical;min-height:80px}
   </div>
   <div id="saju-today" class="tab-content active">
     <div class="quarter-grid">
-      <div class="q-card"><div class="q-score" style="color:#c9a84c">★</div><div class="q-label">전체운</div></div>
-      <div class="q-card"><div class="q-score" style="color:#5c9e6e">★</div><div class="q-label">재물운</div></div>
-      <div class="q-card"><div class="q-score" style="color:#5c7ae0">★</div><div class="q-label">건강운</div></div>
-      <div class="q-card"><div class="q-score" style="color:#e05c5c">★</div><div class="q-label">대인운</div></div>
+      <div class="q-card"><div class="q-score" style="color:#c9a84c" id="score-전체">★</div><div class="q-label">전체운</div></div>
+      <div class="q-card"><div class="q-score" style="color:#5c9e6e" id="score-재물">★</div><div class="q-label">재물운</div></div>
+      <div class="q-card"><div class="q-score" style="color:#5c7ae0" id="score-건강">★</div><div class="q-label">건강운</div></div>
+      <div class="q-card"><div class="q-score" style="color:#e05c5c" id="score-대인">★</div><div class="q-label">대인운</div></div>
     </div>
     <div class="card">
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <input id="saju-today-context" placeholder="오늘 특별히 궁금한 것... (선택)" style="flex:1">
-        <button class="btn btn-primary btn-sm" onclick="genSajuToday()">🔮 오늘의 운세 보기</button>
+      <div style="font-weight:700;margin-bottom:10px;font-size:14px">오늘의 운세 기록</div>
+      <textarea id="saju-today-input" placeholder="Claude.ai에서 생성한 오늘의 운세를 붙여넣으세요..." style="min-height:150px"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+        <button class="btn btn-primary btn-sm" onclick="saveSaju('today')">💾 저장</button>
       </div>
-      <div class="ai-box" id="saju-today-out">버튼을 눌러 오늘의 운세를 확인해보세요.</div>
+      <div id="saju-today-saved" style="margin-top:12px"></div>
     </div>
   </div>
   <div id="saju-quarter" class="tab-content">
@@ -508,30 +452,30 @@ textarea{resize:vertical;min-height:80px}
       <div class="q-card"><div class="q-score">91</div><div style="font-size:10px;color:var(--text2);margin-top:2px">4분기</div><div class="q-label">수확과 도약</div></div>
     </div>
     <div class="card">
-      <input id="saju-q-context" placeholder="추가 맥락이나 질문..." style="margin-bottom:12px">
-      <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="genSaju('분기별','saju-q-out','saju-q-context')">🔮 운세 분석하기</button>
-      <div class="ai-box" id="saju-q-out">유형을 선택하고 분석 버튼을 눌러보세요.</div>
+      <textarea id="saju-quarter-input" placeholder="Claude.ai에서 생성한 분기별 운세를 붙여넣으세요..." style="min-height:150px"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveSaju('quarter')">💾 저장</button></div>
+      <div id="saju-quarter-saved" style="margin-top:12px"></div>
     </div>
   </div>
   <div id="saju-invest" class="tab-content">
     <div class="card">
-      <input id="saju-inv-context" placeholder="투자 관련 특이사항..." style="margin-bottom:12px">
-      <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="genSaju('투자/재물','saju-inv-out','saju-inv-context')">🔮 투자운 분석하기</button>
-      <div class="ai-box" id="saju-inv-out">버튼을 눌러 투자/재물운을 분석해보세요.</div>
+      <textarea id="saju-invest-input" placeholder="Claude.ai에서 생성한 투자/재물운을 붙여넣으세요..." style="min-height:150px"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveSaju('invest')">💾 저장</button></div>
+      <div id="saju-invest-saved" style="margin-top:12px"></div>
     </div>
   </div>
   <div id="saju-career" class="tab-content">
     <div class="card">
-      <input id="saju-car-context" placeholder="커리어 관련 고민..." style="margin-bottom:12px">
-      <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="genSaju('커리어','saju-car-out','saju-car-context')">🔮 커리어운 분석하기</button>
-      <div class="ai-box" id="saju-car-out">버튼을 눌러 커리어운을 분석해보세요.</div>
+      <textarea id="saju-career-input" placeholder="Claude.ai에서 생성한 커리어운을 붙여넣으세요..." style="min-height:150px"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveSaju('career')">💾 저장</button></div>
+      <div id="saju-career-saved" style="margin-top:12px"></div>
     </div>
   </div>
   <div id="saju-rel" class="tab-content">
     <div class="card">
-      <input id="saju-rel-context" placeholder="관계 관련 고민..." style="margin-bottom:12px">
-      <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="genSaju('관계','saju-rel-out','saju-rel-context')">🔮 관계운 분석하기</button>
-      <div class="ai-box" id="saju-rel-out">버튼을 눌러 관계운을 분석해보세요.</div>
+      <textarea id="saju-rel-input" placeholder="Claude.ai에서 생성한 관계운을 붙여넣으세요..." style="min-height:150px"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn btn-primary btn-sm" onclick="saveSaju('rel')">💾 저장</button></div>
+      <div id="saju-rel-saved" style="margin-top:12px"></div>
     </div>
   </div>
 </div>
@@ -549,19 +493,19 @@ textarea{resize:vertical;min-height:80px}
       <span id="diary-date-display" style="font-size:13px;color:var(--text2)"></span>
       <button class="btn btn-primary btn-sm" onclick="openDiaryModal('diary')">+ 일기 쓰기</button>
     </div>
-    <div id="diary-list"><div class="card" style="text-align:center;color:var(--text2);font-size:13px">오늘 하루를 기록해 보세요 📖</div></div>
+    <div id="diary-list"></div>
   </div>
   <div id="diary-gratitude" class="tab-content">
     <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
       <button class="btn btn-primary btn-sm" onclick="openDiaryModal('gratitude')">+ 감사일기 쓰기</button>
     </div>
-    <div id="grat-list"><div class="card" style="text-align:center;color:var(--text2);font-size:13px">감사한 것들을 기록해보세요 🌸</div></div>
+    <div id="grat-list"></div>
   </div>
   <div id="diary-doodle" class="tab-content">
     <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
       <button class="btn btn-primary btn-sm" onclick="openDiaryModal('doodle')">+ 끄적끄적 추가</button>
     </div>
-    <div id="doodle-list"><div class="card" style="text-align:center;color:var(--text2);font-size:13px">생각날 때마다 자유롭게 적어보세요 ✏️</div></div>
+    <div id="doodle-list"></div>
   </div>
 </div>
 
@@ -597,14 +541,13 @@ textarea{resize:vertical;min-height:80px}
       <div id="food-cal-grid" class="cal-food-grid"></div>
     </div>
   </div>
-  <!-- 레시피 탭들 - 추가/삭제 가능 -->
   <div id="food-main" class="tab-content"><div id="r-main"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-main" placeholder="예: 제육볶음"></div><div class="modal-row"><label>재료</label><input id="ri-main" placeholder="재료 목록"></div><div class="modal-row"><label>조리법</label><textarea id="rm-main" placeholder="조리 방법..." style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-main" placeholder="요리 팁 (선택)"></div><button class="btn btn-primary" onclick="addRecipe('main')">저장</button></div></div>
-  <div id="food-veg" class="tab-content"><div id="r-veg"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-veg" placeholder="예: 시금치나물"></div><div class="modal-row"><label>재료</label><input id="ri-veg" placeholder="재료 목록"></div><div class="modal-row"><label>조리법</label><textarea id="rm-veg" placeholder="조리 방법..." style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-veg" placeholder="요리 팁 (선택)"></div><button class="btn btn-primary" onclick="addRecipe('veg')">저장</button></div></div>
-  <div id="food-soup" class="tab-content"><div id="r-soup"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-soup" placeholder="예: 된장찌개"></div><div class="modal-row"><label>재료</label><input id="ri-soup" placeholder="재료 목록"></div><div class="modal-row"><label>조리법</label><textarea id="rm-soup" placeholder="조리 방법..." style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-soup" placeholder="요리 팁 (선택)"></div><button class="btn btn-primary" onclick="addRecipe('soup')">저장</button></div></div>
-  <div id="food-other" class="tab-content"><div id="r-other"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-other" placeholder="예: 깍두기"></div><div class="modal-row"><label>재료</label><input id="ri-other" placeholder="재료 목록"></div><div class="modal-row"><label>조리법</label><textarea id="rm-other" placeholder="조리 방법..." style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-other" placeholder="요리 팁 (선택)"></div><button class="btn btn-primary" onclick="addRecipe('other')">저장</button></div></div>
-  <div id="food-diet" class="tab-content"><div id="r-diet"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-diet" placeholder="예: 닭가슴살 샐러드"></div><div class="modal-row"><label>재료</label><input id="ri-diet" placeholder="재료 목록"></div><div class="modal-row"><label>조리법</label><textarea id="rm-diet" placeholder="조리 방법..." style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-diet" placeholder="요리 팁 (선택)"></div><button class="btn btn-primary" onclick="addRecipe('diet')">저장</button></div></div>
-  <div id="food-snack" class="tab-content"><div id="r-snack"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-snack" placeholder="예: 바나나 오트밀볼"></div><div class="modal-row"><label>재료</label><input id="ri-snack" placeholder="재료 목록"></div><div class="modal-row"><label>조리법</label><textarea id="rm-snack" placeholder="조리 방법..." style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-snack" placeholder="요리 팁 (선택)"></div><button class="btn btn-primary" onclick="addRecipe('snack')">저장</button></div></div>
-  <div id="food-breakfast" class="tab-content"><div id="r-breakfast"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-breakfast" placeholder="예: 아보카도 토스트"></div><div class="modal-row"><label>재료</label><input id="ri-breakfast" placeholder="재료 목록"></div><div class="modal-row"><label>조리법</label><textarea id="rm-breakfast" placeholder="조리 방법..." style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-breakfast" placeholder="요리 팁 (선택)"></div><button class="btn btn-primary" onclick="addRecipe('breakfast')">저장</button></div></div>
+  <div id="food-veg" class="tab-content"><div id="r-veg"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-veg" placeholder="예: 시금치나물"></div><div class="modal-row"><label>재료</label><input id="ri-veg"></div><div class="modal-row"><label>조리법</label><textarea id="rm-veg" style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-veg"></div><button class="btn btn-primary" onclick="addRecipe('veg')">저장</button></div></div>
+  <div id="food-soup" class="tab-content"><div id="r-soup"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-soup" placeholder="예: 된장찌개"></div><div class="modal-row"><label>재료</label><input id="ri-soup"></div><div class="modal-row"><label>조리법</label><textarea id="rm-soup" style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-soup"></div><button class="btn btn-primary" onclick="addRecipe('soup')">저장</button></div></div>
+  <div id="food-other" class="tab-content"><div id="r-other"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-other"></div><div class="modal-row"><label>재료</label><input id="ri-other"></div><div class="modal-row"><label>조리법</label><textarea id="rm-other" style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-other"></div><button class="btn btn-primary" onclick="addRecipe('other')">저장</button></div></div>
+  <div id="food-diet" class="tab-content"><div id="r-diet"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-diet"></div><div class="modal-row"><label>재료</label><input id="ri-diet"></div><div class="modal-row"><label>조리법</label><textarea id="rm-diet" style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-diet"></div><button class="btn btn-primary" onclick="addRecipe('diet')">저장</button></div></div>
+  <div id="food-snack" class="tab-content"><div id="r-snack"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-snack"></div><div class="modal-row"><label>재료</label><input id="ri-snack"></div><div class="modal-row"><label>조리법</label><textarea id="rm-snack" style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-snack"></div><button class="btn btn-primary" onclick="addRecipe('snack')">저장</button></div></div>
+  <div id="food-breakfast" class="tab-content"><div id="r-breakfast"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-breakfast"></div><div class="modal-row"><label>재료</label><input id="ri-breakfast"></div><div class="modal-row"><label>조리법</label><textarea id="rm-breakfast" style="min-height:80px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-breakfast"></div><button class="btn btn-primary" onclick="addRecipe('breakfast')">저장</button></div></div>
 </div>
 
 <!-- 운동 -->
@@ -619,13 +562,13 @@ textarea{resize:vertical;min-height:80px}
     <div class="tab" onclick="switchTab(this,'ex-arm')">💪 손·팔</div>
     <div class="tab" onclick="switchTab(this,'ex-waist')">🏋️ 허리</div>
   </div>
-  <div id="ex-cardio" class="tab-content active"><div id="el-cardio"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-cardio" placeholder="운동 이름"></div><div class="modal-row"><label>설명</label><textarea id="ed-cardio" placeholder="방법, 횟수, 주의사항..." style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('cardio')">저장</button></div></div>
-  <div id="ex-diet" class="tab-content"><div id="el-diet"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-diet" placeholder="운동 이름"></div><div class="modal-row"><label>설명</label><textarea id="ed-diet" placeholder="방법, 횟수..." style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('diet')">저장</button></div></div>
-  <div id="ex-stretch" class="tab-content"><div id="el-stretch"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-stretch" placeholder="운동 이름"></div><div class="modal-row"><label>설명</label><textarea id="ed-stretch" placeholder="방법, 횟수..." style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('stretch')">저장</button></div></div>
-  <div id="ex-neck" class="tab-content"><div id="el-neck"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-neck" placeholder="운동 이름"></div><div class="modal-row"><label>설명</label><textarea id="ed-neck" placeholder="방법, 횟수..." style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('neck')">저장</button></div></div>
-  <div id="ex-leg" class="tab-content"><div id="el-leg"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-leg" placeholder="운동 이름"></div><div class="modal-row"><label>설명</label><textarea id="ed-leg" placeholder="방법, 횟수..." style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('leg')">저장</button></div></div>
-  <div id="ex-arm" class="tab-content"><div id="el-arm"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-arm" placeholder="운동 이름"></div><div class="modal-row"><label>설명</label><textarea id="ed-arm" placeholder="방법, 횟수..." style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('arm')">저장</button></div></div>
-  <div id="ex-waist" class="tab-content"><div id="el-waist"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-waist" placeholder="운동 이름"></div><div class="modal-row"><label>설명</label><textarea id="ed-waist" placeholder="방법, 횟수..." style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('waist')">저장</button></div></div>
+  <div id="ex-cardio" class="tab-content active"><div id="el-cardio"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-cardio"></div><div class="modal-row"><label>설명</label><textarea id="ed-cardio" style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('cardio')">저장</button></div></div>
+  <div id="ex-diet" class="tab-content"><div id="el-diet"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-diet"></div><div class="modal-row"><label>설명</label><textarea id="ed-diet" style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('diet')">저장</button></div></div>
+  <div id="ex-stretch" class="tab-content"><div id="el-stretch"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-stretch"></div><div class="modal-row"><label>설명</label><textarea id="ed-stretch" style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('stretch')">저장</button></div></div>
+  <div id="ex-neck" class="tab-content"><div id="el-neck"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-neck"></div><div class="modal-row"><label>설명</label><textarea id="ed-neck" style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('neck')">저장</button></div></div>
+  <div id="ex-leg" class="tab-content"><div id="el-leg"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-leg"></div><div class="modal-row"><label>설명</label><textarea id="ed-leg" style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('leg')">저장</button></div></div>
+  <div id="ex-arm" class="tab-content"><div id="el-arm"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-arm"></div><div class="modal-row"><label>설명</label><textarea id="ed-arm" style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('arm')">저장</button></div></div>
+  <div id="ex-waist" class="tab-content"><div id="el-waist"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 운동 추가</div><div class="modal-row"><label>운동명</label><input id="en-waist"></div><div class="modal-row"><label>설명</label><textarea id="ed-waist" style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addExercise('waist')">저장</button></div></div>
 </div>
 
 <!-- 마사지 -->
@@ -635,157 +578,61 @@ textarea{resize:vertical;min-height:80px}
     <div class="tab active" onclick="switchTab(this,'mas-face')">✨ 얼굴</div>
     <div class="tab" onclick="switchTab(this,'mas-body')">🧖 두피</div>
   </div>
-  <div id="mas-face" class="tab-content active">
-    <div id="ml-face"></div>
-    <div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 마사지 루틴 추가</div><div class="modal-row"><label>루틴명</label><input id="mn-face" placeholder="예: 아침 림프 마사지"></div><div class="modal-row"><label>방법</label><textarea id="md-face" placeholder="마사지 방법..." style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addMassage('face')">저장</button></div>
-  </div>
-  <div id="mas-body" class="tab-content active" style="display:none">
-    <div id="ml-body"></div>
-    <div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 마사지 루틴 추가</div><div class="modal-row"><label>루틴명</label><input id="mn-body" placeholder="예: 두피 혈액순환 마사지"></div><div class="modal-row"><label>방법</label><textarea id="md-body" placeholder="마사지 방법..." style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addMassage('body')">저장</button></div>
-  </div>
+  <div id="mas-face" class="tab-content active"><div id="ml-face"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 루틴 추가</div><div class="modal-row"><label>루틴명</label><input id="mn-face"></div><div class="modal-row"><label>방법</label><textarea id="md-face" style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addMassage('face')">저장</button></div></div>
+  <div id="mas-body" class="tab-content"><div id="ml-body"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:10px;font-size:14px">+ 루틴 추가</div><div class="modal-row"><label>루틴명</label><input id="mn-body"></div><div class="modal-row"><label>방법</label><textarea id="md-body" style="min-height:70px"></textarea></div><button class="btn btn-primary" onclick="addMassage('body')">저장</button></div></div>
 </div>
 
-</div><!-- end main -->
+</div>
 
 <!-- MODALS -->
-<div id="modal-todo" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">✅ 새 할 일 추가</div>
-    <div class="modal-row"><label>할 일</label><input id="todo-text-input" placeholder="할 일을 입력하세요"></div>
-    <div class="modal-row"><label>카테고리</label><select id="todo-cat"><option>주식</option><option>독서</option><option>생활</option><option>기타</option></select></div>
-    <div class="modal-row"><label>우선순위</label><select id="todo-pri"><option>보통</option><option>중요</option><option>낮음</option></select></div>
-    <div class="modal-row"><label>마감일</label><input id="todo-due" type="date"></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-todo')">취소</button>
-      <button class="btn btn-primary" onclick="addTodo()">추가</button>
-    </div>
-  </div>
-</div>
-
-<div id="modal-event" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">📅 일정 추가</div>
-    <div class="modal-row"><label>제목</label><input id="ev-title" placeholder="일정 제목"></div>
-    <div class="modal-row"><label>날짜</label><input id="ev-date" type="date"></div>
-    <div class="modal-row"><label>시간</label><input id="ev-time" type="time"></div>
-    <div class="modal-row"><label>메모</label><textarea id="ev-memo" style="min-height:60px" placeholder="메모..."></textarea></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-event')">취소</button>
-      <button class="btn btn-primary" onclick="addEvent()">추가</button>
-    </div>
-  </div>
-</div>
-
-<div id="modal-book" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">📚 책 추가</div>
-    <div class="modal-row"><label>책 제목</label><input id="bk-title" placeholder="책 제목"></div>
-    <div class="modal-row"><label>저자</label><input id="bk-author" placeholder="저자명"></div>
-    <div class="modal-row"><label>카테고리</label><input id="bk-cat" placeholder="예: 철학, 경제, 소설"></div>
-    <div class="modal-row"><label>진행률 (%)</label><input id="bk-prog" type="number" value="0" min="0" max="100"></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-book')">취소</button>
-      <button class="btn btn-primary" onclick="addBook()">추가</button>
-    </div>
-  </div>
-</div>
-
-<div id="modal-journal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">💹 투자 일지 작성</div>
-    <div class="modal-row"><label>날짜</label><input id="jn-date" type="date"></div>
-    <div class="modal-row"><label>내용</label><textarea id="jn-content" placeholder="오늘의 매매, 생각, 반성..." style="min-height:120px"></textarea></div>
-    <div class="modal-row"><label>태그</label><input id="jn-tags" placeholder="예: 눌림목, 손절, 수익"></div>
-    <div class="modal-row"><label>손익</label><input id="jn-pnl" placeholder="예: +150,000 또는 -50,000"></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-journal')">취소</button>
-      <button class="btn btn-primary" onclick="addJournal()">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- 일기/감사/끄적 통합 모달 -->
-<div id="modal-diary" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title" id="diary-modal-title">📖 일기 쓰기</div>
-    <div id="diary-modal-body"></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-diary')">취소</button>
-      <button class="btn btn-primary" onclick="saveDiaryEntry()">저장</button>
-    </div>
-  </div>
-</div>
-
-<div id="modal-food-day" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title" id="food-modal-title">식단 입력</div>
-    <div class="modal-row"><label>아침</label><input id="fd-breakfast" placeholder="아침 메뉴..."></div>
-    <div class="modal-row"><label>점심</label><input id="fd-lunch" placeholder="점심 메뉴..."></div>
-    <div class="modal-row"><label>저녁</label><input id="fd-dinner" placeholder="저녁 메뉴..."></div>
-    <div class="modal-row"><label>간식</label><input id="fd-snack-m" placeholder="간식..."></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-food-day')">취소</button>
-      <button class="btn btn-primary" onclick="saveFoodDay()">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- 습관 누적 통계 모달 -->
-<div id="modal-habit-stats" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">📊 습관 누적 통계</div>
-    <div id="habit-stats-body"></div>
-    <div class="modal-actions"><button class="btn btn-primary" onclick="closeModal('modal-habit-stats')">닫기</button></div>
-  </div>
-</div>
+<div id="modal-todo" class="modal-overlay"><div class="modal"><div class="modal-title">✅ 새 할 일 추가</div><div class="modal-row"><label>할 일</label><input id="todo-text-input"></div><div class="modal-row"><label>카테고리</label><select id="todo-cat"><option>주식</option><option>독서</option><option>생활</option><option>기타</option></select></div><div class="modal-row"><label>우선순위</label><select id="todo-pri"><option>보통</option><option>중요</option><option>낮음</option></select></div><div class="modal-row"><label>마감일</label><input id="todo-due" type="date"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-todo')">취소</button><button class="btn btn-primary" onclick="addTodo()">추가</button></div></div></div>
+<div id="modal-event" class="modal-overlay"><div class="modal"><div class="modal-title">📅 일정 추가</div><div class="modal-row"><label>제목</label><input id="ev-title"></div><div class="modal-row"><label>날짜</label><input id="ev-date" type="date"></div><div class="modal-row"><label>시간</label><input id="ev-time" type="time"></div><div class="modal-row"><label>메모</label><textarea id="ev-memo" style="min-height:60px"></textarea></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-event')">취소</button><button class="btn btn-primary" onclick="addEvent()">추가</button></div></div></div>
+<div id="modal-book" class="modal-overlay"><div class="modal"><div class="modal-title">📚 책 추가</div><div class="modal-row"><label>책 제목</label><input id="bk-title"></div><div class="modal-row"><label>저자</label><input id="bk-author"></div><div class="modal-row"><label>카테고리</label><input id="bk-cat" placeholder="예: 철학, 경제"></div><div class="modal-row"><label>진행률 (%)</label><input id="bk-prog" type="number" value="0" min="0" max="100"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-book')">취소</button><button class="btn btn-primary" onclick="addBook()">추가</button></div></div></div>
+<div id="modal-journal" class="modal-overlay"><div class="modal"><div class="modal-title">💹 투자 일지 작성</div><div class="modal-row"><label>날짜</label><input id="jn-date" type="date"></div><div class="modal-row"><label>내용</label><textarea id="jn-content" style="min-height:120px"></textarea></div><div class="modal-row"><label>태그</label><input id="jn-tags" placeholder="예: 눌림목, 손절, 수익"></div><div class="modal-row"><label>손익</label><input id="jn-pnl" placeholder="예: +150,000"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-journal')">취소</button><button class="btn btn-primary" onclick="addJournal()">저장</button></div></div></div>
+<div id="modal-diary" class="modal-overlay"><div class="modal"><div class="modal-title" id="diary-modal-title">📖 일기 쓰기</div><div id="diary-modal-body"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-diary')">취소</button><button class="btn btn-primary" onclick="saveDiaryEntry()">저장</button></div></div></div>
+<div id="modal-food-day" class="modal-overlay"><div class="modal"><div class="modal-title" id="food-modal-title">식단 입력</div><div class="modal-row"><label>아침</label><input id="fd-breakfast"></div><div class="modal-row"><label>점심</label><input id="fd-lunch"></div><div class="modal-row"><label>저녁</label><input id="fd-dinner"></div><div class="modal-row"><label>간식</label><input id="fd-snack-m"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-food-day')">취소</button><button class="btn btn-primary" onclick="saveFoodDay()">저장</button></div></div></div>
+<div id="modal-habit-stats" class="modal-overlay"><div class="modal"><div class="modal-title">📊 습관 누적 통계</div><div id="habit-stats-body"></div><div class="modal-actions"><button class="btn btn-primary" onclick="closeModal('modal-habit-stats')">닫기</button></div></div></div>
 
 <script>
-// ===== STATE =====
-const now = new Date();
+const now=new Date();
 let state={
   todos:[],events:[],books:[{title:'니체의 말',author:'니체/사이토 다카시 편역',cat:'철학',prog:45}],
   stockConcepts:[],stockPatterns:[],stockTrades:[],journals:[],
-  diaries:[],gratitudes:[],doodles:[],
-  habits:[],
-  habitStats:{},// {habitName: {monthly:{YYYY-MM: count}, total: count}}
-  pilTheme:'풍요와 감사',pilHistory:[],condStrat:'5분봉 눌림목',
+  diaries:[],gratitudes:[],doodles:[],habits:[],habitStats:{},
+  pilTheme:'풍요와 감사',pilHistory:[],
+  condSaved:[],
+  sajuSaved:{today:[],quarter:[],invest:[],career:[],rel:[]},
   calYear:now.getFullYear(),calMonth:now.getMonth(),
   foodCalYear:now.getFullYear(),foodCalMonth:now.getMonth(),foodData:{},
   recipes:{main:[],veg:[],soup:[],other:[],diet:[],snack:[],breakfast:[]},
   exercises:{cardio:[],diet:[],stretch:[],neck:[],leg:[],arm:[],waist:[]},
   massages:{face:[],body:[]},
-  currentFoodDay:null,currentBookIdx:0,
-  currentDiaryType:'diary'
+  currentFoodDay:null,currentBookIdx:0,currentDiaryType:'diary'
 };
 
-// ===== NAV =====
+function save(){try{localStorage.setItem('heeju_v2',JSON.stringify(state));}catch(e){}}
+function load(){try{const s=localStorage.getItem('heeju_v2');if(s){const p=JSON.parse(s);Object.keys(p).forEach(k=>{if(k in state)state[k]=p[k];});}}catch(e){}}
+
 function nav(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,cond:6,stocks:7,journal:8,saju:9,diary:10,food:11,exercise:12,massage:13};
-  const items=document.querySelectorAll('.sb-item');
-  if(map[id]!==undefined)items[map[id]].classList.add('active');
+  document.querySelectorAll('.sb-item')[map[id]]?.classList.add('active');
   if(id==='planner')initPlanner();
   if(id==='schedule'||id==='dash')renderCal();
   if(id==='food')renderFoodCal();
   if(id==='book')renderBooks();
   if(id==='dash')updateDashStats();
-  if(id==='diary'){document.getElementById('diary-date-display').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});}
+  if(id==='diary')document.getElementById('diary-date-display').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+  if(id==='saju')renderSajuSaved();
 }
 
-// ===== CLOCK =====
-function updateClock(){const n=new Date(),p=x=>String(x).padStart(2,'0');document.getElementById('clock').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+function updateClock(){const n=new Date(),p=x=>String(x).padStart(2,'0');const el=document.getElementById('clock');if(el)el.textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
 setInterval(updateClock,1000);updateClock();
 
-// ===== SIDEBAR DATE =====
-(function(){
-  const n=new Date();
-  document.getElementById('sb-day').textContent=n.getDate();
-  document.getElementById('sb-datestr').textContent=n.toLocaleDateString('ko-KR',{year:'numeric',month:'long',weekday:'long'});
-})();
+(function(){const n=new Date();document.getElementById('sb-day').textContent=n.getDate();document.getElementById('sb-datestr').textContent=n.toLocaleDateString('ko-KR',{year:'numeric',month:'long',weekday:'long'});})();
 
-// ===== DASH =====
 function updateDashStats(){
   const done=state.todos.filter(t=>t.done).length;
   document.getElementById('d-todo-stat').textContent=`${done}/${state.todos.length}`;
@@ -799,514 +646,222 @@ function updateDashStats(){
   const todayEvs=state.events.filter(e=>e.date===today);
   document.getElementById('dash-events').innerHTML=todayEvs.length?todayEvs.map(e=>`<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f5ede0">📌 ${e.time||''} ${e.title}</div>`).join(''):'<p style="color:var(--text2);font-size:13px;text-align:center;padding:12px">오늘 일정이 없습니다</p>';
 }
-function dashAddTodo(){const inp=document.getElementById('dash-quick-todo');if(!inp.value.trim())return;state.todos.push({text:inp.value.trim(),done:false,cat:'기타',pri:'보통',due:''});inp.value='';updateDashStats();renderTodos();}
+function dashAddTodo(){const inp=document.getElementById('dash-quick-todo');if(!inp.value.trim())return;state.todos.push({text:inp.value.trim(),done:false,cat:'기타',pri:'보통',due:''});inp.value='';save();updateDashStats();renderTodos();}
 
-// ===== PLANNER =====
 function initPlanner(){
   document.getElementById('planner-date').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
   const tt=document.getElementById('time-table');tt.innerHTML='';
   for(let h=6;h<=23;h++){const row=document.createElement('div');row.className='time-row';row.innerHTML=`<span class="time-label">${String(h).padStart(2,'0')}:00</span><input class="time-input" placeholder="비어있음" id="t${h}">`;tt.appendChild(row);}
+  if(state['p-goal'])document.getElementById('p-goal').value=state['p-goal'];
+  if(state['p-mood-memo'])document.getElementById('p-mood-memo').value=state['p-mood-memo'];
+  if(state['p-review'])document.getElementById('p-review').value=state['p-review'];
+  if(state.plannerTimes)Object.entries(state.plannerTimes).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val;});
   renderHabits();
 }
 function setMood(el){document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
-
-// ===== HABITS =====
 function renderHabits(){
-  const hl=document.getElementById('habit-list');
-  if(!state.habits.length){hl.innerHTML='<p style="font-size:12px;color:var(--text2);padding:8px 0">아래에서 습관을 추가하세요</p>';return;}
-  hl.innerHTML=state.habits.map((h,i)=>`
-    <div class="habit-row">
-      <span class="habit-label" title="${h.name}">${h.name}</span>
-      ${h.checks.map((c,j)=>`<input type="checkbox" class="habit-check" ${c?'checked':''} onchange="toggleHabit(${i},${j},this)">`).join('')}
-      <button class="habit-del-btn" onclick="delHabit(${i})">✕</button>
-    </div>`).join('');
+  const hl=document.getElementById('habit-list');if(!hl)return;
+  hl.innerHTML=state.habits.length?state.habits.map((h,i)=>`<div class="habit-row"><span style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.name}</span>${h.checks.map((c,j)=>`<input type="checkbox" class="habit-check" ${c?'checked':''} onchange="toggleHabit(${i},${j},this)">`).join('')}<button class="habit-del-btn" onclick="delHabit(${i})">✕</button></div>`).join(''):'<p style="font-size:12px;color:var(--text2);padding:8px 0">아래에서 습관을 추가하세요</p>';
 }
 function toggleHabit(i,j,el){
   state.habits[i].checks[j]=el.checked;
-  // 통계 업데이트
-  const name=state.habits[i].name;
-  const ym=new Date().toISOString().slice(0,7);
+  const name=state.habits[i].name,ym=new Date().toISOString().slice(0,7);
   if(!state.habitStats[name])state.habitStats[name]={monthly:{},total:0};
   if(el.checked){state.habitStats[name].total++;if(!state.habitStats[name].monthly[ym])state.habitStats[name].monthly[ym]=0;state.habitStats[name].monthly[ym]++;}
   else{state.habitStats[name].total=Math.max(0,state.habitStats[name].total-1);if(state.habitStats[name].monthly[ym])state.habitStats[name].monthly[ym]=Math.max(0,state.habitStats[name].monthly[ym]-1);}
+  save();
 }
-function delHabit(i){if(confirm(`"${state.habits[i].name}" 습관을 삭제할까요?`)){state.habits.splice(i,1);renderHabits();}}
-function addHabit(){
-  const inp=document.getElementById('new-habit');
-  if(!inp.value.trim())return;
-  state.habits.push({name:inp.value.trim(),checks:[false,false,false,false,false,false,false]});
-  inp.value='';renderHabits();
-}
+function delHabit(i){if(confirm(`"${state.habits[i].name}" 삭제할까요?`)){state.habits.splice(i,1);renderHabits();save();}}
+function addHabit(){const inp=document.getElementById('new-habit');if(!inp.value.trim())return;state.habits.push({name:inp.value.trim(),checks:[false,false,false,false,false,false,false]});inp.value='';renderHabits();save();}
 function openHabitStats(){
-  const el=document.getElementById('habit-stats-body');
-  const ym=new Date().toISOString().slice(0,7);
+  const el=document.getElementById('habit-stats-body'),ym=new Date().toISOString().slice(0,7);
   if(!state.habits.length){el.innerHTML='<p style="color:var(--text2);font-size:13px">등록된 습관이 없습니다.</p>';document.getElementById('modal-habit-stats').classList.add('open');return;}
-  let html=`<div style="margin-bottom:14px;padding:10px;background:var(--bg);border-radius:10px;font-size:12px;color:var(--text2)">이번 달: <b style="color:var(--accent)">${ym}</b></div>`;
-  html+=state.habits.map(h=>{
-    const st=state.habitStats[h.name]||{monthly:{},total:0};
-    const monthly=st.monthly[ym]||0;
-    const total=st.total||0;
-    const weekDone=h.checks.filter(Boolean).length;
-    return `<div class="stat-habit-row">
-      <span style="font-weight:600">${h.name}</span>
-      <div style="display:flex;gap:16px;align-items:center">
-        <span>이번 주 <b style="color:var(--accent)">${weekDone}</b>/7</span>
-        <span>이번 달 <b style="color:var(--green)">${monthly}</b>회</span>
-        <span>총 누계 <b style="color:var(--blue)">${total}</b>회</span>
-      </div>
-    </div>`;
-  }).join('');
-  el.innerHTML=html;
+  el.innerHTML=`<div style="margin-bottom:14px;padding:10px;background:var(--bg);border-radius:10px;font-size:12px;color:var(--text2)">기준 월: <b style="color:var(--accent)">${ym}</b></div>`+
+  state.habits.map(h=>{const st=state.habitStats[h.name]||{monthly:{},total:0};return`<div class="stat-habit-row"><span style="font-weight:600">${h.name}</span><div style="display:flex;gap:16px"><span>이번 주 <b style="color:var(--accent)">${h.checks.filter(Boolean).length}</b>/7</span><span>이번 달 <b style="color:var(--green)">${st.monthly[ym]||0}</b>회</span><span>총 <b style="color:var(--blue)">${st.total||0}</b>회</span></div></div>`;}).join('');
   document.getElementById('modal-habit-stats').classList.add('open');
 }
-function resetPlanner(){if(confirm('초기화할까요?')){document.getElementById('p-goal').value='';document.getElementById('p-review').value='';for(let h=6;h<=23;h++){const el=document.getElementById('t'+h);if(el)el.value='';}state.habits.forEach(h=>h.checks=h.checks.map(()=>false));renderHabits();}}
+function resetPlanner(){if(confirm('초기화할까요?')){['p-goal','p-mood-memo','p-review'].forEach(id=>{state[id]='';const el=document.getElementById(id);if(el)el.value='';});for(let h=6;h<=23;h++){if(!state.plannerTimes)state.plannerTimes={};state.plannerTimes['t'+h]='';const el=document.getElementById('t'+h);if(el)el.value='';}state.habits.forEach(h=>h.checks=h.checks.map(()=>false));renderHabits();save();}}
 
-// ===== TODO =====
 let todoFilter='전체';
 function filterTodo(f,el){todoFilter=f;document.querySelectorAll('#todo-filters .filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTodos();}
 function renderTodos(){
-  const tl=document.getElementById('todo-list');
+  const tl=document.getElementById('todo-list');if(!tl)return;
   let todos=state.todos;
   if(todoFilter==='오늘')todos=todos.filter(t=>t.due===new Date().toISOString().split('T')[0]);
   else if(todoFilter==='중요')todos=todos.filter(t=>t.pri==='중요');
   else if(todoFilter==='완료')todos=todos.filter(t=>t.done);
   else if(['주식','독서','생활'].includes(todoFilter))todos=todos.filter(t=>t.cat===todoFilter);
-  if(!todos.length){tl.innerHTML='<div class="card" style="text-align:center;color:var(--text2);font-size:13px">할 일이 없습니다</div>';return;}
-  tl.innerHTML=todos.map(t=>`<div class="todo-item ${t.done?'done':''}">
-    <input type="checkbox" ${t.done?'checked':''} onchange="toggleTodo(${state.todos.indexOf(t)},this)">
-    <span class="todo-text">${t.text}</span>
-    ${t.pri==='중요'?'<span class="badge badge-red">중요</span>':''}
-    <span class="badge badge-green">${t.cat}</span>
-    ${t.due?`<span class="badge badge-blue">${t.due}</span>`:''}
-    <button class="todo-del" onclick="delTodo(${state.todos.indexOf(t)})">✕</button>
-  </div>`).join('');
+  tl.innerHTML=todos.length?todos.map(t=>`<div class="todo-item ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTodo(${state.todos.indexOf(t)},this)"><span class="todo-text">${t.text}</span>${t.pri==='중요'?'<span class="badge badge-red">중요</span>':''}<span class="badge badge-green">${t.cat}</span>${t.due?`<span class="badge badge-blue">${t.due}</span>`:''}<button class="todo-del" onclick="delTodo(${state.todos.indexOf(t)})">✕</button></div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">할 일이 없습니다</div>';
 }
-function toggleTodo(i,el){state.todos[i].done=el.checked;renderTodos();updateDashStats();}
-function delTodo(i){state.todos.splice(i,1);renderTodos();updateDashStats();}
+function toggleTodo(i,el){state.todos[i].done=el.checked;save();renderTodos();updateDashStats();}
+function delTodo(i){state.todos.splice(i,1);save();renderTodos();updateDashStats();}
 function openTodoModal(){document.getElementById('modal-todo').classList.add('open');}
-function addTodo(){
-  const t=document.getElementById('todo-text-input').value.trim();if(!t)return;
-  state.todos.push({text:t,done:false,cat:document.getElementById('todo-cat').value,pri:document.getElementById('todo-pri').value,due:document.getElementById('todo-due').value});
-  closeModal('modal-todo');document.getElementById('todo-text-input').value='';
-  renderTodos();updateDashStats();
-}
+function addTodo(){const t=document.getElementById('todo-text-input').value.trim();if(!t)return;state.todos.push({text:t,done:false,cat:document.getElementById('todo-cat').value,pri:document.getElementById('todo-pri').value,due:document.getElementById('todo-due').value});closeModal('modal-todo');document.getElementById('todo-text-input').value='';save();renderTodos();updateDashStats();}
 
-// ===== SCHEDULE =====
 function renderCal(){
   const yr=state.calYear,mo=state.calMonth;
   document.getElementById('cal-title').textContent=`${yr}년 ${mo+1}월`;
-  const grid=document.getElementById('cal-grid');
   const dows=['일','월','화','수','목','금','토'];
   let html=dows.map(d=>`<div class="cal-dow">${d}</div>`).join('');
-  const first=new Date(yr,mo,1).getDay(),last=new Date(yr,mo+1,0).getDate();
-  const today=new Date();
+  const first=new Date(yr,mo,1).getDay(),last=new Date(yr,mo+1,0).getDate(),today=new Date();
   for(let i=0;i<first;i++)html+=`<div class="cal-day other-month"></div>`;
-  for(let d=1;d<=last;d++){
-    const isToday=today.getFullYear()===yr&&today.getMonth()===mo&&today.getDate()===d;
-    const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const hasEv=state.events.some(e=>e.date===ds);
-    html+=`<div class="cal-day ${isToday?'today':''} ${hasEv?'has-event':''}" onclick="selectDay('${ds}')">${d}</div>`;
-  }
-  grid.innerHTML=html;renderEvents();
+  for(let d=1;d<=last;d++){const isToday=today.getFullYear()===yr&&today.getMonth()===mo&&today.getDate()===d;const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;html+=`<div class="cal-day ${isToday?'today':''} ${state.events.some(e=>e.date===ds)?'has-event':''}" onclick="selectDay('${ds}')">${d}</div>`;}
+  document.getElementById('cal-grid').innerHTML=html;renderEvents();
 }
 function changeMonth(d){state.calMonth+=d;if(state.calMonth>11){state.calMonth=0;state.calYear++;}else if(state.calMonth<0){state.calMonth=11;state.calYear--;}renderCal();}
 function selectDay(date){document.getElementById('ev-date').value=date;document.getElementById('modal-event').classList.add('open');}
-function renderEvents(){
-  const el=document.getElementById('event-list');
-  const yr=state.calYear,mo=state.calMonth;
-  const evs=state.events.filter(e=>{const d=new Date(e.date);return d.getFullYear()===yr&&d.getMonth()===mo;}).sort((a,b)=>a.date>b.date?1:-1);
-  el.innerHTML=evs.length?evs.map((e,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5ede0;font-size:13px"><span>📌 <b>${e.date.slice(5)}</b> ${e.time||''} ${e.title}</span><button class="todo-del" onclick="delEvent(${state.events.indexOf(e)})">✕</button></div>`).join(''):'<p style="color:var(--text2);font-size:13px">이번 달 일정이 없습니다</p>';
-}
-function delEvent(i){state.events.splice(i,1);renderCal();updateDashStats();}
+function renderEvents(){const el=document.getElementById('event-list');if(!el)return;const evs=state.events.filter(e=>{const d=new Date(e.date);return d.getFullYear()===state.calYear&&d.getMonth()===state.calMonth;}).sort((a,b)=>a.date>b.date?1:-1);el.innerHTML=evs.length?evs.map((e,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5ede0;font-size:13px"><span>📌 <b>${e.date.slice(5)}</b> ${e.time||''} ${e.title}</span><button class="todo-del" onclick="delEvent(${state.events.indexOf(e)})">✕</button></div>`).join(''):'<p style="color:var(--text2);font-size:13px">이번 달 일정이 없습니다</p>';}
+function delEvent(i){state.events.splice(i,1);save();renderCal();updateDashStats();}
 function openEventModal(){document.getElementById('modal-event').classList.add('open');}
-function addEvent(){
-  const t=document.getElementById('ev-title').value.trim();if(!t)return;
-  state.events.push({title:t,date:document.getElementById('ev-date').value,time:document.getElementById('ev-time').value,memo:document.getElementById('ev-memo').value});
-  closeModal('modal-event');['ev-title','ev-date','ev-time','ev-memo'].forEach(id=>document.getElementById(id).value='');
-  renderCal();updateDashStats();
-}
+function addEvent(){const t=document.getElementById('ev-title').value.trim();if(!t)return;state.events.push({title:t,date:document.getElementById('ev-date').value,time:document.getElementById('ev-time').value,memo:document.getElementById('ev-memo').value});closeModal('modal-event');['ev-title','ev-date','ev-time','ev-memo'].forEach(id=>document.getElementById(id).value='');save();renderCal();updateDashStats();}
 
-// ===== FOOD CAL =====
 function renderFoodCal(){
   const yr=state.foodCalYear,mo=state.foodCalMonth;
   document.getElementById('food-cal-title').textContent=`${yr}년 ${mo+1}월`;
-  const first=new Date(yr,mo,1).getDay(),last=new Date(yr,mo+1,0).getDate();
-  const today=new Date();
-  let html='';
-  for(let i=0;i<first;i++)html+=`<div></div>`;
-  for(let d=1;d<=last;d++){
-    const key=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const fd=state.foodData[key];
-    const isToday=today.getFullYear()===yr&&today.getMonth()===mo&&today.getDate()===d;
-    html+=`<div class="cal-food-day ${isToday?'today':''}" onclick="openFoodDayModal('${key}')">
-      <div style="font-size:12px;font-weight:${isToday?700:400};color:${isToday?'var(--accent)':'var(--text2)'};margin-bottom:2px">${d}일</div>
-      ${fd&&fd.breakfast?`<div style="font-size:9px;color:var(--text2)">${fd.breakfast.slice(0,5)}</div>`:''}
-    </div>`;
-  }
+  const first=new Date(yr,mo,1).getDay(),last=new Date(yr,mo+1,0).getDate(),today=new Date();
+  let html='';for(let i=0;i<first;i++)html+=`<div></div>`;
+  for(let d=1;d<=last;d++){const key=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const fd=state.foodData[key];const isToday=today.getFullYear()===yr&&today.getMonth()===mo&&today.getDate()===d;html+=`<div class="cal-food-day" onclick="openFoodDayModal('${key}')"><div style="font-size:12px;font-weight:${isToday?700:400};color:${isToday?'var(--accent)':'var(--text2)'};margin-bottom:2px">${d}일</div>${fd&&fd.breakfast?`<div style="font-size:9px;color:var(--text2)">${fd.breakfast.slice(0,5)}</div>`:''}</div>`;}
   document.getElementById('food-cal-grid').innerHTML=html;
 }
 function changeFoodMonth(d){state.foodCalMonth+=d;if(state.foodCalMonth>11){state.foodCalMonth=0;state.foodCalYear++;}else if(state.foodCalMonth<0){state.foodCalMonth=11;state.foodCalYear--;}renderFoodCal();}
-function openFoodDayModal(key){
-  state.currentFoodDay=key;const fd=state.foodData[key]||{};
-  document.getElementById('food-modal-title').textContent=`${key} 식단`;
-  ['breakfast','lunch','dinner'].forEach(k=>document.getElementById('fd-'+k).value=fd[k]||'');
-  document.getElementById('fd-snack-m').value=fd.snack||'';
-  document.getElementById('modal-food-day').classList.add('open');
-}
-function saveFoodDay(){
-  state.foodData[state.currentFoodDay]={breakfast:document.getElementById('fd-breakfast').value,lunch:document.getElementById('fd-lunch').value,dinner:document.getElementById('fd-dinner').value,snack:document.getElementById('fd-snack-m').value};
-  closeModal('modal-food-day');renderFoodCal();
-}
+function openFoodDayModal(key){state.currentFoodDay=key;const fd=state.foodData[key]||{};document.getElementById('food-modal-title').textContent=`${key} 식단`;['breakfast','lunch','dinner'].forEach(k=>document.getElementById('fd-'+k).value=fd[k]||'');document.getElementById('fd-snack-m').value=fd.snack||'';document.getElementById('modal-food-day').classList.add('open');}
+function saveFoodDay(){state.foodData[state.currentFoodDay]={breakfast:document.getElementById('fd-breakfast').value,lunch:document.getElementById('fd-lunch').value,dinner:document.getElementById('fd-dinner').value,snack:document.getElementById('fd-snack-m').value};closeModal('modal-food-day');save();renderFoodCal();}
 
-// ===== RECIPES =====
-function addRecipe(cat){
-  const n=document.getElementById('rn-'+cat).value.trim();if(!n)return;
-  state.recipes[cat].push({name:n,ing:document.getElementById('ri-'+cat).value,method:document.getElementById('rm-'+cat).value,tip:document.getElementById('rt-'+cat).value});
-  ['rn-','ri-','rm-','rt-'].forEach(p=>{document.getElementById(p+cat).value='';});
-  renderRecipes(cat);
-}
-function delRecipe(cat,i){state.recipes[cat].splice(i,1);renderRecipes(cat);}
-function renderRecipes(cat){
-  const el=document.getElementById('r-'+cat);if(!el)return;
-  el.innerHTML=state.recipes[cat].map((r,i)=>`<details class="recipe-item">
-    <summary>${r.name} <div style="display:flex;gap:6px"><button class="btn btn-danger btn-sm" onclick="event.preventDefault();delRecipe('${cat}',${i})">삭제</button><span>▼</span></div></summary>
-    <div class="recipe-detail">
-      ${r.ing?`<b>재료:</b> ${r.ing}<br><br>`:''}
-      ${r.method?`<b>조리법:</b><br>${r.method.replace(/\n/g,'<br>')}<br><br>`:''}
-      ${r.tip?`<b>💡 팁:</b> ${r.tip}`:''}
-    </div>
-  </details>`).join('');
-}
+function addRecipe(cat){const n=document.getElementById('rn-'+cat).value.trim();if(!n)return;state.recipes[cat].push({name:n,ing:document.getElementById('ri-'+cat).value,method:document.getElementById('rm-'+cat).value,tip:document.getElementById('rt-'+cat).value});['rn-','ri-','rm-','rt-'].forEach(p=>document.getElementById(p+cat).value='');save();renderRecipes(cat);}
+function delRecipe(cat,i){state.recipes[cat].splice(i,1);save();renderRecipes(cat);}
+function renderRecipes(cat){const el=document.getElementById('r-'+cat);if(!el)return;el.innerHTML=state.recipes[cat].map((r,i)=>`<details class="recipe-item"><summary>${r.name}<div style="display:flex;gap:6px"><button class="btn btn-danger btn-sm" onclick="event.preventDefault();delRecipe('${cat}',${i})">삭제</button><span>▼</span></div></summary><div class="recipe-detail">${r.ing?`<b>재료:</b> ${r.ing}<br><br>`:''}${r.method?`<b>조리법:</b><br>${r.method.replace(/\n/g,'<br>')}<br><br>`:''}${r.tip?`<b>💡 팁:</b> ${r.tip}`:''}</div></details>`).join('');}
 
-// ===== BOOKS =====
 function renderBooks(){
-  const bl=document.getElementById('book-list');
-  if(!state.books.length){bl.innerHTML='<div class="card" style="text-align:center;color:var(--text2);font-size:13px">책을 추가해 보세요</div>';document.getElementById('book-ai-section').style.display='none';return;}
-  bl.innerHTML=state.books.map((b,i)=>`<div class="card" style="${state.currentBookIdx===i?'border-color:var(--accent)':''}">
-    <div style="display:flex;gap:14px;align-items:flex-start">
-      <div class="book-thumb">📚</div>
-      <div style="flex:1">
-        <div style="font-weight:700;font-size:15px">${b.title}</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:2px">${b.author}</div>
-        <div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:11px;color:var(--text2)">${b.prog<100?'진행중':'완독'}</span><span style="font-size:12px;font-weight:700;color:var(--accent)">${b.prog}%</span></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${b.prog}%"></div></div>
-        <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
-          <span class="badge badge-green">${b.cat}</span>
-          <input type="range" min="0" max="100" value="${b.prog}" oninput="updateProg(${i},this.value)" style="flex:1;width:auto;padding:0;border:none;background:none" onclick="event.stopPropagation()">
-          <button class="btn btn-outline btn-sm" style="font-size:11px" onclick="selectBook(${i})">질문하기</button>
-          <button class="btn btn-danger btn-sm" style="font-size:11px" onclick="delBook(${i})">삭제</button>
-        </div>
-      </div>
-    </div>
-  </div>`).join('');
-  document.getElementById('book-ai-section').style.display='block';
+  const bl=document.getElementById('book-list');if(!bl)return;
+  bl.innerHTML=state.books.length?state.books.map((b,i)=>`<div class="card"><div style="display:flex;gap:14px;align-items:flex-start"><div class="book-thumb">📚</div><div style="flex:1"><div style="font-weight:700;font-size:15px">${b.title}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">${b.author}</div><div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:11px;color:var(--text2)">${b.prog<100?'진행중':'완독'}</span><span style="font-size:12px;font-weight:700;color:var(--accent)">${b.prog}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${b.prog}%"></div></div><div style="display:flex;gap:6px;margin-top:8px;align-items:center"><span class="badge badge-green">${b.cat}</span><input type="range" min="0" max="100" value="${b.prog}" oninput="updateProg(${i},this.value)" style="flex:1;width:auto;padding:0;border:none;background:none"><button class="btn btn-danger btn-sm" style="font-size:11px" onclick="delBook(${i})">삭제</button></div></div></div></div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">책을 추가해 보세요</div>';
 }
-function selectBook(i){state.currentBookIdx=i;renderBooks();}
-function updateProg(i,v){state.books[i].prog=parseInt(v);renderBooks();}
-function delBook(i){state.books.splice(i,1);if(state.currentBookIdx>=state.books.length)state.currentBookIdx=Math.max(0,state.books.length-1);renderBooks();}
+function updateProg(i,v){state.books[i].prog=parseInt(v);save();renderBooks();}
+function delBook(i){state.books.splice(i,1);save();renderBooks();}
 function openBookModal(){document.getElementById('modal-book').classList.add('open');}
-function addBook(){
-  const t=document.getElementById('bk-title').value.trim();if(!t)return;
-  state.books.push({title:t,author:document.getElementById('bk-author').value,cat:document.getElementById('bk-cat').value||'기타',prog:parseInt(document.getElementById('bk-prog').value)||0});
-  closeModal('modal-book');['bk-title','bk-author','bk-cat'].forEach(id=>document.getElementById(id).value='');document.getElementById('bk-prog').value=0;
-  renderBooks();updateDashStats();
-}
-async function askBook(){
-  const q=document.getElementById('book-q').value.trim();if(!q)return;
-  const book=state.books[state.currentBookIdx];
-  const out=document.getElementById('book-ai-out');
-  out.innerHTML='<span class="ai-loading">AI가 답변 중...</span>';
-  try{const r=await callAI(`책 "${book?.title||''}" (저자: ${book?.author||''})에 대해: ${q}\n\n한국어로 구체적이고 인사이트 있게 답해주세요.`);out.textContent=r;}
-  catch(e){out.textContent='오류가 발생했습니다.';}
-}
+function addBook(){const t=document.getElementById('bk-title').value.trim();if(!t)return;state.books.push({title:t,author:document.getElementById('bk-author').value,cat:document.getElementById('bk-cat').value||'기타',prog:parseInt(document.getElementById('bk-prog').value)||0});closeModal('modal-book');['bk-title','bk-author','bk-cat'].forEach(id=>document.getElementById(id).value='');document.getElementById('bk-prog').value=0;save();renderBooks();updateDashStats();}
 
-// ===== STOCKS =====
-function addStockConcept(){
-  const n=document.getElementById('sc-name').value.trim();if(!n)return;
-  state.stockConcepts.push({name:n,desc:document.getElementById('sc-desc').value,tag:document.getElementById('sc-tag').value});
-  ['sc-name','sc-desc','sc-tag'].forEach(id=>document.getElementById(id).value='');
-  renderStockConcepts();updateDashStats();
-}
-function delStockConcept(i){state.stockConcepts.splice(i,1);renderStockConcepts();updateDashStats();}
-function renderStockConcepts(){
-  const el=document.getElementById('stock-concepts-list');
-  el.innerHTML=state.stockConcepts.map((c,i)=>`<div class="concept-card">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div><div class="concept-tag">${c.tag||'개념'}</div><div style="font-weight:700;font-size:14px;margin-bottom:4px">${c.name}</div><div style="font-size:13px;color:var(--text2)">${c.desc}</div></div>
-      <button class="btn btn-danger btn-sm" style="flex-shrink:0;margin-left:8px" onclick="delStockConcept(${i})">삭제</button>
-    </div>
-  </div>`).join('');
-}
+function addStockConcept(){const n=document.getElementById('sc-name').value.trim();if(!n)return;state.stockConcepts.push({name:n,desc:document.getElementById('sc-desc').value,tag:document.getElementById('sc-tag').value});['sc-name','sc-desc','sc-tag'].forEach(id=>document.getElementById(id).value='');save();renderStockConcepts();updateDashStats();}
+function delStockConcept(i){state.stockConcepts.splice(i,1);save();renderStockConcepts();updateDashStats();}
+function renderStockConcepts(){const el=document.getElementById('stock-concepts-list');if(!el)return;el.innerHTML=state.stockConcepts.map((c,i)=>`<div class="concept-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="concept-tag">${c.tag||'개념'}</div><div style="font-weight:700;font-size:14px;margin-bottom:4px">${c.name}</div><div style="font-size:13px;color:var(--text2)">${c.desc}</div></div><button class="btn btn-danger btn-sm" style="flex-shrink:0;margin-left:8px" onclick="delStockConcept(${i})">삭제</button></div></div>`).join('');}
+function addStockPattern(){const n=document.getElementById('sp-name').value.trim();if(!n)return;state.stockPatterns.push({name:n,desc:document.getElementById('sp-desc').value,tag:document.getElementById('sp-tag').value});['sp-name','sp-desc','sp-tag'].forEach(id=>document.getElementById(id).value='');save();renderStockPatterns();}
+function delStockPattern(i){state.stockPatterns.splice(i,1);save();renderStockPatterns();}
+function renderStockPatterns(){const el=document.getElementById('stock-patterns-list');if(!el)return;el.innerHTML=state.stockPatterns.map((c,i)=>`<div class="concept-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="concept-tag">${c.tag||'패턴'}</div><div style="font-weight:700;font-size:14px;margin-bottom:4px">${c.name}</div><div style="font-size:13px;color:var(--text2)">${c.desc}</div></div><button class="btn btn-danger btn-sm" style="flex-shrink:0;margin-left:8px" onclick="delStockPattern(${i})">삭제</button></div></div>`).join('');}
+function addStockTrade(){const n=document.getElementById('st-name').value.trim();if(!n)return;const buy=parseFloat(document.getElementById('st-buy').value)||0,sell=parseFloat(document.getElementById('st-sell').value)||0,qty=parseInt(document.getElementById('st-qty').value)||0;state.stockTrades.push({date:document.getElementById('st-date').value,name:n,buy,sell,qty,result:document.getElementById('st-result').value,memo:document.getElementById('st-memo').value,pnl:qty?(sell-buy)*qty:0});['st-name','st-memo'].forEach(id=>document.getElementById(id).value='');['st-buy','st-sell','st-qty'].forEach(id=>document.getElementById(id).value='0');save();renderStockTrades();}
+function delStockTrade(i){state.stockTrades.splice(i,1);save();renderStockTrades();}
+function renderStockTrades(){const el=document.getElementById('stock-trades-list');if(!el)return;el.innerHTML=state.stockTrades.map((t,i)=>`<div class="concept-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span style="font-weight:700;font-size:14px">${t.name}</span><span class="badge ${t.result==='수익'?'badge-green':t.result==='손절'?'badge-red':'badge-blue'}">${t.result}</span><span style="font-size:11px;color:var(--text2)">${t.date}</span></div><div style="font-size:12px;color:var(--text2)">매수 ${t.buy.toLocaleString()}원 → 매도 ${t.sell.toLocaleString()}원 (${t.qty}주) <b style="color:${t.pnl>=0?'var(--green)':'var(--red)'}">${t.pnl>=0?'+':''}${t.pnl.toLocaleString()}원</b></div>${t.memo?`<div style="font-size:12px;color:var(--text2);margin-top:4px">${t.memo}</div>`:''}</div><button class="btn btn-danger btn-sm" style="flex-shrink:0;margin-left:8px" onclick="delStockTrade(${i})">삭제</button></div></div>`).join('');}
 
-function addStockPattern(){
-  const n=document.getElementById('sp-name').value.trim();if(!n)return;
-  state.stockPatterns.push({name:n,desc:document.getElementById('sp-desc').value,tag:document.getElementById('sp-tag').value});
-  ['sp-name','sp-desc','sp-tag'].forEach(id=>document.getElementById(id).value='');
-  renderStockPatterns();
-}
-function delStockPattern(i){state.stockPatterns.splice(i,1);renderStockPatterns();}
-function renderStockPatterns(){
-  const el=document.getElementById('stock-patterns-list');
-  el.innerHTML=state.stockPatterns.map((c,i)=>`<div class="concept-card">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div><div class="concept-tag">${c.tag||'패턴'}</div><div style="font-weight:700;font-size:14px;margin-bottom:4px">${c.name}</div><div style="font-size:13px;color:var(--text2)">${c.desc}</div></div>
-      <button class="btn btn-danger btn-sm" style="flex-shrink:0;margin-left:8px" onclick="delStockPattern(${i})">삭제</button>
-    </div>
-  </div>`).join('');
-}
+function openJournalModal(){document.getElementById('jn-date').value=new Date().toISOString().split('T')[0];document.getElementById('modal-journal').classList.add('open');}
+function addJournal(){const c=document.getElementById('jn-content').value.trim();if(!c)return;state.journals.unshift({date:document.getElementById('jn-date').value,content:c,tags:document.getElementById('jn-tags').value,pnl:document.getElementById('jn-pnl').value});closeModal('modal-journal');['jn-content','jn-tags','jn-pnl'].forEach(id=>document.getElementById(id).value='');save();renderJournals();}
+function delJournal(i){state.journals.splice(i,1);save();renderJournals();}
+function renderJournals(){const el=document.getElementById('journal-list');if(!el)return;el.innerHTML=state.journals.length?state.journals.map((j,i)=>`<div class="journal-card"><div style="display:flex;justify-content:space-between"><div class="journal-date">${j.date} ${j.pnl?`<span class="badge ${j.pnl.startsWith('+')?'badge-green':'badge-red'}">${j.pnl}</span>`:''}</div><button class="todo-del" onclick="delJournal(${i})">✕</button></div><div style="font-size:13px;margin-top:4px">${j.content.slice(0,100)}${j.content.length>100?'...':''}</div><div style="margin-top:6px">${(j.tags||'').split(',').filter(t=>t.trim()).map(t=>`<span class="tag">${t.trim()}</span>`).join('')}</div></div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">첫 투자 일지를 기록해 보세요 📈</div>';}
 
-function addStockTrade(){
-  const n=document.getElementById('st-name').value.trim();if(!n)return;
-  const buy=parseFloat(document.getElementById('st-buy').value)||0;
-  const sell=parseFloat(document.getElementById('st-sell').value)||0;
-  const qty=parseInt(document.getElementById('st-qty').value)||0;
-  const pnl=qty?(sell-buy)*qty:0;
-  state.stockTrades.push({date:document.getElementById('st-date').value,name:n,buy,sell,qty,result:document.getElementById('st-result').value,memo:document.getElementById('st-memo').value,pnl});
-  ['st-name','st-memo'].forEach(id=>document.getElementById(id).value='');
-  ['st-buy','st-sell','st-qty'].forEach(id=>document.getElementById(id).value='0');
-  renderStockTrades();
-}
-function delStockTrade(i){state.stockTrades.splice(i,1);renderStockTrades();}
-function renderStockTrades(){
-  const el=document.getElementById('stock-trades-list');
-  el.innerHTML=state.stockTrades.map((t,i)=>`<div class="concept-card">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
-          <span style="font-weight:700;font-size:14px">${t.name}</span>
-          <span class="badge ${t.result==='수익'?'badge-green':t.result==='손절'?'badge-red':'badge-blue'}">${t.result}</span>
-          <span style="font-size:11px;color:var(--text2)">${t.date}</span>
-        </div>
-        <div style="font-size:12px;color:var(--text2)">매수 ${t.buy.toLocaleString()}원 → 매도 ${t.sell.toLocaleString()}원 (${t.qty}주) <b style="color:${t.pnl>=0?'var(--green)':'var(--red)'}">${t.pnl>=0?'+':''}${t.pnl.toLocaleString()}원</b></div>
-        ${t.memo?`<div style="font-size:12px;color:var(--text2);margin-top:4px">${t.memo}</div>`:''}
-      </div>
-      <button class="btn btn-danger btn-sm" style="flex-shrink:0;margin-left:8px" onclick="delStockTrade(${i})">삭제</button>
-    </div>
-  </div>`).join('');
-}
-
-// ===== JOURNAL =====
-function openJournalModal(){const d=new Date();document.getElementById('jn-date').value=d.toISOString().split('T')[0];document.getElementById('modal-journal').classList.add('open');}
-function addJournal(){
-  const c=document.getElementById('jn-content').value.trim();if(!c)return;
-  state.journals.unshift({date:document.getElementById('jn-date').value,content:c,tags:document.getElementById('jn-tags').value,pnl:document.getElementById('jn-pnl').value});
-  closeModal('modal-journal');['jn-content','jn-tags','jn-pnl'].forEach(id=>document.getElementById(id).value='');
-  renderJournals();
-}
-function renderJournals(){
-  const el=document.getElementById('journal-list');
-  el.innerHTML=state.journals.length?state.journals.map((j,i)=>`<div class="journal-card">
-    <div style="display:flex;justify-content:space-between">
-      <div class="journal-date">${j.date} ${j.pnl?`<span class="badge ${j.pnl.startsWith('+')?'badge-green':'badge-red'}">${j.pnl}</span>`:''}</div>
-      <button class="todo-del" onclick="delJournal(${i})">✕</button>
-    </div>
-    <div style="font-size:13px;margin-top:4px">${j.content.slice(0,100)}${j.content.length>100?'...':''}</div>
-    <div style="margin-top:6px">${j.tags.split(',').filter(t=>t.trim()).map(t=>`<span class="tag">${t.trim()}</span>`).join('')}</div>
-  </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">첫 투자 일지를 기록해 보세요.<br>기록이 실력이 됩니다 📈</div>';
-}
-function delJournal(i){state.journals.splice(i,1);renderJournals();}
-
-// ===== DIARY =====
 function openDiaryModal(type){
   state.currentDiaryType=type;
   const titles={diary:'📖 일기 쓰기',gratitude:'🌸 감사일기',doodle:'✏️ 끄적끄적'};
   document.getElementById('diary-modal-title').textContent=titles[type];
   const d=new Date().toISOString().split('T')[0];
   let html='';
-  if(type==='diary'){
-    html=`<div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${d}"></div>
-    <div class="modal-row"><label>제목</label><input id="dm-title" placeholder="제목..."></div>
-    <div class="modal-row"><label>내용</label><textarea id="dm-content" placeholder="오늘 하루는..." style="min-height:150px"></textarea></div>`;
-  } else if(type==='gratitude'){
-    html=`<div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${d}"></div>
-    <div class="modal-row"><label>감사한 것 1</label><input id="dm-g1" placeholder="1. "></div>
-    <div class="modal-row"><label>감사한 것 2</label><input id="dm-g2" placeholder="2. "></div>
-    <div class="modal-row"><label>감사한 것 3</label><input id="dm-g3" placeholder="3. "></div>`;
-  } else {
-    html=`<div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${d}"></div>
-    <div class="modal-row"><label>제목 (선택)</label><input id="dm-title" placeholder="제목..."></div>
-    <div class="modal-row"><label>내용</label><textarea id="dm-content" placeholder="지금 떠오르는 것을 자유롭게..." style="min-height:150px"></textarea></div>`;
-  }
+  if(type==='diary'){html=`<div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${d}"></div><div class="modal-row"><label>제목</label><input id="dm-title" placeholder="제목..."></div><div class="modal-row"><label>내용</label><textarea id="dm-content" style="min-height:150px"></textarea></div>`;}
+  else if(type==='gratitude'){html=`<div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${d}"></div><div class="modal-row"><label>감사한 것 1</label><input id="dm-g1" placeholder="1. "></div><div class="modal-row"><label>감사한 것 2</label><input id="dm-g2" placeholder="2. "></div><div class="modal-row"><label>감사한 것 3</label><input id="dm-g3" placeholder="3. "></div>`;}
+  else{html=`<div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${d}"></div><div class="modal-row"><label>제목 (선택)</label><input id="dm-title" placeholder="제목..."></div><div class="modal-row"><label>내용</label><textarea id="dm-content" style="min-height:150px"></textarea></div>`;}
   document.getElementById('diary-modal-body').innerHTML=html;
   document.getElementById('modal-diary').classList.add('open');
 }
 function saveDiaryEntry(){
-  const type=state.currentDiaryType;
-  const date=document.getElementById('dm-date')?.value||new Date().toISOString().split('T')[0];
-  if(type==='diary'){
-    const c=document.getElementById('dm-content').value.trim();if(!c)return;
-    state.diaries.unshift({date,title:document.getElementById('dm-title').value||'일기',content:c});
-    renderDiaries();
-  } else if(type==='gratitude'){
-    const g=[document.getElementById('dm-g1').value,document.getElementById('dm-g2').value,document.getElementById('dm-g3').value].filter(x=>x.trim());
-    if(!g.length)return;
-    state.gratitudes.unshift({date,items:g});
-    renderGratitudes();
-  } else {
-    const c=document.getElementById('dm-content').value.trim();if(!c)return;
-    state.doodles.unshift({date,title:document.getElementById('dm-title').value||'끄적끄적',content:c});
-    renderDoodles();
-  }
-  closeModal('modal-diary');
+  const type=state.currentDiaryType,date=document.getElementById('dm-date')?.value||new Date().toISOString().split('T')[0];
+  if(type==='diary'){const c=document.getElementById('dm-content').value.trim();if(!c)return;state.diaries.unshift({date,title:document.getElementById('dm-title').value||'일기',content:c});renderDiaries();}
+  else if(type==='gratitude'){const g=[document.getElementById('dm-g1').value,document.getElementById('dm-g2').value,document.getElementById('dm-g3').value].filter(x=>x.trim());if(!g.length)return;state.gratitudes.unshift({date,items:g});renderGratitudes();}
+  else{const c=document.getElementById('dm-content').value.trim();if(!c)return;state.doodles.unshift({date,title:document.getElementById('dm-title').value||'끄적끄적',content:c});renderDoodles();}
+  closeModal('modal-diary');save();
 }
-function renderDiaries(){
-  const el=document.getElementById('diary-list');
-  el.innerHTML=state.diaries.length?state.diaries.map((d,i)=>`<div class="journal-card">
-    <div style="display:flex;justify-content:space-between"><div class="journal-date">${d.date}</div><button class="todo-del" onclick="delDiary(${i})">✕</button></div>
-    <div style="font-weight:700;margin:4px 0">${d.title}</div>
-    <div style="font-size:13px;color:var(--text2)">${d.content.slice(0,100)}${d.content.length>100?'...':''}</div>
-  </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">오늘 하루를 기록해 보세요 📖</div>';
-}
-function delDiary(i){state.diaries.splice(i,1);renderDiaries();}
-function renderGratitudes(){
-  const el=document.getElementById('grat-list');
-  el.innerHTML=state.gratitudes.length?state.gratitudes.map((g,i)=>`<div class="journal-card">
-    <div style="display:flex;justify-content:space-between"><div class="journal-date">${g.date}</div><button class="todo-del" onclick="delGratitude(${i})">✕</button></div>
-    ${g.items.map(t=>`<div style="font-size:13px;padding:2px 0">🌸 ${t}</div>`).join('')}
-  </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">감사한 것들을 기록해보세요 🌸</div>';
-}
-function delGratitude(i){state.gratitudes.splice(i,1);renderGratitudes();}
-function renderDoodles(){
-  const el=document.getElementById('doodle-list');
-  el.innerHTML=state.doodles.length?state.doodles.map((d,i)=>`<div class="journal-card">
-    <div style="display:flex;justify-content:space-between"><div class="journal-date">${d.date}</div><button class="todo-del" onclick="delDoodle(${i})">✕</button></div>
-    <div style="font-weight:700;margin:4px 0">${d.title}</div>
-    <div style="font-size:13px;color:var(--text2);white-space:pre-wrap">${d.content.slice(0,120)}${d.content.length>120?'...':''}</div>
-  </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">생각날 때마다 자유롭게 적어보세요 ✏️</div>';
-}
-function delDoodle(i){state.doodles.splice(i,1);renderDoodles();}
+function renderDiaries(){const el=document.getElementById('diary-list');if(!el)return;el.innerHTML=state.diaries.length?state.diaries.map((d,i)=>`<div class="journal-card"><div style="display:flex;justify-content:space-between"><div class="journal-date">${d.date}</div><button class="todo-del" onclick="delDiary(${i})">✕</button></div><div style="font-weight:700;margin:4px 0">${d.title}</div><div style="font-size:13px;color:var(--text2)">${d.content.slice(0,100)}${d.content.length>100?'...':''}</div></div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">오늘 하루를 기록해 보세요 📖</div>';}
+function delDiary(i){state.diaries.splice(i,1);save();renderDiaries();}
+function renderGratitudes(){const el=document.getElementById('grat-list');if(!el)return;el.innerHTML=state.gratitudes.length?state.gratitudes.map((g,i)=>`<div class="journal-card"><div style="display:flex;justify-content:space-between"><div class="journal-date">${g.date}</div><button class="todo-del" onclick="delGratitude(${i})">✕</button></div>${g.items.map(t=>`<div style="font-size:13px;padding:2px 0">🌸 ${t}</div>`).join('')}</div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">감사한 것들을 기록해보세요 🌸</div>';}
+function delGratitude(i){state.gratitudes.splice(i,1);save();renderGratitudes();}
+function renderDoodles(){const el=document.getElementById('doodle-list');if(!el)return;el.innerHTML=state.doodles.length?state.doodles.map((d,i)=>`<div class="journal-card"><div style="display:flex;justify-content:space-between"><div class="journal-date">${d.date}</div><button class="todo-del" onclick="delDoodle(${i})">✕</button></div><div style="font-weight:700;margin:4px 0">${d.title}</div><div style="font-size:13px;color:var(--text2);white-space:pre-wrap">${d.content.slice(0,120)}${d.content.length>120?'...':''}</div></div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px">생각날 때마다 자유롭게 적어보세요 ✏️</div>';}
+function delDoodle(i){state.doodles.splice(i,1);save();renderDoodles();}
 
-// ===== EXERCISE =====
-function addExercise(cat){
-  const n=document.getElementById('en-'+cat).value.trim();if(!n)return;
-  state.exercises[cat].push({name:n,desc:document.getElementById('ed-'+cat).value});
-  document.getElementById('en-'+cat).value='';document.getElementById('ed-'+cat).value='';
-  renderExercises(cat);
-}
-function delExercise(cat,i){state.exercises[cat].splice(i,1);renderExercises(cat);}
-function renderExercises(cat){
-  const el=document.getElementById('el-'+cat);if(!el)return;
-  el.innerHTML=state.exercises[cat].map((e,i)=>`<div class="routine-card">
-    <div><div style="font-weight:700;font-size:14px">${e.name}</div><div style="font-size:13px;color:var(--text2);margin-top:4px">${e.desc}</div></div>
-    <button class="btn btn-danger btn-sm" onclick="delExercise('${cat}',${i})">삭제</button>
-  </div>`).join('');
-}
-
-// ===== MASSAGE =====
-function addMassage(area){
-  const n=document.getElementById('mn-'+area).value.trim();if(!n)return;
-  state.massages[area].push({name:n,desc:document.getElementById('md-'+area).value});
-  document.getElementById('mn-'+area).value='';document.getElementById('md-'+area).value='';
-  renderMassages(area);
-}
-function delMassage(area,i){state.massages[area].splice(i,1);renderMassages(area);}
-function renderMassages(area){
-  const el=document.getElementById('ml-'+area);if(!el)return;
-  el.innerHTML=state.massages[area].map((m,i)=>`<div class="routine-card">
-    <div><div style="font-weight:700;font-size:14px">${m.name}</div><div style="font-size:13px;color:var(--text2);margin-top:4px">${m.desc}</div></div>
-    <button class="btn btn-danger btn-sm" onclick="delMassage('${area}',${i})">삭제</button>
-  </div>`).join('');
-}
-
-// ===== AI =====
-async function callAI(prompt){
-  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':'sk-ant-api03-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','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-  const d=await r.json();
-  return d.content.map(c=>c.text||'').join('');
-}
-
-// ===== 필사 =====
 function setPilTheme(el,theme){state.pilTheme=theme;document.querySelectorAll('#pil-themes .filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
-async function genPil(){
-  const out=document.getElementById('pil-output');
-  out.innerHTML='<span class="ai-loading">✨ 필사 문장 생성 중...</span>';
-  const intent=document.getElementById('pil-intent').value;
-  const lawNote=state.pilTheme==='끌어당김의 법칙'?'\n끌어당김의 법칙(Law of Attraction) 원리를 담아, 원하는 것이 이미 이루어졌다는 확신과 감사, 풍요의 에너지로 작성.':'';
-  try{
-    const r=await callAI(`당신은 긍정 확언 전문가입니다. 아래 조건으로 필사 문장을 작성하세요.
-테마: ${state.pilTheme}${intent?`\n의도: ${intent}`:''}${lawNote}
-요구: 7줄 확언(현재형) + 빈줄 + "✦ 오늘의 질문: [질문]"\n한국어로 작성`);
-    out.textContent=r;
-  }catch(e){out.textContent='생성 오류. 다시 시도해주세요.';}
-}
-function copyPil(){navigator.clipboard.writeText(document.getElementById('pil-output').textContent);}
 function savePil(){
-  const txt=document.getElementById('pil-output').textContent;
-  if(txt.includes('테마를'))return;
+  const txt=document.getElementById('pil-output').value.trim();if(!txt)return;
   state.pilHistory.unshift({date:new Date().toLocaleDateString('ko-KR'),theme:state.pilTheme,text:txt});
-  document.getElementById('pil-history').innerHTML=state.pilHistory.map((h,i)=>`<div class="journal-card">
-    <div style="display:flex;justify-content:space-between"><div class="journal-date">${h.date} · ${h.theme}</div><button class="todo-del" onclick="delPilHistory(${i})">✕</button></div>
-    <div style="font-size:12px;color:var(--text2);white-space:pre-wrap;margin-top:4px">${h.text.slice(0,120)}...</div>
-  </div>`).join('');
+  document.getElementById('pil-output').value='';
+  renderPilHistory();save();
 }
-function delPilHistory(i){state.pilHistory.splice(i,1);savePil();}
+function renderPilHistory(){
+  const el=document.getElementById('pil-history');if(!el)return;
+  el.innerHTML=state.pilHistory.length?state.pilHistory.map((h,i)=>`<div class="journal-card"><div style="display:flex;justify-content:space-between"><div class="journal-date">${h.date} · ${h.theme}</div><button class="todo-del" onclick="delPilHistory(${i})">✕</button></div><div style="font-size:13px;color:var(--text2);white-space:pre-wrap;margin-top:4px">${h.text.slice(0,150)}${h.text.length>150?'...':''}</div></div>`).join(''):'<p style="color:var(--text2);font-size:13px">저장된 필사가 없습니다</p>';
+}
+function delPilHistory(i){state.pilHistory.splice(i,1);save();renderPilHistory();}
 
-// ===== 조건검색식 =====
-function setCondStrat(el,s){state.condStrat=s;document.querySelectorAll('#cond-strats .filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
-async function genCond(){
-  const out=document.getElementById('cond-out'),note=document.getElementById('cond-note');
-  out.innerHTML='<span class="ai-loading">🔥 조건식 생성 중...</span>';
-  try{
-    const r=await callAI(`키움증권 HTS 조건검색식 전문가입니다.
-전략: ${state.condStrat}, 봉: ${document.getElementById('cond-unit').value}, 거래대금≥${document.getElementById('cond-vol').value}억, 주가 ${document.getElementById('cond-low').value}~${document.getElementById('cond-high').value}원, 제외: ${document.getElementById('cond-exc').value||'없음'}
-${document.getElementById('cond-desc').value?`추가: ${document.getElementById('cond-desc').value}`:''}
-출력: [조건식 코드]\n실제 HTS 조건식\n[해설]\n각 조건 의미`);
-    const parts=r.split('[해설]');
-    out.textContent=parts[0].replace('[조건식 코드]','').trim();
-    note.textContent=parts[1]?parts[1].trim():'조건식을 확인하세요.';
-  }catch(e){out.textContent='생성 오류.';}
-}
-function copyCond(){navigator.clipboard.writeText(document.getElementById('cond-out').textContent);}
 function saveCond(){
-  const txt=document.getElementById('cond-out').textContent;if(txt.includes('전략을'))return;
-  const el=document.getElementById('cond-saved-list');
-  el.innerHTML=`<div class="concept-card"><div class="concept-tag">${state.condStrat}</div><div style="font-size:12px;font-family:monospace;white-space:pre-wrap">${txt.slice(0,200)}</div><div style="font-size:11px;color:var(--text2);margin-top:4px">${new Date().toLocaleDateString('ko-KR')}</div></div>`+el.innerHTML;
+  const n=document.getElementById('cond-strat-name').value.trim();if(!n)return;
+  const code=document.getElementById('cond-code').value.trim();if(!code)return;
+  state.condSaved.unshift({name:n,code,memo:document.getElementById('cond-memo').value,date:new Date().toLocaleDateString('ko-KR')});
+  ['cond-strat-name','cond-code','cond-memo'].forEach(id=>document.getElementById(id).value='');
+  save();renderCondSaved();
+}
+function delCondSaved(i){state.condSaved.splice(i,1);save();renderCondSaved();}
+function renderCondSaved(){
+  const el=document.getElementById('cond-saved-list');if(!el)return;
+  el.innerHTML=state.condSaved.length?state.condSaved.map((c,i)=>`<div class="concept-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="flex:1"><div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><span class="concept-tag">${c.name}</span><span style="font-size:11px;color:var(--text2)">${c.date}</span></div><div style="font-size:12px;font-family:monospace;white-space:pre-wrap;background:#f5f0e8;padding:10px;border-radius:8px;margin-bottom:6px">${c.code}</div>${c.memo?`<div style="font-size:12px;color:var(--text2)">${c.memo}</div>`:''}</div><button class="btn btn-danger btn-sm" style="flex-shrink:0;margin-left:8px" onclick="delCondSaved(${i})">삭제</button></div></div>`).join(''):'<p style="color:var(--text2);font-size:13px">저장된 조건식이 없습니다</p>';
 }
 
-// ===== 사주 =====
-async function genSajuToday(){
-  const out=document.getElementById('saju-today-out');
-  out.innerHTML='<span class="ai-loading">🔮 오늘의 운세 분석 중...</span>';
-  const today=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
-  const ctx=document.getElementById('saju-today-context').value;
-  try{
-    const r=await callAI(`사주명리·점성술 전문가입니다. 희주님의 오늘(${today}) 운세를 분석해주세요.${ctx?`\n궁금한 것: ${ctx}`:''}
-항목: 1.전체운★(1~5) 2.재물운★(1~5) 3.건강운★(1~5) 4.대인운★(1~5) 5.오늘의 조언(3줄) 6.오늘의 컬러&숫자 7.주의사항\n한국어로 따뜻하게`);
-    out.textContent=r;
-  }catch(e){out.textContent='생성 오류.';}
+function saveSaju(type){
+  const txt=document.getElementById(`saju-${type}-input`).value.trim();if(!txt)return;
+  if(!state.sajuSaved[type])state.sajuSaved[type]=[];
+  state.sajuSaved[type].unshift({date:new Date().toLocaleDateString('ko-KR'),text:txt});
+  document.getElementById(`saju-${type}-input`).value='';
+  save();renderSajuSaved();
 }
-async function genSaju(type,outId,ctxId){
-  const out=document.getElementById(outId);
-  out.innerHTML='<span class="ai-loading">🔮 운세 분석 중...</span>';
-  const ctx=document.getElementById(ctxId)?.value||'';
-  try{
-    const r=await callAI(`사주명리·서양점성술·수비학 전문가입니다. 희주님의 2026년 ${type} 운세를 분석해주세요.${ctx?`\n맥락: ${ctx}`:''}
-2026 분기: 1분기 78점(준비), 2분기 85점(기회), 3분기 72점(조정), 4분기 91점(수확)
-구체적 전략 조언 한국어로 (300~400자)`);
-    out.textContent=r;
-  }catch(e){out.textContent='생성 오류.';}
+function delSajuSaved(type,i){state.sajuSaved[type].splice(i,1);save();renderSajuSaved();}
+function renderSajuSaved(){
+  ['today','quarter','invest','career','rel'].forEach(type=>{
+    const el=document.getElementById(`saju-${type}-saved`);if(!el)return;
+    const arr=state.sajuSaved[type]||[];
+    el.innerHTML=arr.length?arr.map((s,i)=>`<div class="journal-card" style="margin-top:8px"><div style="display:flex;justify-content:space-between"><div class="journal-date">${s.date}</div><button class="todo-del" onclick="delSajuSaved('${type}',${i})">✕</button></div><div style="font-size:13px;white-space:pre-wrap;margin-top:4px">${s.text}</div></div>`).join(''):'';
+  });
 }
 
-// ===== TABS =====
-function switchTab(el,targetId){
-  el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  el.closest('.page').querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-  document.getElementById(targetId).classList.add('active');
-}
+function addExercise(cat){const n=document.getElementById('en-'+cat).value.trim();if(!n)return;state.exercises[cat].push({name:n,desc:document.getElementById('ed-'+cat).value});document.getElementById('en-'+cat).value='';document.getElementById('ed-'+cat).value='';save();renderExercises(cat);}
+function delExercise(cat,i){state.exercises[cat].splice(i,1);save();renderExercises(cat);}
+function renderExercises(cat){const el=document.getElementById('el-'+cat);if(!el)return;el.innerHTML=state.exercises[cat].map((e,i)=>`<div class="routine-card"><div><div style="font-weight:700;font-size:14px">${e.name}</div><div style="font-size:13px;color:var(--text2);margin-top:4px">${e.desc}</div></div><button class="btn btn-danger btn-sm" onclick="delExercise('${cat}',${i})">삭제</button></div>`).join('');}
+function addMassage(area){const n=document.getElementById('mn-'+area).value.trim();if(!n)return;state.massages[area].push({name:n,desc:document.getElementById('md-'+area).value});document.getElementById('mn-'+area).value='';document.getElementById('md-'+area).value='';save();renderMassages(area);}
+function delMassage(area,i){state.massages[area].splice(i,1);save();renderMassages(area);}
+function renderMassages(area){const el=document.getElementById('ml-'+area);if(!el)return;el.innerHTML=state.massages[area].map((m,i)=>`<div class="routine-card"><div><div style="font-weight:700;font-size:14px">${m.name}</div><div style="font-size:13px;color:var(--text2);margin-top:4px">${m.desc}</div></div><button class="btn btn-danger btn-sm" onclick="delMassage('${area}',${i})">삭제</button></div>`).join('');}
 
-// ===== MODAL UTILS =====
+function switchTab(el,targetId){el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');el.closest('.page').querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById(targetId).classList.add('active');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
 
-// ===== INIT =====
+document.addEventListener('input',function(e){
+  if(['p-goal','p-mood-memo','p-review'].includes(e.target.id)){state[e.target.id]=e.target.value;save();}
+  if(e.target.id&&e.target.id.startsWith('t')&&!isNaN(e.target.id.slice(1))){if(!state.plannerTimes)state.plannerTimes={};state.plannerTimes[e.target.id]=e.target.value;save();}
+  if(e.target.id==='stock-rules-text'){state['stock-rules-text']=e.target.value;save();}
+});
+
+// INIT
+load();
 initPlanner();
 renderCal();
 renderFoodCal();
 renderBooks();
 renderTodos();
 renderJournals();
+renderDiaries();
+renderGratitudes();
+renderDoodles();
+renderStockConcepts();
+renderStockPatterns();
+renderStockTrades();
+renderPilHistory();
+renderCondSaved();
+renderSajuSaved();
+Object.keys(state.recipes).forEach(cat=>renderRecipes(cat));
+Object.keys(state.exercises).forEach(cat=>renderExercises(cat));
+Object.keys(state.massages).forEach(area=>renderMassages(area));
 updateDashStats();
+if(state['stock-rules-text']){const el=document.getElementById('stock-rules-text');if(el)el.value=state['stock-rules-text'];}
 </script>
 </body>
 </html>
