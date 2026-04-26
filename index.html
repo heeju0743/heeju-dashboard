@@ -437,37 +437,251 @@ textarea{resize:vertical;min-height:80px}
 <!-- 주식 공부 노트 -->
 <div id="page-stocks" class="page">
   <div class="page-title">📊 주식 공부 노트</div>
-  <div class="tabs">
+  <div class="tabs" style="flex-wrap:wrap">
     <div class="tab active" onclick="switchTab(this,'stock-concepts')">📚 핵심 개념</div>
     <div class="tab" onclick="switchTab(this,'stock-patterns')">📈 패턴 노트</div>
-    <div class="tab" onclick="switchTab(this,'stock-trades')">✅ 매매 기록</div>
     <div class="tab" onclick="switchTab(this,'stock-rules')">📌 매매 원칙</div>
+    <div class="tab" onclick="switchTab(this,'stock-goals')">🎯 목표</div>
+    <div class="tab" onclick="switchTab(this,'stock-words')">💬 한마디</div>
+    <div class="tab" onclick="switchTab(this,'stock-profile')">🧠 나의 성향</div>
+    <div class="tab" onclick="switchTab(this,'stock-homework')">📝 오늘의 숙제</div>
   </div>
+
+  <!-- 핵심 개념 -->
   <div id="stock-concepts" class="tab-content active">
-    <div id="stock-concepts-list"></div>
-    <div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:11px;font-size:13px">+ 개념 추가</div><div class="modal-row"><label>개념명</label><input id="sc-name"></div><div class="modal-row"><label>설명</label><textarea id="sc-desc" style="min-height:75px"></textarea></div><div class="modal-row"><label>태그</label><input id="sc-tag"></div><button class="btn btn-primary" onclick="addStockConcept()">저장</button></div>
-  </div>
-  <div id="stock-patterns" class="tab-content">
-    <div id="stock-patterns-list"></div>
-    <div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:11px;font-size:13px">+ 패턴 추가</div><div class="modal-row"><label>패턴명</label><input id="sp-name"></div><div class="modal-row"><label>설명</label><textarea id="sp-desc" style="min-height:75px"></textarea></div><div class="modal-row"><label>태그</label><input id="sp-tag"></div><button class="btn btn-primary" onclick="addStockPattern()">저장</button></div>
-  </div>
-  <div id="stock-trades" class="tab-content">
-    <div id="stock-trades-list"></div>
-    <div class="card" style="border-style:dashed">
-      <div style="font-weight:700;margin-bottom:11px;font-size:13px">+ 매매 기록</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div class="modal-row"><label>날짜</label><input id="st-date" type="date"></div>
-        <div class="modal-row"><label>종목명</label><input id="st-name"></div>
-        <div class="modal-row"><label>매수가</label><input id="st-buy" type="number" placeholder="0"></div>
-        <div class="modal-row"><label>매도가</label><input id="st-sell" type="number" placeholder="0"></div>
-        <div class="modal-row"><label>수량</label><input id="st-qty" type="number" placeholder="0"></div>
-        <div class="modal-row"><label>결과</label><select id="st-result"><option>수익</option><option>손절</option><option>본전</option></select></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:7px;flex-wrap:wrap" id="sc-cat-filters">
+        <button class="filter-btn on" onclick="filterSC('전체',this)">전체</button>
+        <button class="filter-btn" onclick="filterSC('기술적분석',this)">기술적분석</button>
+        <button class="filter-btn" onclick="filterSC('캔들/차트',this)">캔들/차트</button>
+        <button class="filter-btn" onclick="filterSC('지표',this)">지표</button>
+        <button class="filter-btn" onclick="filterSC('수급',this)">수급</button>
+        <button class="filter-btn" onclick="filterSC('심리',this)">심리</button>
+        <button class="filter-btn" onclick="filterSC('기타',this)">기타</button>
       </div>
-      <div class="modal-row"><label>메모</label><textarea id="st-memo" style="min-height:55px"></textarea></div>
-      <button class="btn btn-primary" onclick="addStockTrade()">저장</button>
+      <button class="btn btn-primary btn-sm" onclick="openSCModal()">+ 개념 추가</button>
+    </div>
+    <div id="stock-concepts-list"></div>
+  </div>
+
+  <!-- 패턴 노트 -->
+  <div id="stock-patterns" class="tab-content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:7px;flex-wrap:wrap" id="sp-cat-filters">
+        <button class="filter-btn on" onclick="filterSP('전체',this)">전체</button>
+        <button class="filter-btn" onclick="filterSP('눌림목',this)">눌림목</button>
+        <button class="filter-btn" onclick="filterSP('돌파',this)">돌파</button>
+        <button class="filter-btn" onclick="filterSP('추세',this)">추세</button>
+        <button class="filter-btn" onclick="filterSP('횡보',this)">횡보</button>
+        <button class="filter-btn" onclick="filterSP('반등',this)">반등</button>
+        <button class="filter-btn" onclick="filterSP('실패패턴',this)">실패패턴</button>
+        <button class="filter-btn" onclick="filterSP('기타',this)">기타</button>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openSPModal()">+ 패턴 추가</button>
+    </div>
+    <div id="stock-patterns-list"></div>
+  </div>
+
+  <!-- 매매 원칙 -->
+  <div id="stock-rules" class="tab-content">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px">
+        <div style="font-weight:700;font-size:14px">📌 나만의 매매 원칙</div>
+        <button class="btn btn-primary btn-sm" onclick="openRuleModal()">+ 원칙 추가</button>
+      </div>
+      <div id="stock-rules-list"></div>
     </div>
   </div>
-  <div id="stock-rules" class="tab-content"><div class="card"><textarea id="stock-rules-text" placeholder="나만의 매매 원칙..." style="min-height:280px"></textarea></div></div>
+
+  <!-- 목표 -->
+  <div id="stock-goals" class="tab-content">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--accent)">🎯 단기 목표 (1~3개월)</div>
+        <div id="goal-short-list"></div>
+        <div style="display:flex;gap:6px;margin-top:10px"><input id="goal-short-in" placeholder="단기 목표 입력..."><button class="btn btn-primary btn-sm" onclick="addGoal('short')">+</button></div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--blue)">🏆 중기 목표 (3~12개월)</div>
+        <div id="goal-mid-list"></div>
+        <div style="display:flex;gap:6px;margin-top:10px"><input id="goal-mid-in" placeholder="중기 목표 입력..."><button class="btn btn-primary btn-sm" onclick="addGoal('mid')">+</button></div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--purple)">🌟 장기 목표 (1년+)</div>
+        <div id="goal-long-list"></div>
+        <div style="display:flex;gap:6px;margin-top:10px"><input id="goal-long-in" placeholder="장기 목표 입력..."><button class="btn btn-primary btn-sm" onclick="addGoal('long')">+</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 한마디 -->
+  <div id="stock-words" class="tab-content">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px">
+        <div>
+          <div style="font-weight:700;font-size:14px">💬 한마디</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px">매매/공부 중 지켜야 할 것들, 깨달은 것들</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openWordModal()">+ 추가</button>
+      </div>
+      <div id="stock-words-list"></div>
+    </div>
+  </div>
+
+  <!-- 나의 성향 분석 -->
+  <div id="stock-profile" class="tab-content">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--green)">💪 나의 강점</div>
+        <textarea id="profile-strength" placeholder="잘하는 것, 강점..." style="min-height:120px"></textarea>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--red)">⚠️ 개선할 점</div>
+        <textarea id="profile-weakness" placeholder="약점, 반복되는 실수..." style="min-height:120px"></textarea>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--blue)">🎯 나의 매매 스타일</div>
+        <textarea id="profile-style" placeholder="선호하는 매매 유형, 시간대, 종목군..." style="min-height:120px"></textarea>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--accent)">📈 이번 달 개선 목표</div>
+        <textarea id="profile-improve" placeholder="이번 달 집중적으로 개선할 것..." style="min-height:120px"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
+      <button class="btn btn-primary" onclick="saveProfile()">💾 저장 (히스토리에 기록)</button>
+    </div>
+    <!-- 히스토리 -->
+    <div id="profile-history"></div>
+  </div>
+
+  <!-- 오늘의 숙제 -->
+  <div id="stock-homework" class="tab-content">
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div>
+          <div style="font-weight:700;font-size:15px">📝 오늘의 숙제</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">공부하면서 생긴 숙제, 확인해야 할 것들을 기록해요</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openHWModal()">+ 숙제 추가</button>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px" id="hw-filters">
+        <button class="filter-btn on" onclick="filterHW('전체',this)">전체</button>
+        <button class="filter-btn" onclick="filterHW('미완료',this)">⏳ 미완료</button>
+        <button class="filter-btn" onclick="filterHW('완료',this)">✅ 완료</button>
+      </div>
+      <div id="homework-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 숙제 추가/수정 모달 -->
+<div id="modal-hw" class="modal-overlay">
+  <div class="modal" style="width:560px">
+    <div class="modal-title" id="hw-modal-title">📝 숙제 추가</div>
+    <div class="modal-row"><label>날짜</label><input id="hw-date" type="date"></div>
+    <div class="modal-row"><label>제목</label><input id="hw-title" placeholder="예: 5분봉 눌림목 패턴 복습"></div>
+    <div class="modal-row"><label>내용</label><textarea id="hw-content" style="min-height:120px" placeholder="오늘 공부할 것, 확인할 것..."></textarea></div>
+    <div class="modal-row">
+      <label>📸 이미지 첨부 (차트, 캡처 등)</label>
+      <div class="img-upload-area" onclick="document.getElementById('hw-img-in').click()">
+        <input type="file" id="hw-img-in" accept="image/*" multiple style="display:none" onchange="handleNoteImg('hw',this)">
+        📁 클릭하여 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="hw-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-hw')">취소</button>
+      <button class="btn btn-primary" onclick="saveHW()">저장</button>
+    </div>
+  </div>
+</div>
+<div id="modal-sc" class="modal-overlay">
+  <div class="modal" style="width:580px">
+    <div class="modal-title" id="sc-modal-title">📚 핵심 개념 추가</div>
+    <div class="mg2">
+      <div class="modal-row"><label>개념명</label><input id="sc-name" placeholder="예: 눌림목 매매"></div>
+      <div class="modal-row"><label>분류</label><select id="sc-cat"><option>기술적분석</option><option>캔들/차트</option><option>지표</option><option>수급</option><option>심리</option><option>기타</option></select></div>
+    </div>
+    <div class="modal-row"><label>설명</label><textarea id="sc-desc" style="min-height:100px" placeholder="개념 설명..."></textarea></div>
+    <div class="modal-row"><label>🔗 참고 URL (유튜브, 블로그 등)</label><input id="sc-url" placeholder="https://..."></div>
+    <div class="modal-row">
+      <label>📸 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('sc-img-in').click()">
+        <input type="file" id="sc-img-in" accept="image/*" multiple style="display:none" onchange="handleNoteImg('sc',this)">
+        📁 클릭하여 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="sc-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-sc')">취소</button>
+      <button class="btn btn-primary" onclick="saveSC()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 패턴 추가 모달 -->
+<div id="modal-sp" class="modal-overlay">
+  <div class="modal" style="width:580px">
+    <div class="modal-title" id="sp-modal-title">📈 패턴 추가</div>
+    <div class="mg2">
+      <div class="modal-row"><label>패턴명</label><input id="sp-name" placeholder="예: 5분봉 눌림목 반등"></div>
+      <div class="modal-row"><label>패턴 분류</label><select id="sp-cat"><option>눌림목</option><option>돌파</option><option>추세</option><option>횡보</option><option>반등</option><option>실패패턴</option><option>기타</option></select></div>
+    </div>
+    <div class="modal-row"><label>진입 조건</label><textarea id="sp-entry" style="min-height:70px" placeholder="어떤 조건일 때 진입하는가..."></textarea></div>
+    <div class="modal-row"><label>손절 / 익절 기준</label><textarea id="sp-exit" style="min-height:60px" placeholder="손절/익절 기준..."></textarea></div>
+    <div class="modal-row"><label>주의사항 / 실패 케이스</label><textarea id="sp-caution" style="min-height:60px" placeholder="이럴 때 주의해야 한다..."></textarea></div>
+    <div class="modal-row"><label>🔗 참고 URL</label><input id="sp-url" placeholder="https://..."></div>
+    <div class="modal-row">
+      <label>📸 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('sp-img-in').click()">
+        <input type="file" id="sp-img-in" accept="image/*" multiple style="display:none" onchange="handleNoteImg('sp',this)">
+        📁 클릭하여 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="sp-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-sp')">취소</button>
+      <button class="btn btn-primary" onclick="saveSP()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 전체보기 모달 -->
+<div id="modal-note-view" class="modal-overlay">
+  <div class="modal" style="width:680px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="modal-title" style="margin:0" id="note-view-title"></div>
+      <button style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2)" onclick="closeModal('modal-note-view')">✕</button>
+    </div>
+    <div id="note-view-body" style="font-size:13px;line-height:1.9;color:var(--text)"></div>
+  </div>
+</div>
+
+<!-- 매매 원칙 추가 모달 -->
+<div id="modal-rule" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">📌 매매 원칙 추가</div>
+    <div class="modal-row"><label>원칙</label><input id="rule-text" placeholder="예: 손절은 반드시 즉시 실행한다"></div>
+    <div class="modal-row"><label>이유/근거</label><textarea id="rule-reason" style="min-height:80px" placeholder="왜 이 원칙이 중요한가..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-rule')">취소</button>
+      <button class="btn btn-primary" onclick="saveRule()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 한마디 추가 모달 -->
+<div id="modal-word" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">💬 한마디 추가</div>
+    <div class="modal-row"><label>한마디</label><textarea id="word-text" style="min-height:100px" placeholder="매매/공부하면서 깨달은 것, 지켜야 할 것..."></textarea></div>
+    <div class="modal-row"><label>날짜</label><input id="word-date" type="date"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-word')">취소</button>
+      <button class="btn btn-primary" onclick="saveWord()">저장</button>
+    </div>
+  </div>
 </div>
 
 <!-- ===== 투자 일지 (매매일지 v3.0) ===== -->
@@ -871,6 +1085,10 @@ const now=new Date();
 window.state={
   todos:[],events:[],books:[{title:'니체의 말',author:'니체/사이토 다카시 편역',cat:'철학',prog:45}],
   stockConcepts:[],stockPatterns:[],stockTrades:[],
+  stockRules:[],stockGoals:{short:[],mid:[],long:[]},stockWords:[],
+  stockProfile:{strength:'',weakness:'',style:'',improve:'',history:[]},
+  stockHomework:[],
+  tempNoteImgs:{sc:[],sp:[],hw:[]},
   journals:[],diaries:[],gratitudes:[],doodles:[],
   habits:[],habitStats:{},reviews:[],
   pilTheme:'풍요와 감사',pilHistory:[],
@@ -948,6 +1166,8 @@ try{
         const initIds=new Set(window.state.trades.map(t=>t.id));
         const fbNewOnly=(p.trades||[]).filter(t=>!initIds.has(t.id));
         window.state.trades=[...window.state.trades,...fbNewOnly];
+      } else if(k==='stockConcepts'||k==='stockPatterns'){
+        window.state[k]=(p[k]||[]).map((item,i)=>item.id?item:{...item,id:Date.now()+i+1});
       } else if(k in window.state){
         window.state[k]=p[k];
       }
@@ -966,7 +1186,7 @@ function initApp(){
   document.getElementById('sb-datestr').textContent=n.toLocaleDateString('ko-KR',{year:'numeric',month:'long',weekday:'long'});
   function tick(){const n=new Date(),p=x=>String(x).padStart(2,'0');const el=document.getElementById('clock');if(el)el.textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
   setInterval(tick,1000);tick();
-  initPlanner();renderSchedCal();renderFoodCal();renderBooks();renderTodos();renderDiaries();renderGratitudes();renderDoodles();renderStockConcepts();renderStockPatterns();renderStockTrades();renderPilList();renderCondSaved();renderSajuSaved();renderReviewHistory();renderDashHabits();updateDashStats();
+  initPlanner();renderSchedCal();renderFoodCal();renderBooks();renderTodos();renderDiaries();renderGratitudes();renderDoodles();renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();renderPilList();renderCondSaved();renderSajuSaved();renderReviewHistory();renderDashHabits();updateDashStats();
   Object.keys(state.recipes).forEach(cat=>renderRecipes(cat));
   ['cardio','diet','stretch','neck','leg','arm','waist'].forEach(cat=>{renderEx(cat);renderAddForm('ex',cat);});
   ['face','scalp'].forEach(cat=>{renderMas(cat);renderAddForm('mas',cat);});
@@ -988,7 +1208,7 @@ function nav(id){
   document.getElementById('page-'+id)?.classList.add('active');
   const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,cond:6,stocks:7,journal:8,saju:9,diary:10,food:11,exercise:12,massage:13,budget:14};
   document.querySelectorAll('.sb-item')[map[id]]?.classList.add('active');
-  if(id==='planner')initPlanner();
+  if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();}
   if(id==='schedule')renderSchedCal();
   if(id==='food')renderFoodCal();
   if(id==='book')renderBooks();
@@ -1535,13 +1755,409 @@ function updateBook(i,v){state.books[i].prog=parseInt(v)||0;save();renderBooks()
 function delBook(i){if(confirm('삭제할까요?')){state.books.splice(i,1);save();renderBooks();updateDashStats();}}
 function addBook(){const t=document.getElementById('bk-title').value.trim();if(!t)return;state.books.push({title:t,author:document.getElementById('bk-author').value,cat:document.getElementById('bk-cat').value,prog:parseInt(document.getElementById('bk-prog').value)||0});closeModal('modal-book');['bk-title','bk-author','bk-cat'].forEach(id=>document.getElementById(id).value='');document.getElementById('bk-prog').value='0';save();renderBooks();updateDashStats();}
 
-// ===== STOCKS =====
-function renderStockConcepts(){const el=document.getElementById('stock-concepts-list');if(!el)return;el.innerHTML=state.stockConcepts.map((c,i)=>`<div class="concept-card"><div class="concept-tag">${c.tag||'개념'}</div><div style="font-weight:700;margin-bottom:4px">${c.name}</div><div style="font-size:12px;color:var(--text2)">${c.desc}</div><button class="del-btn" onclick="state.stockConcepts.splice(${i},1);save();renderStockConcepts()">✕</button></div>`).join('');}
-function addStockConcept(){const n=document.getElementById('sc-name').value.trim();if(!n)return;state.stockConcepts.push({name:n,desc:document.getElementById('sc-desc').value,tag:document.getElementById('sc-tag').value});['sc-name','sc-desc','sc-tag'].forEach(id=>document.getElementById(id).value='');save();renderStockConcepts();}
-function renderStockPatterns(){const el=document.getElementById('stock-patterns-list');if(!el)return;el.innerHTML=state.stockPatterns.map((c,i)=>`<div class="concept-card"><div class="concept-tag">${c.tag||'패턴'}</div><div style="font-weight:700;margin-bottom:4px">${c.name}</div><div style="font-size:12px;color:var(--text2)">${c.desc}</div><button class="del-btn" onclick="state.stockPatterns.splice(${i},1);save();renderStockPatterns()">✕</button></div>`).join('');}
-function addStockPattern(){const n=document.getElementById('sp-name').value.trim();if(!n)return;state.stockPatterns.push({name:n,desc:document.getElementById('sp-desc').value,tag:document.getElementById('sp-tag').value});['sp-name','sp-desc','sp-tag'].forEach(id=>document.getElementById(id).value='');save();renderStockPatterns();}
-function renderStockTrades(){const el=document.getElementById('stock-trades-list');if(!el)return;el.innerHTML=state.stockTrades.map((t,i)=>`<div class="card" style="font-size:12px"><div style="display:flex;justify-content:space-between"><span><b>${t.date}</b> ${t.name}</span><button class="del-btn" onclick="state.stockTrades.splice(${i},1);save();renderStockTrades()">✕</button></div><div style="color:var(--text2);margin-top:4px">매수 ${t.buy} → 매도 ${t.sell} | ${t.qty}주 | ${t.result}</div>${t.memo?`<div style="margin-top:4px">${t.memo}</div>`:''}</div>`).join('');}
-function addStockTrade(){const n=document.getElementById('st-name').value.trim();if(!n)return;state.stockTrades.push({date:document.getElementById('st-date').value,name:n,buy:document.getElementById('st-buy').value,sell:document.getElementById('st-sell').value,qty:document.getElementById('st-qty').value,result:document.getElementById('st-result').value,memo:document.getElementById('st-memo').value});['st-name','st-buy','st-sell','st-qty','st-memo'].forEach(id=>document.getElementById(id).value='');save();renderStockTrades();}
+// ===== 주식 공부노트 =====
+let scFilter='전체', spFilter='전체';
+const catColors={기술적분석:'#dbeafe',캔들차트:'#fef3c7','캔들/차트':'#fef3c7',지표:'#f3e8ff',수급:'#dcfce7',심리:'#ffe4e6',기타:'#f3f4f6',
+  눌림목:'#dbeafe',돌파:'#fef3c7',추세:'#dcfce7',횡보:'#f3f4f6',반등:'#f3e8ff',실패패턴:'#ffe4e6'};
+const catTxtColors={기술적분석:'#1e40af',캔들차트:'#92400e','캔들/차트':'#92400e',지표:'#7c3aed',수급:'#166534',심리:'#9f1239',기타:'#374151',
+  눌림목:'#1e40af',돌파:'#92400e',추세:'#166534',횡보:'#374151',반등:'#7c3aed',실패패턴:'#9f1239'};
+
+function filterSC(f,el){scFilter=f;document.querySelectorAll('#sc-cat-filters .filter-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderSC();}
+function filterSP(f,el){spFilter=f;document.querySelectorAll('#sp-cat-filters .filter-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderSP();}
+
+// 이미지 핸들러
+function handleNoteImg(type,input){
+  if(!state.tempNoteImgs)state.tempNoteImgs={sc:[],sp:[]};
+  if(!state.tempNoteImgs[type])state.tempNoteImgs[type]=[];
+  Array.from(input.files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=e=>{state.tempNoteImgs[type].push(e.target.result);renderNoteImgPrev(type);};
+    r.readAsDataURL(f);
+  });
+}
+function renderNoteImgPrev(type){
+  const el=document.getElementById(type+'-img-prev');if(!el)return;
+  el.innerHTML=(state.tempNoteImgs[type]||[]).map((img,i)=>
+    `<div class="img-preview-item"><img src="${img}" style="width:65px;height:55px;object-fit:cover;border-radius:7px;border:1px solid var(--border)"><button class="rm" onclick="state.tempNoteImgs['${type}'].splice(${i},1);renderNoteImgPrev('${type}')">✕</button></div>`
+  ).join('');
+}
+
+// ===== 핵심 개념 =====
+function openSCModal(editId){
+  if(!state.tempNoteImgs)state.tempNoteImgs={sc:[],sp:[]};
+  state.tempNoteImgs.sc=[];
+  document.getElementById('sc-img-prev').innerHTML='';
+  if(editId){
+    const item=state.stockConcepts.find(x=>x.id===editId);if(!item)return;
+    document.getElementById('sc-modal-title').textContent='📚 핵심 개념 수정';
+    document.getElementById('sc-name').value=item.name||'';
+    document.getElementById('sc-cat').value=item.cat||'기술적분석';
+    document.getElementById('sc-desc').value=item.desc||'';
+    document.getElementById('sc-url').value=item.url||'';
+    state.tempNoteImgs.sc=item.images?[...item.images]:[];
+    renderNoteImgPrev('sc');
+    document.getElementById('modal-sc').dataset.editId=editId;
+  } else {
+    document.getElementById('sc-modal-title').textContent='📚 핵심 개념 추가';
+    ['sc-name','sc-desc','sc-url'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('sc-cat').value='기술적분석';
+    delete document.getElementById('modal-sc').dataset.editId;
+  }
+  openModal('modal-sc');
+}
+function saveSC(){
+  const name=document.getElementById('sc-name').value.trim();if(!name)return alert('개념명을 입력해주세요');
+  const editId=document.getElementById('modal-sc').dataset.editId;
+  const obj={id:editId?parseInt(editId):Date.now(),name,cat:document.getElementById('sc-cat').value,
+    desc:document.getElementById('sc-desc').value,url:document.getElementById('sc-url').value,
+    images:[...(state.tempNoteImgs?.sc||[])],date:new Date().toLocaleDateString('ko-KR')};
+  if(editId){const idx=state.stockConcepts.findIndex(x=>x.id===parseInt(editId));if(idx>=0)state.stockConcepts[idx]=obj;}
+  else{state.stockConcepts.unshift(obj);}
+  closeModal('modal-sc');save();renderSC();
+}
+function renderSC(){
+  const el=document.getElementById('stock-concepts-list');if(!el)return;
+  let items=state.stockConcepts||[];
+  if(scFilter!=='전체')items=items.filter(c=>c.cat===scFilter);
+  el.innerHTML=items.length?items.map(c=>`
+    <div class="concept-card" style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:${catColors[c.cat]||'#f3f4f6'};color:${catTxtColors[c.cat]||'#374151'}">${c.cat}</span>
+          <span style="font-weight:700;font-size:14px">${c.name}</span>
+        </div>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-outline btn-sm" onclick="openNoteView('sc',${c.id})">🔍 전체보기</button>
+          <button class="btn btn-outline btn-sm" onclick="openSCModal(${c.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="delSC(${c.id})">삭제</button>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:7px">${(c.desc||'').slice(0,120)}${(c.desc||'').length>120?'...':''}</div>
+      ${c.url?`<a href="${c.url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 ${c.url.slice(0,50)}${c.url.length>50?'...':''}</a>`:''}
+      ${c.images&&c.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${c.images.map(img=>`<img src="${img}" onclick="document.getElementById('img-fullview-src').src='${img}';document.getElementById('img-fullview').classList.add('open')" style="width:70px;height:60px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`:''}
+      <div style="font-size:10px;color:var(--text2);margin-top:6px">${c.date||''}</div>
+    </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">개념을 추가해보세요 📚</div>';
+}
+function delSC(id){if(confirm('삭제할까요?')){state.stockConcepts=state.stockConcepts.filter(x=>x.id!==id);save();renderSC();}}
+
+// ===== 패턴 노트 =====
+function openSPModal(editId){
+  if(!state.tempNoteImgs)state.tempNoteImgs={sc:[],sp:[]};
+  state.tempNoteImgs.sp=[];
+  document.getElementById('sp-img-prev').innerHTML='';
+  if(editId){
+    const item=state.stockPatterns.find(x=>x.id===editId);if(!item)return;
+    document.getElementById('sp-modal-title').textContent='📈 패턴 수정';
+    document.getElementById('sp-name').value=item.name||'';
+    document.getElementById('sp-cat').value=item.cat||'눌림목';
+    document.getElementById('sp-entry').value=item.entry||'';
+    document.getElementById('sp-exit').value=item.exit||'';
+    document.getElementById('sp-caution').value=item.caution||'';
+    document.getElementById('sp-url').value=item.url||'';
+    state.tempNoteImgs.sp=item.images?[...item.images]:[];
+    renderNoteImgPrev('sp');
+    document.getElementById('modal-sp').dataset.editId=editId;
+  } else {
+    document.getElementById('sp-modal-title').textContent='📈 패턴 추가';
+    ['sp-name','sp-entry','sp-exit','sp-caution','sp-url'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('sp-cat').value='눌림목';
+    delete document.getElementById('modal-sp').dataset.editId;
+  }
+  openModal('modal-sp');
+}
+function saveSP(){
+  const name=document.getElementById('sp-name').value.trim();if(!name)return alert('패턴명을 입력해주세요');
+  const editId=document.getElementById('modal-sp').dataset.editId;
+  const obj={id:editId?parseInt(editId):Date.now(),name,cat:document.getElementById('sp-cat').value,
+    entry:document.getElementById('sp-entry').value,exit:document.getElementById('sp-exit').value,
+    caution:document.getElementById('sp-caution').value,url:document.getElementById('sp-url').value,
+    images:[...(state.tempNoteImgs?.sp||[])],date:new Date().toLocaleDateString('ko-KR')};
+  if(editId){const idx=state.stockPatterns.findIndex(x=>x.id===parseInt(editId));if(idx>=0)state.stockPatterns[idx]=obj;}
+  else{state.stockPatterns.unshift(obj);}
+  closeModal('modal-sp');save();renderSP();
+}
+function renderSP(){
+  const el=document.getElementById('stock-patterns-list');if(!el)return;
+  let items=state.stockPatterns||[];
+  if(spFilter!=='전체')items=items.filter(c=>c.cat===spFilter);
+  el.innerHTML=items.length?items.map(c=>`
+    <div class="concept-card" style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:${catColors[c.cat]||'#f3f4f6'};color:${catTxtColors[c.cat]||'#374151'}">${c.cat}</span>
+          <span style="font-weight:700;font-size:14px">${c.name}</span>
+        </div>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-outline btn-sm" onclick="openNoteView('sp',${c.id})">🔍 전체보기</button>
+          <button class="btn btn-outline btn-sm" onclick="openSPModal(${c.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="delSP(${c.id})">삭제</button>
+        </div>
+      </div>
+      ${c.entry?`<div style="font-size:12px;margin-bottom:5px"><b>📍 진입조건:</b> <span style="color:var(--text2)">${c.entry.slice(0,80)}${c.entry.length>80?'...':''}</span></div>`:''}
+      ${c.exit?`<div style="font-size:12px;margin-bottom:5px"><b>✂️ 손절/익절:</b> <span style="color:var(--text2)">${c.exit.slice(0,80)}${c.exit.length>80?'...':''}</span></div>`:''}
+      ${c.caution?`<div style="font-size:12px;margin-bottom:5px"><b>⚠️ 주의:</b> <span style="color:var(--red)">${c.caution.slice(0,80)}${c.caution.length>80?'...':''}</span></div>`:''}
+      ${c.url?`<a href="${c.url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 ${c.url.slice(0,50)}${c.url.length>50?'...':''}</a>`:''}
+      ${c.images&&c.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${c.images.map(img=>`<img src="${img}" onclick="document.getElementById('img-fullview-src').src='${img}';document.getElementById('img-fullview').classList.add('open')" style="width:70px;height:60px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`:''}
+      <div style="font-size:10px;color:var(--text2);margin-top:6px">${c.date||''}</div>
+    </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">패턴을 추가해보세요 📈</div>';
+}
+function delSP(id){if(confirm('삭제할까요?')){state.stockPatterns=state.stockPatterns.filter(x=>x.id!==id);save();renderSP();}}
+
+// ===== 전체보기 =====
+function openNoteView(type,id){
+  const item=type==='sc'?state.stockConcepts.find(x=>x.id===id):state.stockPatterns.find(x=>x.id===id);
+  if(!item)return;
+  document.getElementById('note-view-title').textContent=item.name;
+  let html=`<div style="margin-bottom:10px"><span style="padding:2px 8px;border-radius:9px;font-size:11px;font-weight:600;background:${catColors[item.cat]||'#f3f4f6'};color:${catTxtColors[item.cat]||'#374151'}">${item.cat}</span></div>`;
+  if(type==='sc'){
+    if(item.desc)html+=`<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">${item.desc}</div>`;
+  } else {
+    if(item.entry)html+=`<div style="margin-bottom:10px"><div style="font-weight:700;margin-bottom:4px">📍 진입 조건</div><div style="white-space:pre-wrap;color:var(--text2);line-height:1.7">${item.entry}</div></div>`;
+    if(item.exit)html+=`<div style="margin-bottom:10px"><div style="font-weight:700;margin-bottom:4px">✂️ 손절 / 익절 기준</div><div style="white-space:pre-wrap;color:var(--text2);line-height:1.7">${item.exit}</div></div>`;
+    if(item.caution)html+=`<div style="margin-bottom:10px"><div style="font-weight:700;margin-bottom:4px">⚠️ 주의사항 / 실패 케이스</div><div style="white-space:pre-wrap;color:var(--red);line-height:1.7">${item.caution}</div></div>`;
+  }
+  if(item.url)html+=`<div style="margin-bottom:12px"><a href="${item.url}" target="_blank" style="color:var(--blue);font-size:13px">🔗 ${item.url}</a></div>`;
+  if(item.images&&item.images.length){
+    html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">${item.images.map(img=>`<img src="${img}" onclick="document.getElementById('img-fullview-src').src='${img}';document.getElementById('img-fullview').classList.add('open')" style="max-width:100%;max-height:220px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`;
+  }
+  document.getElementById('note-view-body').innerHTML=html;
+  openModal('modal-note-view');
+}
+
+// ===== 매매 원칙 =====
+function openRuleModal(){document.getElementById('rule-text').value='';document.getElementById('rule-reason').value='';openModal('modal-rule');}
+function saveRule(){
+  const t=document.getElementById('rule-text').value.trim();if(!t)return;
+  if(!state.stockRules)state.stockRules=[];
+  state.stockRules.unshift({id:Date.now(),text:t,reason:document.getElementById('rule-reason').value,date:new Date().toLocaleDateString('ko-KR')});
+  closeModal('modal-rule');save();renderRules();
+}
+function renderRules(){
+  const el=document.getElementById('stock-rules-list');if(!el)return;
+  if(!state.stockRules||!state.stockRules.length){el.innerHTML='<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">매매 원칙을 추가해보세요 📌</div>';return;}
+  el.innerHTML=state.stockRules.map((r,i)=>`
+    <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)">
+      <div style="background:var(--accent);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${i+1}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13px;margin-bottom:3px">${r.text}</div>
+        ${r.reason?`<div style="font-size:12px;color:var(--text2);line-height:1.6">${r.reason}</div>`:''}
+        <div style="font-size:10px;color:var(--text2);margin-top:4px">${r.date||''}</div>
+      </div>
+      <button class="del-btn" onclick="state.stockRules.splice(${i},1);save();renderRules()">✕</button>
+    </div>`).join('');
+}
+
+// ===== 목표 =====
+function addGoal(type){
+  const inp=document.getElementById('goal-'+type+'-in');
+  if(!inp.value.trim())return;
+  if(!state.stockGoals)state.stockGoals={short:[],mid:[],long:[]};
+  if(!state.stockGoals[type])state.stockGoals[type]=[];
+  state.stockGoals[type].push({id:Date.now(),text:inp.value.trim(),done:false,date:new Date().toLocaleDateString('ko-KR')});
+  inp.value='';save();renderGoals();
+}
+function renderGoals(){
+  ['short','mid','long'].forEach(type=>{
+    const el=document.getElementById('goal-'+type+'-list');if(!el)return;
+    const goals=(state.stockGoals||{})[type]||[];
+    el.innerHTML=goals.map((g,i)=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)">
+        <input type="checkbox" ${g.done?'checked':''} style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer" onchange="toggleGoal('${type}',${i},this)">
+        <span style="flex:1;font-size:13px;${g.done?'text-decoration:line-through;color:var(--text2)':''}">${g.text}</span>
+        <button class="del-btn" onclick="state.stockGoals['${type}'].splice(${i},1);save();renderGoals()">✕</button>
+      </div>`).join('') || '<div style="font-size:12px;color:var(--text2);padding:8px 0">목표를 추가해보세요</div>';
+  });
+}
+function toggleGoal(type,i,el){state.stockGoals[type][i].done=el.checked;save();renderGoals();}
+
+// ===== 한마디 =====
+function openWordModal(){document.getElementById('word-text').value='';document.getElementById('word-date').value=new Date().toISOString().split('T')[0];openModal('modal-word');}
+function saveWord(){
+  const t=document.getElementById('word-text').value.trim();if(!t)return;
+  if(!state.stockWords)state.stockWords=[];
+  state.stockWords.unshift({id:Date.now(),text:t,date:document.getElementById('word-date').value});
+  closeModal('modal-word');save();renderWords();
+}
+function renderWords(){
+  const el=document.getElementById('stock-words-list');if(!el)return;
+  if(!state.stockWords||!state.stockWords.length){el.innerHTML='<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">한마디를 추가해보세요 💬</div>';return;}
+  el.innerHTML=state.stockWords.map((w,i)=>`
+    <div style="display:flex;gap:12px;padding:13px;background:var(--bg);border-radius:11px;margin-bottom:9px;border-left:4px solid var(--accent)">
+      <div style="font-size:22px;flex-shrink:0">💬</div>
+      <div style="flex:1">
+        <div style="font-size:14px;line-height:1.8;font-weight:500;white-space:pre-wrap">${w.text}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:5px">${w.date||''}</div>
+      </div>
+      <button class="del-btn" onclick="state.stockWords.splice(${i},1);save();renderWords()">✕</button>
+    </div>`).join('');
+}
+
+// ===== 성향 분석 =====
+function saveProfile(){
+  if(!state.stockProfile)state.stockProfile={history:[]};
+  if(!state.stockProfile.history)state.stockProfile.history=[];
+  const snap={
+    id:Date.now(),
+    date:new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}),
+    strength:document.getElementById('profile-strength')?.value||'',
+    weakness:document.getElementById('profile-weakness')?.value||'',
+    style:document.getElementById('profile-style')?.value||'',
+    improve:document.getElementById('profile-improve')?.value||''
+  };
+  // 현재 값도 최신으로 유지
+  state.stockProfile.strength=snap.strength;
+  state.stockProfile.weakness=snap.weakness;
+  state.stockProfile.style=snap.style;
+  state.stockProfile.improve=snap.improve;
+  // 히스토리 앞에 추가
+  state.stockProfile.history.unshift(snap);
+  save();
+  renderProfileHistory();
+  // 저장 완료 피드백
+  const btn=document.querySelector('[onclick="saveProfile()"]');
+  if(btn){const orig=btn.textContent;btn.textContent='✅ 저장됨!';setTimeout(()=>btn.textContent=orig,1500);}
+}
+function loadProfile(){
+  if(!state.stockProfile)return;
+  ['strength','weakness','style','improve'].forEach(k=>{
+    const el=document.getElementById('profile-'+k);if(el)el.value=state.stockProfile[k]||'';
+  });
+  renderProfileHistory();
+}
+function renderProfileHistory(){
+  const el=document.getElementById('profile-history');if(!el)return;
+  const hist=(state.stockProfile?.history||[]);
+  if(!hist.length){el.innerHTML='';return;}
+  el.innerHTML=`
+    <div style="margin-bottom:14px">
+      <div style="font-weight:700;font-size:15px;margin-bottom:4px">📜 성향 변화 히스토리</div>
+      <div style="font-size:12px;color:var(--text2)">저장할 때마다 기록됩니다. 내가 어떻게 성장하고 있는지 확인해보세요.</div>
+    </div>
+    ${hist.map((h,i)=>`
+      <div style="border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;background:var(--card);position:relative">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="background:var(--accent);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${hist.length-i}</div>
+            <span style="font-weight:700;font-size:14px">${h.date}</span>
+            ${i===0?'<span style="background:#e8f5ee;color:var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:9px">최신</span>':''}
+          </div>
+          <button class="del-btn" onclick="delProfileHistory(${h.id})" style="font-size:13px">✕</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          ${h.strength?`<div style="background:#f0fdf4;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:5px">💪 강점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${h.strength}</div></div>`:''}
+          ${h.weakness?`<div style="background:#fff1f2;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--red);margin-bottom:5px">⚠️ 개선할 점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${h.weakness}</div></div>`:''}
+          ${h.style?`<div style="background:#eff6ff;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--blue);margin-bottom:5px">🎯 매매 스타일</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${h.style}</div></div>`:''}
+          ${h.improve?`<div style="background:#fffbeb;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:5px">📈 이번 달 목표</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${h.improve}</div></div>`:''}
+        </div>
+      </div>`).join('')}`;
+}
+function delProfileHistory(id){
+  if(!confirm('이 기록을 삭제할까요?'))return;
+  state.stockProfile.history=state.stockProfile.history.filter(h=>h.id!==id);
+  save();renderProfileHistory();
+}
+
+// ===== 오늘의 숙제 =====
+let hwFilter='전체';
+let hwEditId=null;
+function filterHW(f,el){
+  hwFilter=f;
+  document.querySelectorAll('#hw-filters .filter-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderHW();
+}
+function openHWModal(editId){
+  if(!state.tempNoteImgs)state.tempNoteImgs={sc:[],sp:[],hw:[]};
+  state.tempNoteImgs.hw=[];
+  document.getElementById('hw-img-prev').innerHTML='';
+  hwEditId=editId||null;
+  if(editId){
+    const item=(state.stockHomework||[]).find(x=>x.id===editId);if(!item)return;
+    document.getElementById('hw-modal-title').textContent='📝 숙제 수정';
+    document.getElementById('hw-date').value=item.date||'';
+    document.getElementById('hw-title').value=item.title||'';
+    document.getElementById('hw-content').value=item.content||'';
+    state.tempNoteImgs.hw=item.images?[...item.images]:[];
+    renderNoteImgPrev('hw');
+  } else {
+    document.getElementById('hw-modal-title').textContent='📝 숙제 추가';
+    document.getElementById('hw-date').value=new Date().toISOString().split('T')[0];
+    document.getElementById('hw-title').value='';
+    document.getElementById('hw-content').value='';
+  }
+  openModal('modal-hw');
+}
+function saveHW(){
+  const title=document.getElementById('hw-title').value.trim();
+  if(!title)return alert('제목을 입력해주세요');
+  if(!state.stockHomework)state.stockHomework=[];
+  const obj={
+    id:hwEditId||Date.now(),
+    date:document.getElementById('hw-date').value,
+    title,
+    content:document.getElementById('hw-content').value,
+    images:[...(state.tempNoteImgs?.hw||[])],
+    done:hwEditId?(state.stockHomework.find(x=>x.id===hwEditId)?.done||false):false,
+    createdAt:hwEditId?(state.stockHomework.find(x=>x.id===hwEditId)?.createdAt||new Date().toLocaleDateString('ko-KR')):new Date().toLocaleDateString('ko-KR')
+  };
+  if(hwEditId){
+    const idx=state.stockHomework.findIndex(x=>x.id===hwEditId);
+    if(idx>=0)state.stockHomework[idx]=obj;
+  } else {
+    state.stockHomework.unshift(obj);
+  }
+  closeModal('modal-hw');hwEditId=null;
+  save();renderHW();
+}
+function toggleHW(id){
+  const item=(state.stockHomework||[]).find(x=>x.id===id);
+  if(!item)return;
+  item.done=!item.done;
+  save();renderHW();
+}
+function delHW(id){
+  if(!confirm('삭제할까요?'))return;
+  state.stockHomework=state.stockHomework.filter(x=>x.id!==id);
+  save();renderHW();
+}
+function renderHW(){
+  const el=document.getElementById('homework-list');if(!el)return;
+  if(!state.stockHomework)state.stockHomework=[];
+  let items=[...state.stockHomework].sort((a,b)=>b.date>a.date?1:-1);
+  if(hwFilter==='미완료')items=items.filter(x=>!x.done);
+  else if(hwFilter==='완료')items=items.filter(x=>x.done);
+  if(!items.length){
+    el.innerHTML=`<div style="text-align:center;color:var(--text2);padding:30px;font-size:13px">숙제를 추가해보세요 📝</div>`;
+    return;
+  }
+  // 날짜별 그룹핑
+  const groups={};
+  items.forEach(h=>{
+    const key=h.date||'날짜없음';
+    if(!groups[key])groups[key]=[];
+    groups[key].push(h);
+  });
+  el.innerHTML=Object.keys(groups).sort((a,b)=>b>a?1:-1).map(date=>`
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)">${date}</div>
+      ${groups[date].map(h=>`
+        <div style="border:1px solid ${h.done?'var(--border)':'var(--accent2)'};border-radius:12px;padding:14px;margin-bottom:9px;background:${h.done?'#fafaf7':'var(--card)'};opacity:${h.done?0.7:1};transition:.2s">
+          <div style="display:flex;align-items:flex-start;gap:10px">
+            <input type="checkbox" ${h.done?'checked':''} style="width:17px;height:17px;accent-color:var(--accent);cursor:pointer;margin-top:2px;flex-shrink:0" onchange="toggleHW(${h.id})">
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:14px;${h.done?'text-decoration:line-through;color:var(--text2)':'color:var(--text)'};margin-bottom:5px">${h.title}</div>
+              ${h.content?`<div style="font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-wrap;margin-bottom:7px">${h.content}</div>`:''}
+              ${h.images&&h.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">${h.images.map(img=>`<img src="${img}" onclick="document.getElementById('img-fullview-src').src='${img}';document.getElementById('img-fullview').classList.add('open')" style="width:90px;height:75px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`:''}
+              <div style="font-size:10px;color:var(--text2)">📅 등록: ${h.createdAt||''} ${h.done?'<span style="color:var(--green);font-weight:600">✅ 완료</span>':''}</div>
+            </div>
+            <div style="display:flex;gap:5px;flex-shrink:0">
+              <button class="btn btn-outline btn-sm" onclick="openHWModal(${h.id})" style="font-size:10px;padding:3px 8px">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="delHW(${h.id})">삭제</button>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
 
 // ===== PIL =====
 let pilTheme='풍요와 감사';
