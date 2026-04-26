@@ -515,7 +515,7 @@ textarea{resize:vertical;min-height:80px}
               <th>매수가(1주)</th><th>총매수금</th><th>매도가(1주)</th><th>총매도금</th>
               <th>수익률(%)</th><th>손익(원)</th><th>승패</th>
               <th>①종목선정</th><th>③손절설정</th>
-              <th>비고</th><th>삭제</th>
+              <th>심리상태</th><th>감정메모</th><th>비고</th><th>삭제</th>
             </tr>
           </thead>
           <tbody id="t-trade-tbody"></tbody>
@@ -586,20 +586,21 @@ textarea{resize:vertical;min-height:80px}
   <div id="t-balance" class="trade-page">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div style="font-size:15px;font-weight:700">📉 시장별 잔고 추이</div>
-      <button class="btn btn-primary btn-sm" onclick="addBalanceRow()">+ 날짜 추가</button>
+      <div style="font-size:12px;color:var(--green);background:#e8f5ee;border:1px solid #b8dfc8;border-radius:8px;padding:5px 12px">✅ 매도완료 종목만 자동 계산</div>
     </div>
+    <div id="t-balance-holding"></div>
     <div class="balance-layout">
       <div>
         <div class="card" style="padding:0;overflow:hidden">
-          <div style="background:#1a2744;color:#fff;padding:9px 13px;font-weight:700;font-size:13px">📊 시장별 잔고 입력</div>
+          <div style="background:#1a2744;color:#fff;padding:9px 13px;font-weight:700;font-size:13px">📊 날짜별 자동 집계 (매도완료 기준)</div>
           <div style="overflow-x:auto">
             <table class="bal-table" id="balance-table">
-              <thead><tr><th>날짜</th><th style="color:#60a5fa">국내장(원)</th><th style="color:#34d399">미국장(원)</th><th style="color:#c084fc">선물(원)</th><th style="color:#fb923c">코인(원)</th><th>합계(원)</th><th>전일대비</th><th>삭제</th></tr></thead>
+              <thead><tr><th>날짜</th><th style="color:#60a5fa">국내장(원)</th><th style="color:#34d399">미국장(원)</th><th style="color:#c084fc">선물(원)</th><th style="color:#fb923c">코인(원)</th><th>합계(원)</th><th>당일손익</th><th>비고</th></tr></thead>
               <tbody id="balance-tbody"></tbody>
-              <tfoot><tr class="init-row"><td>초기잔고</td><td><input id="init-dom" type="number" value="200000" onchange="renderBalance()"></td><td><input id="init-us" type="number" value="0" onchange="renderBalance()"></td><td><input id="init-fut" type="number" value="0" onchange="renderBalance()"></td><td><input id="init-coin" type="number" value="0" onchange="renderBalance()"></td><td id="init-total" style="color:#c9a84c;font-weight:700;font-size:13px"></td><td>-</td><td>-</td></tr></tfoot>
+              <tfoot><tr class="init-row"><td>초기잔고</td><td><input id="init-dom" type="number" value="200000" onchange="renderTBalance()"></td><td><input id="init-us" type="number" value="0" onchange="renderTBalance()"></td><td><input id="init-fut" type="number" value="0" onchange="renderTBalance()"></td><td><input id="init-coin" type="number" value="0" onchange="renderTBalance()"></td><td id="init-total" style="color:#c9a84c;font-weight:700;font-size:13px"></td><td>-</td><td>-</td></tr></tfoot>
             </table>
           </div>
-          <div style="padding:8px 13px;font-size:11px;color:var(--text2);background:var(--bg);border-top:1px solid var(--border)">💡 초기잔고를 입력하고 날짜별 잔고를 기록하세요</div>
+          <div style="padding:8px 13px;font-size:11px;color:var(--text2);background:var(--bg);border-top:1px solid var(--border)">💡 초기잔고만 입력하면 매매기록 손익이 날짜별로 자동 누적됩니다</div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px">
@@ -792,7 +793,7 @@ textarea{resize:vertical;min-height:80px}
 <!-- 매매 추가 모달 -->
 <div id="modal-trade" class="modal-overlay">
   <div class="modal" style="width:640px">
-    <div class="modal-title">📝 매매 추가</div>
+    <div class="modal-title" id="trade-modal-title">📝 매매 추가</div>
     <div class="mg2">
       <div class="modal-row"><label>날짜</label><input id="t-date" type="date"></div>
       <div class="modal-row"><label>종목명</label><input id="t-name" placeholder="예: 삼성전자"></div>
@@ -823,10 +824,14 @@ textarea{resize:vertical;min-height:80px}
       <div class="modal-row"><label>①종목선정</label><select id="t-c1"><option>O</option><option>X</option><option>△</option></select></div>
       <div class="modal-row"><label>③손절설정</label><select id="t-c3"><option>O</option><option>X</option><option>△</option></select></div>
     </div>
+    <div class="mg2">
+      <div class="modal-row"><label>😌 심리상태</label><select id="t-psych"><option>안정</option><option>보통</option><option>조급</option><option>흥분</option><option>공포</option><option>탐욕</option></select></div>
+      <div class="modal-row"><label>💬 감정메모</label><input id="t-emotion" placeholder="예: 타이밍이 늦었을땐 보내라..."></div>
+    </div>
     <div class="modal-row"><label>비고</label><textarea id="t-note" placeholder="기타 메모..." style="min-height:55px"></textarea></div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-trade')">취소</button>
-      <button class="btn btn-primary" onclick="addTrade()">저장</button>
+      <button class="btn btn-primary" onclick="saveTrade()">저장</button>
     </div>
   </div>
 </div>
@@ -888,27 +893,32 @@ window.state={
   bTxFilter:'전체',debtFilter:'전체',bTxType:'지출',
   // 매매일지 데이터
   trades:[
-    {id:1,date:'2026-04-02',name:'남선알미늄',type:'단타',pattern:'눌림',vol:'증가',target:0,stop:0,rr:'-1.0x',buy:1816,buyTotal:181610,sell:1837,sellTotal:183248,pct:1.16,pnl:1638,result:'승',market:'국내장',c1:'X',c3:'O',note:''},
-    {id:2,date:'2026-04-02',name:'알서포트',type:'단타',pattern:'실패',vol:'증가',target:0,stop:0,rr:'-1.0x',buy:2585,buyTotal:103400,sell:2571,sellTotal:102625,pct:-0.54,pnl:-775,result:'패',market:'국내장',c1:'X',c3:'O',note:''},
-    {id:3,date:'2026-04-03',name:'JW신약',type:'단타',pattern:'눌림',vol:'증가',target:0,stop:0,rr:'-1.0x',buy:2086,buyTotal:187700,sell:1964,sellTotal:176388,pct:-5.85,pnl:-11312,result:'패',market:'국내장',c1:'X',c3:'O',note:''},
-    {id:4,date:'2026-04-06',name:'에코플라스틱',type:'스캘핑',pattern:'추세',vol:'감소',target:0,stop:0,rr:'-1.0x',buy:4268,buyTotal:128040,sell:4210,sellTotal:126028,pct:-1.36,pnl:-2012,result:'패',market:'국내장',c1:'X',c3:'O',note:''},
-    {id:5,date:'2026-04-07',name:'더블유씨피',type:'스캘핑',pattern:'눌림',vol:'증가',target:0,stop:0,rr:'-1.0x',buy:15250,buyTotal:122000,sell:15540,sellTotal:124052,pct:1.90,pnl:2052,result:'승',market:'국내장',c1:'O',c3:'O',note:''},
-    {id:6,date:'2026-04-08',name:'GS건설',type:'스캘핑',pattern:'눌림',vol:'증가',target:0,stop:0,rr:'-1.0x',buy:31200,buyTotal:124800,sell:31400,sellTotal:125330,pct:0.64,pnl:530,result:'승',market:'국내장',c1:'O',c3:'O',note:''},
-    {id:7,date:'2026-04-08',name:'우리넷',type:'단타',pattern:'눌림',vol:'증가',target:0,stop:0,rr:'-1.0x',buy:11333,buyTotal:170000,sell:11640,sellTotal:174211,pct:2.71,pnl:4211,result:'승',market:'국내장',c1:'O',c3:'O',note:''},
-    {id:8,date:'2026-04-08',name:'GS글로벌',type:'단타',pattern:'횡보',vol:'감소',target:0,stop:0,rr:'-1.0x',buy:3540,buyTotal:141600,sell:3663,sellTotal:146168,pct:3.47,pnl:4568,result:'승',market:'국내장',c1:'O',c3:'O',note:''},
-    {id:9,date:'2026-04-09',name:'남선알미늄',type:'단타',pattern:'돌파',vol:'증가',target:0,stop:0,rr:'-1.0x',buy:2294,buyTotal:195030,sell:2205,sellTotal:187011,pct:-3.88,pnl:-8019,result:'패',market:'국내장',c1:'X',c3:'O',note:''},
-    {id:10,date:'2026-04-21',name:'대우건설',type:'단타',pattern:'눌림',vol:'감소',target:33200,stop:32300,rr:'3.5x',buy:32500,buyTotal:97500,sell:33200,sellTotal:99382,pct:2.15,pnl:1882,result:'승',market:'국내장',c1:'O',c3:'O',note:'첫진입 낮은 금액으로 마수걸이'},
-    {id:11,date:'2026-04-21',name:'DI동일',type:'단타',pattern:'돌파',vol:'증가',target:32900,stop:30700,rr:'1.4x',buy:31600,buyTotal:158000,sell:30200,sellTotal:150659,pct:-4.43,pnl:-7341,result:'패',market:'국내장',c1:'O',c3:'X',note:'조금 저렴하게 매수하다 물렸음'},
-    {id:12,date:'2026-04-22',name:'중앙첨단소재',type:'단타',pattern:'눌림',vol:'증가',target:0,stop:0,rr:'-1.0x',buy:2170,buyTotal:43400,sell:2240,sellTotal:44711,pct:3.23,pnl:1311,result:'승',market:'국내장',c1:'O',c3:'O',note:''},
+    {id:1, date:'2026-04-02',name:'남선알미늄',   type:'단타',  pattern:'눌림',     entry:'일봉 상승 및 회보구간', vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:1816, buyTotal:181610, sell:1837, sellTotal:183248, pct:1.16,  pnl:1638,   result:'승',market:'국내장',c1:'',  c3t:'',c3:'',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:'성공한 매매. 명확한 반등 타점 이용함'},
+    {id:2, date:'2026-04-02',name:'알서포트',     type:'단타',  pattern:'실패매매', entry:'60분봉 추세',          vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:2585, buyTotal:103400, sell:2571, sellTotal:102625, pct:-0.54, pnl:-775,   result:'패',market:'국내장',c1:'X', c3t:'',c3:'',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:''},
+    {id:3, date:'2026-04-02',name:'코라스코리아', type:'단타',  pattern:'추세',     entry:'일봉 추세',            vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:498,  buyTotal:97636,  sell:488,  sellTotal:95425,  pct:-2.01, pnl:-2211,  result:'패',market:'국내장',c1:'X', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:'손절못해서 매매손실 확대됨'},
+    {id:4, date:'2026-04-03',name:'JW신약',       type:'단타',  pattern:'눌림',     entry:'오전 급등후 눌림',     vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:2086, buyTotal:187700, sell:1964, sellTotal:176388, pct:-5.85, pnl:-11312, result:'패',market:'국내장',c1:'X', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:'타이밍. 각각 쥐어냄'},
+    {id:5, date:'2026-04-06',name:'에코플라스틱',  type:'스캘핑',pattern:'추세',     entry:'20일선 직고 상승',     vol:'감소',target:0,    stop:0,    rr:'-1.0x', buy:4268, buyTotal:128040, sell:4210, sellTotal:126028, pct:-1.36, pnl:-2012,  result:'패',market:'국내장',c1:'X', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:'성급한 매매. 손절 못지킴'},
+    {id:6, date:'2026-04-07',name:'새로닉스',     type:'스캘핑',pattern:'돌파',     entry:'전고점 근처',          vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:20450,buyTotal:40900,  sell:20900,sellTotal:41717,  pct:2.20,  pnl:817,    result:'패',market:'국내장',c1:'',  c3t:'',c3:'',c3v:'',psych:'',    emotion:'없음', handTrade:'',stopKeep:'',grade:'C',note:'확인 안지키고 의사결정 부족'},
+    {id:7, date:'2026-04-07',name:'더블유씨피',   type:'스캘핑',pattern:'눌림',     entry:'20/5일선 타치',        vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:15250,buyTotal:122000, sell:15540,sellTotal:124052, pct:1.90,  pnl:2052,   result:'승',market:'국내장',c1:'O', c3t:'O',c3:'O',c3v:'O',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:''},
+    {id:8, date:'2026-04-07',name:'세림B&G',      type:'스캘핑',pattern:'눌림',     entry:'눌림및횡보',           vol:'감소',target:0,    stop:0,    rr:'-1.0x', buy:2308, buyTotal:138500, sell:2330, sellTotal:139481, pct:0.95,  pnl:981,    result:'승',market:'국내장',c1:'O', c3t:'',c3:'',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:''},
+    {id:9, date:'2026-04-08',name:'GS건설',       type:'스캘핑',pattern:'눌림',     entry:'눌림및횡보',           vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:31200,buyTotal:124800, sell:31400,sellTotal:125330, pct:0.64,  pnl:530,    result:'승',market:'국내장',c1:'△', c3t:'',c3:'X',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:''},
+    {id:10,date:'2026-04-08',name:'우리넷',       type:'단타',  pattern:'눌림',     entry:'눌림및횡보',           vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:11333,buyTotal:170000, sell:11640,sellTotal:174211, pct:2.71,  pnl:4211,   result:'승',market:'국내장',c1:'O', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:''},
+    {id:11,date:'2026-04-08',name:'알택',         type:'단타',  pattern:'눌림',     entry:'눌림및횡보',           vol:'감소',target:0,    stop:0,    rr:'-1.0x', buy:60100,buyTotal:60100,  sell:60900,sellTotal:60779,  pct:1.33,  pnl:679,    result:'승',market:'국내장',c1:'',  c3t:'',c3:'',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:'테스트 /5일선 거래량 체크로 연습'},
+    {id:12,date:'2026-04-08',name:'GS글로벌',     type:'단타',  pattern:'횡보',     entry:'눌림및횡보',           vol:'감소',target:0,    stop:0,    rr:'-1.0x', buy:3540, buyTotal:141600, sell:3663, sellTotal:146168, pct:3.47,  pnl:4568,   result:'승',market:'국내장',c1:'O', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:''},
+    {id:13,date:'2026-04-09',name:'한솔아이원',   type:'단타',  pattern:'눌림',     entry:'20/5일선 타치',        vol:'감소',target:0,    stop:0,    rr:'-1.0x', buy:15863,buyTotal:142770, sell:16037,sellTotal:144002, pct:1.10,  pnl:1232,   result:'승',market:'국내장',c1:'O', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:'손절 어려운거 생각 잘됨'},
+    {id:14,date:'2026-04-09',name:'새로닉스',     type:'단타',  pattern:'눌림',     entry:'20/5일선 타치',        vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:21450,buyTotal:85800,  sell:20800,sellTotal:83014,  pct:-3.03, pnl:-2786,  result:'패',market:'국내장',c1:'X', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:''},
+    {id:15,date:'2026-04-09',name:'남선알미늄',   type:'단타',  pattern:'돌파',     entry:'거래량증가',           vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:2294, buyTotal:195030, sell:2205, sellTotal:187011, pct:-3.88, pnl:-8019,  result:'패',market:'국내장',c1:'X', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:'이평선 이탈 시 손절 못함. 반성'},
+    {id:16,date:'2026-04-09',name:'세온미디칼',   type:'단타',  pattern:'눌림',     entry:'20/5일선 타치',        vol:'감소',target:0,    stop:0,    rr:'-1.0x', buy:2901, buyTotal:185640, sell:2825, sellTotal:180399, pct:-2.62, pnl:-5241,  result:'패',market:'국내장',c1:'X', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:'손절 늦음. 낮은 진입'},
+    {id:17,date:'2026-04-15',name:'SOL 한국형사역 SMR',type:'단타',pattern:'눌림', entry:'20/5일선 타치',        vol:'감소',target:0,    stop:0,    rr:'-1.0x', buy:22500,buyTotal:45000,  sell:22790,sellTotal:45580,  pct:1.29,  pnl:580,    result:'패',market:'국내장',c1:'O', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:'적절한 시기에 매도 완료'},
+    {id:18,date:'2026-04-15',name:'프림바이스트',  type:'단타',  pattern:'눌림',     entry:'20/5일선 타치',        vol:'감소',target:0,    stop:0,    rr:'-1.0x', buy:5210, buyTotal:52100,  sell:5178, sellTotal:51678,  pct:-0.61, pnl:-422,   result:'승',market:'국내장',c1:'O', c3t:'',c3:'O',c3v:'',psych:'',    emotion:'',    handTrade:'',stopKeep:'',grade:'C',note:''},
+    {id:19,date:'2026-04-16',name:'서남',         type:'단타',  pattern:'돌파',     entry:'눌림및횡보',           vol:'증가',target:6130,stop:0,    rr:'-18.0x',buy:6490, buyTotal:129800, sell:6010, sellTotal:119940, pct:-7.40, pnl:-9860,  result:'패',market:'국내장',c1:'X', c3t:'',c3:'X',c3v:'',psych:'조급',emotion:'성급한 고점 진입, 손절 못지킴',handTrade:'',stopKeep:'',grade:'C',note:'성급한 고점 진입, 손절 못지킴'},
+    {id:20,date:'2026-04-21',name:'대우건설',     type:'단타',  pattern:'눌림',     entry:'5/20일선 타치',        vol:'감소',target:33200,stop:32300,rr:'3.5x',  buy:32500,buyTotal:97500,  sell:33200,sellTotal:99382,  pct:2.15,  pnl:1882,   result:'승',market:'국내장',c1:'O', c3t:'O',c3:'O',c3v:'O',psych:'보통',emotion:'더 올라가는건 내 돈이 아니다',handTrade:'O',stopKeep:'',grade:'A',note:'첫진입 낮은 금액으로 마수걸이'},
+    {id:21,date:'2026-04-21',name:'DI동일',       type:'단타',  pattern:'돌파',     entry:'거래량 증가',          vol:'증가',target:32900,stop:30700,rr:'1.4x',  buy:31600,buyTotal:158000, sell:30200,sellTotal:150659, pct:-4.43, pnl:-7341,  result:'패',market:'국내장',c1:'O', c3t:'X',c3:'X',c3v:'O',psych:'조급',emotion:'타이밍이 늦었을땐 보내라',handTrade:'X',stopKeep:'',grade:'C',note:'조금 저렴하게 매수하다가 물렸음'},
+    {id:22,date:'2026-04-22',name:'중앙첨단소재', type:'단타',  pattern:'눌림',     entry:'눌림및횡보',           vol:'증가',target:0,    stop:0,    rr:'-1.0x', buy:2170, buyTotal:43400,  sell:2240, sellTotal:44711,  pct:3.23,  pnl:1311,   result:'승',market:'국내장',c1:'O', c3t:'O',c3:'O',c3v:'O',psych:'보통',emotion:'욕심부리지 마라',handTrade:'',stopKeep:'',grade:'C',note:''},
+    {id:23,date:'2026-04-23',name:'알프',         type:'스윙',  pattern:'눌림',     entry:'눌림및횡보',           vol:'감소',target:3400, stop:2850, rr:'',      buy:3085, buyTotal:92550,  sell:0,    sellTotal:0,      pct:0,     pnl:0,      result:'승',market:'국내장',c1:'O', c3t:'O',c3:'O',c3v:'O',psych:'안정',emotion:'',handTrade:'',stopKeep:'',grade:'C',note:'오늘을 넘기지 않은건 잘했다'},
+    {id:24,date:'2026-04-23',name:'SK아이테크',   type:'스윙',  pattern:'눌림',     entry:'5224',                 vol:'감소',target:30000,stop:26800,rr:'5.4x',  buy:27300,buyTotal:27300,  sell:27450,sellTotal:27396,  pct:0.55,  pnl:96,     result:'승',market:'국내장',c1:'O', c3t:'O',c3:'O',c3v:'O',psych:'안정',emotion:'',handTrade:'',stopKeep:'',grade:'C',note:'5224 테스트 주식으로 1주만 구매'},
   ],
-  balanceRows:[
-    {date:'2026-04-02',dom:198652,us:0,fut:0,coin:0},
-    {date:'2026-04-03',dom:187340,us:0,fut:0,coin:0},
-    {date:'2026-04-07',dom:189178,us:0,fut:0,coin:0},
-    {date:'2026-04-08',dom:199166,us:0,fut:0,coin:0},
-    {date:'2026-04-09',dom:184352,us:0,fut:0,coin:0},
-    {date:'2026-04-21',dom:176532,us:0,fut:0,coin:0},
-  ],
+  balanceRows:[],
   tradeDiaries:[],
   tempTradeDiaryImgs:[]
 };
@@ -998,48 +1008,59 @@ function tradeNav(id){
 function renderTDash(){
   const markets=['국내장','미국장','선물','코인'];
   const mcolors={국내장:'#1e40af',미국장:'#166534',선물:'#6b21a8',코인:'#c2410c'};
-  const wins=state.trades.filter(t=>t.result==='승');
-  const totalPnl=state.trades.reduce((s,t)=>s+t.pnl,0);
-  const winRate=state.trades.length?Math.round(wins.length/state.trades.length*100):0;
-  const avgPct=state.trades.length?state.trades.reduce((s,t)=>s+t.pct,0)/state.trades.length:0;
-  const maxLoss=state.trades.reduce((m,t)=>Math.min(m,t.pnl),0);
-  const maxProfit=state.trades.reduce((m,t)=>Math.max(m,t.pnl),0);
+  const closed=state.trades.filter(t=>t.sellTotal>0);
+  const wins=closed.filter(t=>t.result==='승');
+  const totalPnl=closed.reduce((s,t)=>s+t.pnl,0);
+  const winRate=closed.length?Math.round(wins.length/closed.length*100):0;
+  const avgPct=closed.length?closed.reduce((s,t)=>s+t.pct,0)/closed.length:0;
+  const pending=state.trades.filter(t=>isSwingTypeFn(t.type)&&!(t.sellTotal>0));
   document.getElementById('t-overall-stats').innerHTML=[
     {label:'총 매매',val:state.trades.length+'회',cls:'blue'},
     {label:'전체 승률',val:winRate+'%',cls:winRate>=50?'pos':'neg'},
-    {label:'총 손익(원)',val:totalPnl.toLocaleString(),cls:totalPnl>=0?'pos':'neg'},
+    {label:'실현 손익',val:totalPnl.toLocaleString()+'원',cls:totalPnl>=0?'pos':'neg'},
     {label:'평균수익률',val:avgPct.toFixed(2)+'%',cls:avgPct>=0?'pos':'neg'},
-    {label:'최대 손실',val:maxLoss.toLocaleString(),cls:'neg'},
-    {label:'최대 수익',val:maxProfit.toLocaleString(),cls:'pos'},
-    {label:'승/패',val:`${wins.length}/${state.trades.length-wins.length}`,cls:'blue'},
-    {label:'미결제',val:state.trades.filter(t=>!t.sellTotal).length+'건',cls:'blue'},
+    {label:'최대 손실',val:closed.length?Math.min(...closed.map(t=>t.pnl)).toLocaleString():'-',cls:'neg'},
+    {label:'최대 수익',val:closed.length?Math.max(...closed.map(t=>t.pnl)).toLocaleString():'-',cls:'pos'},
+    {label:'승/패',val:`${wins.length}/${closed.length-wins.length}`,cls:'blue'},
+    {label:'보유중',val:pending.length+'건',cls:'blue'},
   ].map(c=>`<div class="t-stat-cell"><div class="t-stat-label">${c.label}</div><div class="t-stat-val" style="color:${c.cls==='pos'?'var(--green)':c.cls==='neg'?'var(--red)':'var(--blue)'}">${c.val}</div></div>`).join('');
   document.getElementById('t-market-stats').innerHTML=markets.map(mkt=>{
-    const mt=state.trades.filter(t=>t.market===mkt);
-    if(!mt.length)return'';
-    const mw=mt.filter(t=>t.result==='승');
-    const mpnl=mt.reduce((s,t)=>s+t.pnl,0);
-    const mwr=mt.length?Math.round(mw.length/mt.length*100):0;
-    const mavg=mt.length?mt.reduce((s,t)=>s+t.pct,0)/mt.length:0;
-    const mml=mt.reduce((m,t)=>Math.min(m,t.pnl),0);
-    const mmp=mt.reduce((m,t)=>Math.max(m,t.pnl),0);
-    return`<div class="t-market-section"><div class="t-market-header" style="background:${mcolors[mkt]}">▶ ${mkt}</div><div class="t-stats-grid"><div class="t-stat-cell"><div class="t-stat-label">매매 횟수</div><div class="t-stat-val" style="color:var(--blue)">${mt.length}</div></div><div class="t-stat-cell"><div class="t-stat-label">승률</div><div class="t-stat-val" style="color:${mwr>=50?'var(--green)':'var(--red)'}">${mwr}%</div></div><div class="t-stat-cell"><div class="t-stat-label">총 손익</div><div class="t-stat-val" style="color:${mpnl>=0?'var(--green)':'var(--red)'}">${mpnl.toLocaleString()}</div></div><div class="t-stat-cell"><div class="t-stat-label">평균수익률</div><div class="t-stat-val" style="color:${mavg>=0?'var(--green)':'var(--red)'}">${mavg.toFixed(2)}%</div></div><div class="t-stat-cell"><div class="t-stat-label">최대손실</div><div class="t-stat-val" style="color:var(--red)">${mml.toLocaleString()}</div></div><div class="t-stat-cell"><div class="t-stat-label">최대수익</div><div class="t-stat-val" style="color:var(--green)">${mmp.toLocaleString()}</div></div><div class="t-stat-cell"><div class="t-stat-label">승/패</div><div class="t-stat-val" style="color:var(--blue)">${mw.length}/${mt.length-mw.length}</div></div></div></div>`;
+    const mt=state.trades.filter(t=>t.market===mkt);if(!mt.length)return'';
+    const mc=mt.filter(t=>t.sellTotal>0);
+    const mw=mc.filter(t=>t.result==='승');
+    const mpnl=mc.reduce((s,t)=>s+t.pnl,0);
+    const mwr=mc.length?Math.round(mw.length/mc.length*100):0;
+    const mavg=mc.length?mc.reduce((s,t)=>s+t.pct,0)/mc.length:0;
+    const mml=mc.length?mc.reduce((m,t)=>Math.min(m,t.pnl),0):0;
+    const mmp=mc.length?mc.reduce((m,t)=>Math.max(m,t.pnl),0):0;
+    return`<div class="t-market-section"><div class="t-market-header" style="background:${mcolors[mkt]}">▶ ${mkt}</div><div class="t-stats-grid"><div class="t-stat-cell"><div class="t-stat-label">매매 횟수</div><div class="t-stat-val" style="color:var(--blue)">${mt.length}</div></div><div class="t-stat-cell"><div class="t-stat-label">승률</div><div class="t-stat-val" style="color:${mwr>=50?'var(--green)':'var(--red)'}">${mwr}%</div></div><div class="t-stat-cell"><div class="t-stat-label">실현손익</div><div class="t-stat-val" style="color:${mpnl>=0?'var(--green)':'var(--red)'}">${mpnl.toLocaleString()}</div></div><div class="t-stat-cell"><div class="t-stat-label">평균수익률</div><div class="t-stat-val" style="color:${mavg>=0?'var(--green)':'var(--red)'}">${mavg.toFixed(2)}%</div></div><div class="t-stat-cell"><div class="t-stat-label">최대손실</div><div class="t-stat-val" style="color:var(--red)">${mml.toLocaleString()}</div></div><div class="t-stat-cell"><div class="t-stat-label">최대수익</div><div class="t-stat-val" style="color:var(--green)">${mmp.toLocaleString()}</div></div><div class="t-stat-cell"><div class="t-stat-label">승/패</div><div class="t-stat-val" style="color:var(--blue)">${mw.length}/${mc.length-mw.length}</div></div></div></div>`;
   }).join('');
 }
 
 // ===== 매매기록 =====
 let tradeFilter='전체';
+let tEditId=null;
+function isSwingTypeFn(type){return['스윙','농사','장기'].includes(type);}
+function isClosedFn(t){return t.sellTotal>0;}
 function tFilterTrades(f){tradeFilter=f;renderTrades();}
 function renderTrades(){
   const tbody=document.getElementById('t-trade-tbody');
-  let trades=[...state.trades];
+  let trades=[...state.trades].sort((a,b)=>a.date>b.date?1:-1);
   if(tradeFilter==='승')trades=trades.filter(t=>t.result==='승');
   else if(tradeFilter==='패')trades=trades.filter(t=>t.result==='패');
-  tbody.innerHTML=trades.map(t=>`
-    <tr class="${t.result==='승'?'win':t.result==='패'?'lose':''}">
+  const psychColor={안정:'var(--green)',보통:'var(--text2)',조급:'var(--accent)',흥분:'var(--red)',공포:'var(--blue)',탐욕:'var(--purple)'};
+  tbody.innerHTML=trades.map(t=>{
+    const swing=isSwingTypeFn(t.type);
+    const closed=isClosedFn(t);
+    const pending=swing&&!closed;
+    const pctStr=pending?'<span style="background:#fff3dc;color:#c9a84c;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700">보유중</span>':`<span style="color:${t.pct>=0?'var(--green)':'var(--red)'};font-weight:700">${t.pct.toFixed(2)}%</span>`;
+    const pnlStr=pending?'-':`<span style="color:${t.pnl>=0?'var(--green)':'var(--red)'};font-weight:700">${t.pnl>=0?'+':''}${t.pnl.toLocaleString()}</span>`;
+    const resultStr=pending?'<span style="color:var(--accent);font-weight:700">진행</span>':t.result==='승'?'<span style="color:var(--green);font-weight:700">승</span>':'<span style="color:var(--red);font-weight:700">패</span>';
+    return`<tr class="${!pending&&t.result==='승'?'win':!pending&&t.result==='패'?'lose':''}">
       <td>${t.date.slice(5)}</td>
-      <td style="font-weight:600;min-width:80px">${t.name}</td>
+      <td style="font-weight:600;min-width:80px">${t.name}${pending?'<span style="font-size:9px;color:var(--accent);display:block">▶보유중</span>':''}</td>
       <td>${t.type}</td><td>${t.pattern}</td>
+      <td style="font-size:10px;color:var(--text2);max-width:80px;overflow:hidden;text-overflow:ellipsis">${t.entry||'-'}</td>
       <td><span class="market-tag">${t.market}</span></td>
       <td>${t.vol}</td>
       <td>${t.target?t.target.toLocaleString():'-'}</td>
@@ -1047,18 +1068,24 @@ function renderTrades(){
       <td>${t.rr||'-'}</td>
       <td>${t.buy.toLocaleString()}</td>
       <td>${t.buyTotal.toLocaleString()}</td>
-      <td>${t.sell?t.sell.toLocaleString():'-'}</td>
-      <td>${t.sellTotal?t.sellTotal.toLocaleString():'-'}</td>
-      <td style="color:${t.pct>=0?'var(--green)':'var(--red)'};font-weight:700">${t.pct.toFixed(2)}%</td>
-      <td style="color:${t.pnl>=0?'var(--green)':'var(--red)'};font-weight:700">${t.pnl>=0?'+':''}${t.pnl.toLocaleString()}</td>
-      <td>${t.result==='승'?'<span style="color:var(--green);font-weight:700">승</span>':'<span style="color:var(--red);font-weight:700">패</span>'}</td>
-      <td class="${t.c1==='O'?'check-o':t.c1==='△'?'check-tri':'check-x'}">${t.c1||'-'}</td>
-      <td class="${t.c3==='O'?'check-o':t.c3==='△'?'check-tri':'check-x'}">${t.c3||'-'}</td>
+      <td>${t.sell?t.sell.toLocaleString():'<span style="color:#ccc">미입력</span>'}</td>
+      <td>${t.sellTotal?t.sellTotal.toLocaleString():'<span style="color:#ccc">-</span>'}</td>
+      <td>${pctStr}</td><td>${pnlStr}</td><td>${resultStr}</td>
+      <td class="${t.c1==='O'?'check-o':t.c1==='△'?'check-tri':t.c1==='X'?'check-x':''}">${t.c1||'-'}</td>
+      <td class="${t.c3==='O'?'check-o':t.c3==='△'?'check-tri':t.c3==='X'||t.c3==='x'?'check-x':''}">${t.c3||'-'}</td>
+      <td style="font-size:11px;font-weight:600;color:${psychColor[t.psych]||'var(--text2)'}">${t.psych||'-'}</td>
+      <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:var(--text2)">${t.emotion||'-'}</td>
       <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;font-size:10px;text-align:left">${t.note||'-'}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="delTrade(${t.id})">삭제</button></td>
-    </tr>`).join('');
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-outline btn-sm" onclick="openEditTrade(${t.id})" style="font-size:10px;padding:3px 8px">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="delTrade(${t.id})">삭제</button>
+      </td>
+    </tr>`;
+  }).join('');
 }
 function calcPnl(){
+  const type=document.getElementById('t-type').value;
+  const swing=isSwingTypeFn(type);
   const buy=parseFloat(document.getElementById('t-buy').value)||0;
   const buyTotal=parseFloat(document.getElementById('t-buyTotal').value)||0;
   const sell=parseFloat(document.getElementById('t-sell').value)||0;
@@ -1066,6 +1093,12 @@ function calcPnl(){
   const qty=buy?Math.round(buyTotal/buy):0;
   document.getElementById('t-qty').value=qty||'';
   document.getElementById('calc-qty').textContent=qty?qty+'주':'-';
+  if(swing&&!sellTotal){
+    document.getElementById('calc-pnl').textContent='보유중';
+    document.getElementById('calc-pnl').style.color='var(--accent)';
+    document.getElementById('calc-pct').textContent='-';
+    return;
+  }
   if(sellTotal&&buyTotal){
     const pnl=sellTotal-buyTotal;
     const pct=Math.round(pnl/buyTotal*10000)/100;
@@ -1076,27 +1109,62 @@ function calcPnl(){
   }
   const target=parseFloat(document.getElementById('t-target').value)||0;
   const stop=parseFloat(document.getElementById('t-stop').value)||0;
-  if(buy&&target&&stop){
-    const reward=target-buy,risk=buy-stop;
-    if(risk>0)document.getElementById('t-rr').value=(reward/risk).toFixed(1)+'x';
-  }
+  if(buy&&target&&stop&&(buy-stop)>0){document.getElementById('t-rr').value=((target-buy)/(buy-stop)).toFixed(1)+'x';}
 }
 function openTradeModal(){
+  tEditId=null;
+  const mt=document.getElementById('trade-modal-title');if(mt)mt.textContent='📝 매매 추가';
   document.getElementById('t-date').value=new Date().toISOString().split('T')[0];
+  ['t-name','t-buy','t-buyTotal','t-sell','t-sellTotal','t-target','t-stop','t-note','t-emotion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('t-rr').value='';
+  document.getElementById('calc-pnl').textContent='-';document.getElementById('calc-pct').textContent='-';document.getElementById('calc-qty').textContent='-';
   document.getElementById('modal-trade').classList.add('open');
 }
-function addTrade(){
+function openEditTrade(id){
+  const t=state.trades.find(x=>x.id===id);if(!t)return;
+  tEditId=id;
+  const mt=document.getElementById('trade-modal-title');if(mt)mt.textContent='✏️ 매매 수정';
+  document.getElementById('t-date').value=t.date;
+  document.getElementById('t-name').value=t.name;
+  document.getElementById('t-type').value=t.type;
+  document.getElementById('t-pattern').value=t.pattern||'눌림';
+  const entryEl=document.getElementById('t-entry');if(entryEl)entryEl.value=t.entry||'';
+  document.getElementById('t-vol').value=t.vol||'증가';
+  document.getElementById('t-market').value=t.market||'국내장';
+  document.getElementById('t-buy').value=t.buy||'';
+  document.getElementById('t-buyTotal').value=t.buyTotal||'';
+  document.getElementById('t-sell').value=t.sell||'';
+  document.getElementById('t-sellTotal').value=t.sellTotal||'';
+  document.getElementById('t-target').value=t.target||'';
+  document.getElementById('t-stop').value=t.stop||'';
+  document.getElementById('t-rr').value=t.rr||'';
+  document.getElementById('t-result').value=t.result||'승';
+  document.getElementById('t-c1').value=t.c1||'O';
+  document.getElementById('t-c3').value=t.c3||'O';
+  const psychEl=document.getElementById('t-psych');if(psychEl)psychEl.value=t.psych||'안정';
+  const emotionEl=document.getElementById('t-emotion');if(emotionEl)emotionEl.value=t.emotion||'';
+  document.getElementById('t-note').value=t.note||'';
+  calcPnl();
+  document.getElementById('modal-trade').classList.add('open');
+}
+function saveTrade(){
+  const name=document.getElementById('t-name').value.trim();
+  if(!name)return alert('종목명을 입력해주세요');
+  const type=document.getElementById('t-type').value;
   const buy=parseFloat(document.getElementById('t-buy').value)||0;
   const buyTotal=parseFloat(document.getElementById('t-buyTotal').value)||0;
   const sell=parseFloat(document.getElementById('t-sell').value)||0;
   const sellTotal=parseFloat(document.getElementById('t-sellTotal').value)||0;
-  const pnl=sellTotal-buyTotal;
-  const pct=buyTotal?Math.round(pnl/buyTotal*10000)/100:0;
-  const name=document.getElementById('t-name').value.trim();
-  if(!name)return alert('종목명을 입력해주세요');
-  state.trades.push({
-    id:Date.now(),date:document.getElementById('t-date').value,name,
-    type:document.getElementById('t-type').value,pattern:document.getElementById('t-pattern').value,
+  const closed=sellTotal>0;
+  const pnl=closed?sellTotal-buyTotal:0;
+  const pct=closed&&buyTotal?Math.round(pnl/buyTotal*10000)/100:0;
+  const entryEl=document.getElementById('t-entry');
+  const psychEl=document.getElementById('t-psych');
+  const emotionEl=document.getElementById('t-emotion');
+  const obj={
+    id:tEditId||Date.now(),date:document.getElementById('t-date').value,name,type,
+    pattern:document.getElementById('t-pattern').value,
+    entry:entryEl?entryEl.value:'',
     vol:document.getElementById('t-vol').value,
     target:parseFloat(document.getElementById('t-target').value)||0,
     stop:parseFloat(document.getElementById('t-stop').value)||0,
@@ -1104,21 +1172,22 @@ function addTrade(){
     buy,buyTotal,sell,sellTotal,pct,pnl,
     result:document.getElementById('t-result').value,
     market:document.getElementById('t-market').value,
-    c1:document.getElementById('t-c1').value,c3:document.getElementById('t-c3').value,
+    c1:document.getElementById('t-c1').value,c3t:'',c3:document.getElementById('t-c3').value,c3v:'',
+    psych:psychEl?psychEl.value:'',
+    emotion:emotionEl?emotionEl.value:'',
     note:document.getElementById('t-note').value
-  });
-  closeModal('modal-trade');
-  ['t-name','t-buy','t-buyTotal','t-sell','t-sellTotal','t-target','t-stop','t-note'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('t-rr').value='';
-  document.getElementById('calc-pnl').textContent='-';document.getElementById('calc-pct').textContent='-';document.getElementById('calc-qty').textContent='-';
-  save();renderTrades();renderTDash();
+  };
+  if(tEditId){const idx=state.trades.findIndex(x=>x.id===tEditId);if(idx>=0)state.trades[idx]=obj;}
+  else{state.trades.push(obj);}
+  closeModal('modal-trade');tEditId=null;
+  save();renderTrades();renderTDash();renderTBalance();
 }
-function delTrade(id){if(confirm('삭제할까요?')){state.trades=state.trades.filter(t=>t.id!==id);save();renderTrades();renderTDash();}}
+function delTrade(id){if(confirm('삭제할까요?')){state.trades=state.trades.filter(t=>t.id!==id);save();renderTrades();renderTDash();renderTBalance();}}
 
 // ===== 패턴분석 =====
 function calcGroup(trades,key,options){
   return options.map(opt=>{
-    const g=trades.filter(t=>t[key]===opt);
+    const g=trades.filter(t=>t[key]===opt&&isClosedFn(t));
     const wins=g.filter(t=>t.result==='승').length;
     const pnl=g.reduce((s,t)=>s+t.pnl,0);
     const avgPct=g.length?g.reduce((s,t)=>s+t.pct,0)/g.length:0;
@@ -1140,15 +1209,7 @@ function renderTPattern(){
   renderPT('t-market-tbody',calcGroup(state.trades,'market',['국내장','미국장','선물','코인']));
 }
 
-// ===== 잔고추이 =====
-function addBalanceRow(){
-  const date=prompt('날짜를 입력하세요 (예: 2026-04-22)','2026-04-');
-  if(!date||!date.match(/^\d{4}-\d{2}-\d{2}$/)){alert('올바른 날짜 형식으로 입력해주세요');return;}
-  if(state.balanceRows.find(r=>r.date===date)){alert('이미 존재하는 날짜입니다.');return;}
-  state.balanceRows.push({date,dom:0,us:0,fut:0,coin:0});
-  state.balanceRows.sort((a,b)=>a.date>b.date?1:-1);
-  save();renderTBalance();
-}
+// ===== 잔고추이 - 매도완료 종목만 자동 집계 =====
 function renderTBalance(){
   const initDom=parseInt(document.getElementById('init-dom').value)||0;
   const initUs=parseInt(document.getElementById('init-us').value)||0;
@@ -1156,48 +1217,62 @@ function renderTBalance(){
   const initCoin=parseInt(document.getElementById('init-coin').value)||0;
   const initTotal=initDom+initUs+initFut+initCoin;
   document.getElementById('init-total').textContent=initTotal.toLocaleString()+'원';
+  const dateMap={};
+  state.trades.forEach(t=>{
+    if(!t.date||!isClosedFn(t))return;
+    if(!dateMap[t.date])dateMap[t.date]={dom:0,us:0,fut:0,coin:0};
+    const mk=t.market==='국내장'?'dom':t.market==='미국장'?'us':t.market==='선물'?'fut':'coin';
+    dateMap[t.date][mk]+=t.pnl;
+  });
+  const dates=Object.keys(dateMap).sort();
+  let cumDom=initDom,cumUs=initUs,cumFut=initFut,cumCoin=initCoin;
+  const rows=dates.map(date=>{
+    const p=dateMap[date];
+    cumDom+=p.dom;cumUs+=p.us;cumFut+=p.fut;cumCoin+=p.coin;
+    const total=Math.round(cumDom+cumUs+cumFut+cumCoin);
+    const day=Math.round(p.dom+p.us+p.fut+p.coin);
+    return{date,dom:Math.round(cumDom),us:Math.round(cumUs),fut:Math.round(cumFut),coin:Math.round(cumCoin),total,day,pnlByMkt:{dom:Math.round(p.dom),us:Math.round(p.us),fut:Math.round(p.fut),coin:Math.round(p.coin)}};
+  });
+  const holding=state.trades.filter(t=>isSwingTypeFn(t.type)&&!isClosedFn(t));
+  const holdEl=document.getElementById('t-balance-holding');
+  if(holdEl)holdEl.innerHTML=holding.length?`<div style="background:#fff3dc;border:1px solid var(--accent2);border-radius:9px;padding:9px 14px;margin-bottom:12px;font-size:12px">📌 <b>보유중 스윙/장기 종목</b> (잔고 미반영): ${holding.map(t=>`<span style="margin-left:8px;font-weight:600">${t.name} (${t.date.slice(5)} 매수, ${t.buyTotal.toLocaleString()}원)</span>`).join('')}</div>`:'';
   const tbody=document.getElementById('balance-tbody');
-  tbody.innerHTML=state.balanceRows.map((r,i)=>{
-    const total=r.dom+r.us+r.fut+r.coin;
-    const prev=i===0?{dom:initDom,us:initUs,fut:initFut,coin:initCoin}:state.balanceRows[i-1];
-    const prevTotal=prev.dom+prev.us+prev.fut+prev.coin;
-    const diff=total-prevTotal;
-    return`<tr>
-      <td>${r.date.slice(5)}</td>
-      <td><input type="number" value="${r.dom}" onchange="updateBal(${i},'dom',this.value)" style="width:85px"></td>
-      <td><input type="number" value="${r.us}" onchange="updateBal(${i},'us',this.value)" style="width:85px"></td>
-      <td><input type="number" value="${r.fut}" onchange="updateBal(${i},'fut',this.value)" style="width:85px"></td>
-      <td><input type="number" value="${r.coin}" onchange="updateBal(${i},'coin',this.value)" style="width:85px"></td>
-      <td style="font-weight:700">${total.toLocaleString()}</td>
-      <td style="color:${diff>=0?'var(--green)':'var(--red)'};font-weight:600">${diff>=0?'+':''}${diff.toLocaleString()}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="delBal(${i})">삭제</button></td>
-    </tr>`;
-  }).join('');
-  const last=state.balanceRows[state.balanceRows.length-1]||{dom:initDom,us:initUs,fut:initFut,coin:initCoin};
-  const lastTotal=last.dom+last.us+last.fut+last.coin;
+  tbody.innerHTML=rows.length?rows.map(r=>`<tr>
+    <td>${r.date.slice(5)}</td>
+    <td style="text-align:right">${r.dom.toLocaleString()}</td>
+    <td style="text-align:right">${r.us.toLocaleString()}</td>
+    <td style="text-align:right">${r.fut.toLocaleString()}</td>
+    <td style="text-align:right">${r.coin.toLocaleString()}</td>
+    <td style="font-weight:700;text-align:right">${r.total.toLocaleString()}</td>
+    <td style="color:${r.day>=0?'var(--green)':'var(--red)'};font-weight:600;text-align:right">${r.day>=0?'+':''}${r.day.toLocaleString()}</td>
+    <td style="font-size:11px;color:var(--text2);text-align:center">자동</td>
+  </tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--text2);padding:20px;font-size:13px">매매기록을 추가하면 자동으로 반영됩니다 📊</td></tr>';
+  const last=rows[rows.length-1];
+  const lastTotal=last?last.total:initTotal;
   const totalDiff=lastTotal-initTotal;
   const totalPct=initTotal?Math.round(totalDiff/initTotal*10000)/100:0;
   document.getElementById('t-balance-summary').innerHTML=`
     <div class="t-bsum"><div class="t-bsum-label">🏦 현재 총 잔고</div><div class="t-bsum-val">${lastTotal.toLocaleString()}원</div></div>
-    <div class="t-bsum"><div class="t-bsum-label">📈 총 손익</div><div class="t-bsum-val" style="color:${totalDiff>=0?'var(--green)':'var(--red)'}">${totalDiff>=0?'+':''}${totalDiff.toLocaleString()}원</div></div>
+    <div class="t-bsum"><div class="t-bsum-label">📈 실현 손익</div><div class="t-bsum-val" style="color:${totalDiff>=0?'var(--green)':'var(--red)'}">${totalDiff>=0?'+':''}${totalDiff.toLocaleString()}원</div></div>
     <div class="t-bsum"><div class="t-bsum-label">📊 수익률</div><div class="t-bsum-val" style="color:${totalPct>=0?'var(--green)':'var(--red)'}">${totalPct>=0?'+':''}${totalPct}%</div></div>
-    <div class="t-bsum"><div class="t-bsum-label">🗓️ 기록일수</div><div class="t-bsum-val" style="color:var(--blue)">${state.balanceRows.length}일</div></div>`;
-  setTimeout(()=>drawTCharts(initDom,initUs,initFut,initCoin),50);
+    <div class="t-bsum"><div class="t-bsum-label">🗓️ 기록일수</div><div class="t-bsum-val" style="color:var(--blue)">${rows.length}일</div></div>`;
+  setTimeout(()=>drawTCharts(rows),50);
 }
-function updateBal(i,key,val){state.balanceRows[i][key]=parseInt(val)||0;save();renderTBalance();}
-function delBal(i){if(confirm('삭제할까요?')){state.balanceRows.splice(i,1);save();renderTBalance();}}
-function drawTCharts(initDom,initUs,initFut,initCoin){
-  const rows=state.balanceRows;if(!rows.length)return;
+function drawTCharts(rows){
+  if(!rows||!rows.length){
+    ['t-pnl-chart','t-balance-chart'].forEach(id=>{
+      const c=document.getElementById(id);if(!c)return;
+      const ctx=c.getContext('2d');const w=c.parentElement.clientWidth-4;const h=parseInt(c.getAttribute('height'))||140;
+      c.width=w;c.height=h;ctx.clearRect(0,0,w,h);
+      ctx.fillStyle='#94a3b8';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText('매매기록을 추가하면 자동 반영됩니다',w/2,h/2);
+    });return;
+  }
   const labels=rows.map(r=>r.date.slice(5));
-  const pDom=[initDom,...rows.slice(0,-1).map(r=>r.dom)];
-  const pUs=[initUs,...rows.slice(0,-1).map(r=>r.us)];
-  const pFut=[initFut,...rows.slice(0,-1).map(r=>r.fut)];
-  const pCoin=[initCoin,...rows.slice(0,-1).map(r=>r.coin)];
   drawLineChart('t-pnl-chart',labels,[
-    {label:'국내장',data:rows.map((r,i)=>r.dom-pDom[i]),color:'#60a5fa'},
-    {label:'미국장',data:rows.map((r,i)=>r.us-pUs[i]),color:'#34d399'},
-    {label:'선물',data:rows.map((r,i)=>r.fut-pFut[i]),color:'#c084fc'},
-    {label:'코인',data:rows.map((r,i)=>r.coin-pCoin[i]),color:'#fb923c'},
+    {label:'국내장',data:rows.map(r=>r.pnlByMkt.dom),color:'#60a5fa'},
+    {label:'미국장',data:rows.map(r=>r.pnlByMkt.us),color:'#34d399'},
+    {label:'선물',data:rows.map(r=>r.pnlByMkt.fut),color:'#c084fc'},
+    {label:'코인',data:rows.map(r=>r.pnlByMkt.coin),color:'#fb923c'},
   ]);
   drawLineChart('t-balance-chart',labels,[
     {label:'국내장',data:rows.map(r=>r.dom),color:'#60a5fa'},
