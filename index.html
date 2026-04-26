@@ -595,7 +595,7 @@ textarea{resize:vertical;min-height:80px}
           <div style="background:#1a2744;color:#fff;padding:9px 13px;font-weight:700;font-size:13px">📊 날짜별 자동 집계 (매도완료 기준)</div>
           <div style="overflow-x:auto">
             <table class="bal-table" id="balance-table">
-              <thead><tr><th>날짜</th><th style="color:#60a5fa">국내장(원)</th><th style="color:#34d399">미국장(원)</th><th style="color:#c084fc">선물(원)</th><th style="color:#fb923c">코인(원)</th><th>합계(원)</th><th>당일손익</th><th>비고</th></tr></thead>
+              <thead><tr><th>날짜</th><th style="color:#60a5fa">국내장(원)</th><th style="color:#34d399">미국장(원)</th><th style="color:#c084fc">선물(원)</th><th style="color:#fb923c">코인(원)</th><th>합계(원)</th><th>당일손익</th><th>종목별 손익</th></tr></thead>
               <tbody id="balance-tbody"></tbody>
               <tfoot><tr class="init-row"><td>초기잔고</td><td><input id="init-dom" type="number" value="200000" onchange="renderTBalance()"></td><td><input id="init-us" type="number" value="0" onchange="renderTBalance()"></td><td><input id="init-fut" type="number" value="0" onchange="renderTBalance()"></td><td><input id="init-coin" type="number" value="0" onchange="renderTBalance()"></td><td id="init-total" style="color:#c9a84c;font-weight:700;font-size:13px"></td><td>-</td><td>-</td></tr></tfoot>
             </table>
@@ -941,7 +941,17 @@ try{
   const snap=await getDoc(doc(db,"dashboard",DOC));
   if(snap.exists()){
     const p=JSON.parse(snap.data().data);
-    Object.keys(p).forEach(k=>{if(k in window.state)window.state[k]=p[k];});
+    Object.keys(p).forEach(k=>{
+      if(k==='trades'){
+        // 초기 데이터(코드에 하드코딩된 id 1~24)는 항상 최신 코드 기준으로 고정
+        // Firebase에만 있는 새 매매(사용자가 직접 추가한 것)만 병합
+        const initIds=new Set(window.state.trades.map(t=>t.id));
+        const fbNewOnly=(p.trades||[]).filter(t=>!initIds.has(t.id));
+        window.state.trades=[...window.state.trades,...fbNewOnly];
+      } else if(k in window.state){
+        window.state[k]=p[k];
+      }
+    });
   }
 }catch(e){}
 
@@ -1217,13 +1227,19 @@ function renderTBalance(){
   const initCoin=parseInt(document.getElementById('init-coin').value)||0;
   const initTotal=initDom+initUs+initFut+initCoin;
   document.getElementById('init-total').textContent=initTotal.toLocaleString()+'원';
+
+  // 매도완료 종목만 날짜별 집계
   const dateMap={};
+  const dateTrades={}; // 날짜별 종목 목록 (검증용)
   state.trades.forEach(t=>{
     if(!t.date||!isClosedFn(t))return;
     if(!dateMap[t.date])dateMap[t.date]={dom:0,us:0,fut:0,coin:0};
+    if(!dateTrades[t.date])dateTrades[t.date]=[];
     const mk=t.market==='국내장'?'dom':t.market==='미국장'?'us':t.market==='선물'?'fut':'coin';
     dateMap[t.date][mk]+=t.pnl;
+    dateTrades[t.date].push({id:t.id, name:t.name, pnl:t.pnl});
   });
+
   const dates=Object.keys(dateMap).sort();
   let cumDom=initDom,cumUs=initUs,cumFut=initFut,cumCoin=initCoin;
   const rows=dates.map(date=>{
@@ -1231,22 +1247,30 @@ function renderTBalance(){
     cumDom+=p.dom;cumUs+=p.us;cumFut+=p.fut;cumCoin+=p.coin;
     const total=Math.round(cumDom+cumUs+cumFut+cumCoin);
     const day=Math.round(p.dom+p.us+p.fut+p.coin);
-    return{date,dom:Math.round(cumDom),us:Math.round(cumUs),fut:Math.round(cumFut),coin:Math.round(cumCoin),total,day,pnlByMkt:{dom:Math.round(p.dom),us:Math.round(p.us),fut:Math.round(p.fut),coin:Math.round(p.coin)}};
+    const detail=dateTrades[date]||[];
+    return{date,dom:Math.round(cumDom),us:Math.round(cumUs),fut:Math.round(cumFut),coin:Math.round(cumCoin),total,day,detail,pnlByMkt:{dom:Math.round(p.dom),us:Math.round(p.us),fut:Math.round(p.fut),coin:Math.round(p.coin)}};
   });
+
   const holding=state.trades.filter(t=>isSwingTypeFn(t.type)&&!isClosedFn(t));
   const holdEl=document.getElementById('t-balance-holding');
-  if(holdEl)holdEl.innerHTML=holding.length?`<div style="background:#fff3dc;border:1px solid var(--accent2);border-radius:9px;padding:9px 14px;margin-bottom:12px;font-size:12px">📌 <b>보유중 스윙/장기 종목</b> (잔고 미반영): ${holding.map(t=>`<span style="margin-left:8px;font-weight:600">${t.name} (${t.date.slice(5)} 매수, ${t.buyTotal.toLocaleString()}원)</span>`).join('')}</div>`:'';
+  if(holdEl)holdEl.innerHTML=holding.length?`<div style="background:#fff3dc;border:1px solid var(--accent2);border-radius:9px;padding:9px 14px;margin-bottom:12px;font-size:12px">📌 <b>보유중 종목</b> (잔고 미반영): ${holding.map(t=>`<span style="margin-left:8px;font-weight:600">${t.name} (${t.date.slice(5)} 매수, ${t.buyTotal.toLocaleString()}원)</span>`).join('')}</div>`:'';
+
   const tbody=document.getElementById('balance-tbody');
-  tbody.innerHTML=rows.length?rows.map(r=>`<tr>
-    <td>${r.date.slice(5)}</td>
-    <td style="text-align:right">${r.dom.toLocaleString()}</td>
-    <td style="text-align:right">${r.us.toLocaleString()}</td>
-    <td style="text-align:right">${r.fut.toLocaleString()}</td>
-    <td style="text-align:right">${r.coin.toLocaleString()}</td>
-    <td style="font-weight:700;text-align:right">${r.total.toLocaleString()}</td>
-    <td style="color:${r.day>=0?'var(--green)':'var(--red)'};font-weight:600;text-align:right">${r.day>=0?'+':''}${r.day.toLocaleString()}</td>
-    <td style="font-size:11px;color:var(--text2);text-align:center">자동</td>
-  </tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--text2);padding:20px;font-size:13px">매매기록을 추가하면 자동으로 반영됩니다 📊</td></tr>';
+  tbody.innerHTML=rows.length?rows.map(r=>{
+    const seen=new Set();
+    const detailHtml=r.detail.filter(d=>{if(seen.has(d.id))return false;seen.add(d.id);return true;}).map(d=>`<span style="margin-right:6px;white-space:nowrap">${d.name}: <b style="color:${d.pnl>=0?'var(--green)':'var(--red)'}">${d.pnl>=0?'+':''}${d.pnl.toLocaleString()}</b></span>`).join('');
+    return`<tr>
+      <td style="font-weight:600">${r.date.slice(5)}</td>
+      <td style="text-align:right">${r.dom.toLocaleString()}</td>
+      <td style="text-align:right">${r.us>0?r.us.toLocaleString():'-'}</td>
+      <td style="text-align:right">${r.fut>0?r.fut.toLocaleString():'-'}</td>
+      <td style="text-align:right">${r.coin>0?r.coin.toLocaleString():'-'}</td>
+      <td style="font-weight:700;text-align:right;color:var(--accent)">${r.total.toLocaleString()}</td>
+      <td style="color:${r.day>=0?'var(--green)':'var(--red)'};font-weight:700;text-align:right">${r.day>=0?'+':''}${r.day.toLocaleString()}</td>
+      <td style="font-size:10px;color:var(--text2);max-width:200px">${detailHtml}</td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--text2);padding:20px;font-size:13px">매매기록을 추가하면 자동으로 반영됩니다 📊</td></tr>';
+
   const last=rows[rows.length-1];
   const lastTotal=last?last.total:initTotal;
   const totalDiff=lastTotal-initTotal;
