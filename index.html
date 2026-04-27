@@ -312,15 +312,13 @@ textarea{resize:vertical;min-height:80px}
       </div>
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
-         <div style="font-weight:700;font-size:13px">🔥 습관 체크</div>
-          <div style="display:flex;align-items:center;gap:6px">
-            <button class="btn btn-outline btn-sm" style="font-size:11px;padding:3px 9px" onclick="habitPrevMonth()">◀</button>
-            <span id="habit-month-label" style="font-size:12px;font-weight:600;color:var(--accent);min-width:68px;text-align:center"></span>
-            <button class="btn btn-outline btn-sm" style="font-size:11px;padding:3px 9px" onclick="habitNextMonth()">▶</button>
-          </div>
-        <div class="hab-prog-bar"><div class="hab-prog-fill" id="habit-cal-prog"></div></div>
-<div id="habit-stats-row" style="display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap"></div>
-<div style="overflow-x:auto"><div id="habit-cal-wrap"></div></div>
+          <div style="font-weight:700;font-size:13px">🔥 습관 체크</div>
+          <button class="btn btn-outline btn-sm" style="font-size:10px" onclick="openHabitStats()">📊 누적 통계</button>
+        </div>
+        <table class="habit-table">
+          <thead><tr><th style="text-align:left">습관</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th class="sat">토</th><th class="sun">일</th><th></th></tr></thead>
+          <tbody id="planner-habits"></tbody>
+        </table>
         <div style="display:flex;gap:6px;margin-top:10px"><input id="new-habit" placeholder="새 습관 추가..."><button class="btn btn-primary btn-sm" onclick="addHabit()">+</button></div>
       </div>
       <div class="card">
