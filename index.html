@@ -450,8 +450,8 @@ textarea{resize:vertical;min-height:80px}
 <div id="page-stocks" class="page">
   <div class="page-title">📊 주식 공부 노트</div>
   <div class="tabs" style="flex-wrap:wrap">
-    <div class="tab active" onclick="switchTab(this,'stock-concepts')">📚 핵심 개념</div>
-    <div class="tab" onclick="switchTab(this,'stock-patterns')">📈 패턴 노트</div>
+    <div class="tab active" onclick="switchTab(this,'stock-concepts');renderCatFilters();renderSC()">📚 핵심 개념</div>
+    <div class="tab" onclick="switchTab(this,'stock-patterns');renderCatFilters();renderSP()">📈 패턴 노트</div>
     <div class="tab" onclick="switchTab(this,'stock-rules')">📌 매매 원칙</div>
     <div class="tab" onclick="switchTab(this,'stock-goals')">🎯 목표</div>
     <div class="tab" onclick="switchTab(this,'stock-words')">💬 한마디</div>
@@ -463,16 +463,11 @@ textarea{resize:vertical;min-height:80px}
   <!-- 핵심 개념 -->
   <div id="stock-concepts" class="tab-content active">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <div style="display:flex;gap:7px;flex-wrap:wrap" id="sc-cat-filters">
-        <button class="filter-btn on" onclick="filterSC('전체',this)">전체</button>
-        <button class="filter-btn" onclick="filterSC('기술적분석',this)">기술적분석</button>
-        <button class="filter-btn" onclick="filterSC('캔들/차트',this)">캔들/차트</button>
-        <button class="filter-btn" onclick="filterSC('지표',this)">지표</button>
-        <button class="filter-btn" onclick="filterSC('수급',this)">수급</button>
-        <button class="filter-btn" onclick="filterSC('심리',this)">심리</button>
-        <button class="filter-btn" onclick="filterSC('기타',this)">기타</button>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center" id="sc-cat-filters"></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline btn-sm" onclick="manageCats('SC')">⚙️ 분류 관리</button>
+        <button class="btn btn-primary btn-sm" onclick="openSCModal()">+ 개념 추가</button>
       </div>
-      <button class="btn btn-primary btn-sm" onclick="openSCModal()">+ 개념 추가</button>
     </div>
     <div id="stock-concepts-list"></div>
   </div>
@@ -480,17 +475,11 @@ textarea{resize:vertical;min-height:80px}
   <!-- 패턴 노트 -->
   <div id="stock-patterns" class="tab-content">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <div style="display:flex;gap:7px;flex-wrap:wrap" id="sp-cat-filters">
-        <button class="filter-btn on" onclick="filterSP('전체',this)">전체</button>
-        <button class="filter-btn" onclick="filterSP('눌림목',this)">눌림목</button>
-        <button class="filter-btn" onclick="filterSP('돌파',this)">돌파</button>
-        <button class="filter-btn" onclick="filterSP('추세',this)">추세</button>
-        <button class="filter-btn" onclick="filterSP('횡보',this)">횡보</button>
-        <button class="filter-btn" onclick="filterSP('반등',this)">반등</button>
-        <button class="filter-btn" onclick="filterSP('실패패턴',this)">실패패턴</button>
-        <button class="filter-btn" onclick="filterSP('기타',this)">기타</button>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center" id="sp-cat-filters"></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline btn-sm" onclick="manageCats('SP')">⚙️ 분류 관리</button>
+        <button class="btn btn-primary btn-sm" onclick="openSPModal()">+ 패턴 추가</button>
       </div>
-      <button class="btn btn-primary btn-sm" onclick="openSPModal()">+ 패턴 추가</button>
     </div>
     <div id="stock-patterns-list"></div>
   </div>
@@ -666,7 +655,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-title" id="sc-modal-title">📚 핵심 개념 추가</div>
     <div class="mg2">
       <div class="modal-row"><label>개념명</label><input id="sc-name" placeholder="예: 눌림목 매매"></div>
-      <div class="modal-row"><label>분류</label><select id="sc-cat"><option>기술적분석</option><option>캔들/차트</option><option>지표</option><option>수급</option><option>심리</option><option>기타</option></select></div>
+      <div class="modal-row"><label>분류</label><select id="sc-cat"></select></div>
     </div>
     <div class="modal-row"><label>설명</label><textarea id="sc-desc" style="min-height:100px" placeholder="개념 설명..."></textarea></div>
     <div class="modal-row"><label>🔗 참고 URL (유튜브, 블로그 등)</label><input id="sc-url" placeholder="https://..."></div>
@@ -691,7 +680,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-title" id="sp-modal-title">📈 패턴 추가</div>
     <div class="mg2">
       <div class="modal-row"><label>패턴명</label><input id="sp-name" placeholder="예: 5분봉 눌림목 반등"></div>
-      <div class="modal-row"><label>패턴 분류</label><select id="sp-cat"><option>눌림목</option><option>돌파</option><option>추세</option><option>횡보</option><option>반등</option><option>실패패턴</option><option>기타</option></select></div>
+      <div class="modal-row"><label>패턴 분류</label><select id="sp-cat"></select></div>
     </div>
     <div class="modal-row"><label>진입 조건</label><textarea id="sp-entry" style="min-height:70px" placeholder="어떤 조건일 때 진입하는가..."></textarea></div>
     <div class="modal-row"><label>손절 / 익절 기준</label><textarea id="sp-exit" style="min-height:60px" placeholder="손절/익절 기준..."></textarea></div>
@@ -737,6 +726,22 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-cl-item')">취소</button>
       <button class="btn btn-primary" onclick="saveCLItem()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 분류 관리 모달 -->
+<div id="modal-cats" class="modal-overlay">
+  <div class="modal" style="width:420px">
+    <div class="modal-title" id="cats-modal-title">⚙️ 분류 관리</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">드래그로 순서 변경, ✕로 삭제할 수 있어요. <b>기타</b>는 삭제 불가.</div>
+    <div id="cats-list" style="margin-bottom:14px"></div>
+    <div style="display:flex;gap:7px">
+      <input id="cats-new-input" placeholder="새 분류명 입력..." style="flex:1" onkeydown="if(event.key==='Enter')addCat()">
+      <button class="btn btn-primary btn-sm" onclick="addCat()">+ 추가</button>
+    </div>
+    <div class="modal-actions" style="margin-top:14px">
+      <button class="btn btn-outline" onclick="closeModal('modal-cats')">닫기</button>
     </div>
   </div>
 </div>
@@ -1130,6 +1135,8 @@ window.state={
   stockConcepts:[],stockPatterns:[],stockTrades:[],
   stockRules:[],stockGoals:{short:[],mid:[],long:[]},stockWords:[],
   stockWatchlist:[],
+  scCats:['기술적분석','캔들/차트','지표','수급','심리','기타'],
+  spCats:['눌림목','돌파','추세','횡보','반등','실패패턴','기타'],
   tradeChecklist:[
     {id:1,cat:'시장 환경',name:'코스피/코스닥 지수 방향 확인',std:'상승장 or 횡보장에서만 매매'},
     {id:2,cat:'시장 환경',name:'장 초반 분위기 확인 (9:00~9:30)',std:'급락/패닉 분위기면 관망'},
@@ -1269,7 +1276,7 @@ function nav(id){
   document.getElementById('page-'+id)?.classList.add('active');
   const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,cond:6,stocks:7,journal:8,saju:9,diary:10,food:11,exercise:12,massage:13,budget:14};
   document.querySelectorAll('.sb-item')[map[id]]?.classList.add('active');
-  if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();renderWatch();}
+  if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();renderWatch();renderCatFilters();}
   if(id==='schedule')renderSchedCal();
   if(id==='food')renderFoodCal();
   if(id==='book')renderBooks();
@@ -1970,8 +1977,79 @@ const catColors={기술적분석:'#dbeafe',캔들차트:'#fef3c7','캔들/차트
 const catTxtColors={기술적분석:'#1e40af',캔들차트:'#92400e','캔들/차트':'#92400e',지표:'#7c3aed',수급:'#166534',심리:'#9f1239',기타:'#374151',
   눌림목:'#1e40af',돌파:'#92400e',추세:'#166534',횡보:'#374151',반등:'#7c3aed',실패패턴:'#9f1239'};
 
-function filterSC(f,el){scFilter=f;document.querySelectorAll('#sc-cat-filters .filter-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderSC();}
-function filterSP(f,el){spFilter=f;document.querySelectorAll('#sp-cat-filters .filter-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderSP();}
+// ===== 카테고리 동적 렌더 =====
+let catEditType=null;
+function renderCatFilters(){
+  if(!state.scCats)state.scCats=['기술적분석','캔들/차트','지표','수급','심리','기타'];
+  if(!state.spCats)state.spCats=['눌림목','돌파','추세','횡보','반등','실패패턴','기타'];
+  const scEl=document.getElementById('sc-cat-filters');
+  const spEl=document.getElementById('sp-cat-filters');
+  if(scEl){
+    scEl.innerHTML=`<button class="filter-btn ${scFilter==='전체'?'on':''}" onclick="filterSC('전체',this)">전체</button>`
+      +state.scCats.map(c=>`<button class="filter-btn ${scFilter===c?'on':''}" onclick="filterSC('${c}',this)">${c}</button>`).join('');
+  }
+  if(spEl){
+    spEl.innerHTML=`<button class="filter-btn ${spFilter==='전체'?'on':''}" onclick="filterSP('전체',this)">전체</button>`
+      +state.spCats.map(c=>`<button class="filter-btn ${spFilter===c?'on':''}" onclick="filterSP('${c}',this)">${c}</button>`).join('');
+  }
+  // select 옵션도 업데이트
+  const scSel=document.getElementById('sc-cat');
+  if(scSel)scSel.innerHTML=state.scCats.map(c=>`<option>${c}</option>`).join('');
+  const spSel=document.getElementById('sp-cat');
+  if(spSel)spSel.innerHTML=state.spCats.map(c=>`<option>${c}</option>`).join('');
+}
+function manageCats(type){
+  catEditType=type;
+  document.getElementById('cats-modal-title').textContent=type==='SC'?'⚙️ 개념 분류 관리':'⚙️ 패턴 분류 관리';
+  document.getElementById('cats-new-input').value='';
+  renderCatsList();
+  openModal('modal-cats');
+}
+function renderCatsList(){
+  const cats=catEditType==='SC'?state.scCats:state.spCats;
+  const el=document.getElementById('cats-list');if(!el)return;
+  el.innerHTML=cats.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg);border-radius:9px;margin-bottom:6px">
+      <span style="flex:1;font-size:13px;font-weight:600">${c}</span>
+      ${c==='기타'?'<span style="font-size:11px;color:var(--text2)">기본값</span>':`
+        <button style="background:none;border:1px solid var(--border);border-radius:6px;padding:2px 8px;cursor:pointer;font-size:11px;color:var(--text2)" onclick="renameCat(${i})">✏️ 수정</button>
+        <button style="background:none;border:none;cursor:pointer;color:#ddd;font-size:13px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='#ddd'" onclick="deleteCat(${i})">✕</button>
+      `}
+    </div>`).join('');
+}
+function addCat(){
+  const inp=document.getElementById('cats-new-input');
+  const val=inp.value.trim();if(!val)return;
+  const cats=catEditType==='SC'?state.scCats:state.spCats;
+  if(cats.includes(val)){alert('이미 있는 분류예요!');return;}
+  // 기타 앞에 추가
+  const idx=cats.indexOf('기타');
+  if(idx>=0)cats.splice(idx,0,val);else cats.push(val);
+  inp.value='';save();renderCatsList();renderCatFilters();
+}
+function deleteCat(i){
+  const cats=catEditType==='SC'?state.scCats:state.spCats;
+  if(cats[i]==='기타')return;
+  if(!confirm(`"${cats[i]}" 분류를 삭제할까요?\n이 분류의 항목들은 "기타"로 이동됩니다.`))return;
+  const old=cats[i];
+  // 해당 분류 항목들 → 기타로 이동
+  if(catEditType==='SC'&&state.stockConcepts){state.stockConcepts.forEach(c=>{if(c.cat===old)c.cat='기타';});}
+  if(catEditType==='SP'&&state.stockPatterns){state.stockPatterns.forEach(p=>{if(p.cat===old)p.cat='기타';});}
+  cats.splice(i,1);save();renderCatsList();renderCatFilters();renderSC();renderSP();
+}
+function renameCat(i){
+  const cats=catEditType==='SC'?state.scCats:state.spCats;
+  const newName=prompt('새 분류명을 입력하세요:',cats[i]);
+  if(!newName||!newName.trim())return;
+  const trimmed=newName.trim();
+  if(cats.includes(trimmed)&&trimmed!==cats[i]){alert('이미 있는 분류예요!');return;}
+  const old=cats[i];cats[i]=trimmed;
+  if(catEditType==='SC'&&state.stockConcepts){state.stockConcepts.forEach(c=>{if(c.cat===old)c.cat=trimmed;});}
+  if(catEditType==='SP'&&state.stockPatterns){state.stockPatterns.forEach(p=>{if(p.cat===old)p.cat=trimmed;});}
+  save();renderCatsList();renderCatFilters();renderSC();renderSP();
+}
+function filterSC(f,el){scFilter=f;renderCatFilters();renderSC();}
+function filterSP(f,el){spFilter=f;renderCatFilters();renderSP();}
 
 // 이미지 핸들러
 function handleNoteImg(type,input){
