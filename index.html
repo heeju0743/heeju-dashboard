@@ -312,13 +312,25 @@ textarea{resize:vertical;min-height:80px}
       </div>
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
-          <div style="font-weight:700;font-size:13px">🔥 습관 체크</div>
-          <button class="btn btn-outline btn-sm" style="font-size:10px" onclick="openHabitStats()">📊 누적 통계</button>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="font-weight:700;font-size:13px">🔥 습관 체크</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <button class="cal-nav" onclick="changeHabitMonth(-1)">◀</button>
+              <span id="habit-month-label" style="font-size:12px;font-weight:700;color:var(--accent);min-width:70px;text-align:center"></span>
+              <button class="cal-nav" onclick="changeHabitMonth(1)">▶</button>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="habit-month-stats" style="font-size:11px;color:var(--text2)"></span>
+            <button class="btn btn-outline btn-sm" style="font-size:10px" onclick="openHabitStats()">📊 연간 통계</button>
+          </div>
         </div>
-        <table class="habit-table">
-          <thead><tr><th style="text-align:left">습관</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th class="sat">토</th><th class="sun">일</th><th></th></tr></thead>
-          <tbody id="planner-habits"></tbody>
-        </table>
+        <div style="overflow-x:auto">
+          <table class="habit-table" id="habit-main-table">
+            <thead><tr id="habit-thead-row"><th style="text-align:left">습관</th><th></th></tr></thead>
+            <tbody id="planner-habits"></tbody>
+          </table>
+        </div>
         <div style="display:flex;gap:6px;margin-top:10px"><input id="new-habit" placeholder="새 습관 추가..."><button class="btn btn-primary btn-sm" onclick="addHabit()">+</button></div>
       </div>
       <div class="card">
@@ -711,6 +723,24 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
+<!-- 체크리스트 항목 추가/수정 모달 -->
+<div id="modal-cl-item" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title" id="cl-item-title">✅ 체크리스트 항목 추가</div>
+    <div class="modal-row"><label>카테고리</label>
+      <select id="cl-cat">
+        <option>시장 환경</option><option>종목 선정</option><option>타점 확인</option><option>리스크 관리</option><option>심리 체크</option><option>기타</option>
+      </select>
+    </div>
+    <div class="modal-row"><label>체크 항목</label><input id="cl-name" placeholder="예: 코스피 방향 확인"></div>
+    <div class="modal-row"><label>기준/설명</label><input id="cl-std" placeholder="예: 상승장에서만 매매"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-cl-item')">취소</button>
+      <button class="btn btn-primary" onclick="saveCLItem()">저장</button>
+    </div>
+  </div>
+</div>
+
 <!-- 매매 원칙 추가 모달 -->
 <div id="modal-rule" class="modal-overlay">
   <div class="modal">
@@ -794,51 +824,11 @@ textarea{resize:vertical;min-height:80px}
 
   <!-- 체크리스트 -->
   <div id="t-checklist" class="trade-page">
-    <div style="font-size:15px;font-weight:700;margin-bottom:14px">✅ 매매 전 체크리스트 — 모든 항목 OK일 때만 진입</div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 시장 환경</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">1</div><div class="t-ci-name">코스피/코스닥 지수 방향 확인</div><div class="t-ci-std">상승상 or 횡보상에서만 매매</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">2</div><div class="t-ci-name">장 초반 분위기 확인 (9:00~9:30)</div><div class="t-ci-std">급락/패닉 분위기면 관망</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:15px;font-weight:700">✅ 매매 전 체크리스트</div>
+      <button class="btn btn-primary btn-sm" onclick="openCLItemModal()">+ 항목 추가</button>
     </div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 종목 선정</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">3</div><div class="t-ci-name">당일 거래량 상위 + 등락률 상위 교차</div><div class="t-ci-std">거래량 터지면서 오르는 종목</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">4</div><div class="t-ci-name">5분봉 연속 양봉 2개 이상</div><div class="t-ci-std">모멘텀 있는 종목</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">5</div><div class="t-ci-name">일봉 추세 (5일선/20일선 방향)</div><div class="t-ci-std">우상향 or 횡보 돌파 중</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
-    </div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 타점 확인</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">6</div><div class="t-ci-name">눌림목: 첫 음봉 후 반등 캔들 확인</div><div class="t-ci-std">반등 양봉 나올 때 진입</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">7</div><div class="t-ci-name">돌파: 전고점 + 거래량 동반 확인</div><div class="t-ci-std">거래량 없는 돌파는 가짜</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">8</div><div class="t-ci-name">이평선(5일/20일) 지지 확인</div><div class="t-ci-std">이평선 위에서 진입</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
-    </div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 리스크 관리</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">9</div><div class="t-ci-name">손절가 미리 설정 후 즉시 주문 등록</div><div class="t-ci-std">매수 직후 손절 주문 체결</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">10</div><div class="t-ci-name">목표 익절가 설정 (R:R 1.5x 이상)</div><div class="t-ci-std">R:R 1.5 미만이면 진입 재고</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">11</div><div class="t-ci-name">투자금액 자본의 50% 이하</div><div class="t-ci-std">한 종목 몰빵 금지</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
-    </div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 심리 체크</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">12</div><div class="t-ci-name">지금 조급한 마음인가?</div><div class="t-ci-std">조급하면 매매 안 함</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">13</div><div class="t-ci-name">전날 손실 만회 심리인가?</div><div class="t-ci-std">복수매매 절대 금지</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">14</div><div class="t-ci-name">손절 대응 가능한 상태인가?</div><div class="t-ci-std">대응 못하면 진입 금지</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
-    </div>
+    <div id="checklist-render"></div>
   </div>
 
   <!-- 패턴분석 -->
@@ -1140,6 +1130,23 @@ window.state={
   stockConcepts:[],stockPatterns:[],stockTrades:[],
   stockRules:[],stockGoals:{short:[],mid:[],long:[]},stockWords:[],
   stockWatchlist:[],
+  tradeChecklist:[
+    {id:1,cat:'시장 환경',name:'코스피/코스닥 지수 방향 확인',std:'상승장 or 횡보장에서만 매매'},
+    {id:2,cat:'시장 환경',name:'장 초반 분위기 확인 (9:00~9:30)',std:'급락/패닉 분위기면 관망'},
+    {id:3,cat:'종목 선정',name:'당일 거래량 상위 + 등락률 상위 교차',std:'거래량 터지면서 오르는 종목'},
+    {id:4,cat:'종목 선정',name:'5분봉 연속 양봉 2개 이상',std:'모멘텀 있는 종목'},
+    {id:5,cat:'종목 선정',name:'일봉 추세 (5일선/20일선 방향)',std:'우상향 or 횡보 돌파 중'},
+    {id:6,cat:'타점 확인',name:'눌림목: 첫 음봉 후 반등 캔들 확인',std:'반등 양봉 나올 때 진입'},
+    {id:7,cat:'타점 확인',name:'돌파: 전고점 + 거래량 동반 확인',std:'거래량 없는 돌파는 가짜'},
+    {id:8,cat:'타점 확인',name:'이평선(5일/20일) 지지 확인',std:'이평선 위에서 진입'},
+    {id:9,cat:'리스크 관리',name:'손절가 미리 설정 후 즉시 주문 등록',std:'매수 직후 손절 주문 체결'},
+    {id:10,cat:'리스크 관리',name:'목표 익절가 설정 (R:R 1.5x 이상)',std:'R:R 1.5 미만이면 진입 재고'},
+    {id:11,cat:'리스크 관리',name:'투자금액 자본의 50% 이하',std:'한 종목 몰빵 금지'},
+    {id:12,cat:'심리 체크',name:'지금 조급한 마음인가?',std:'조급하면 매매 안 함'},
+    {id:13,cat:'심리 체크',name:'전날 손실 만회 심리인가?',std:'복수매매 절대 금지'},
+    {id:14,cat:'심리 체크',name:'손절 대응 가능한 상태인가?',std:'대응 못하면 진입 금지'},
+  ],
+  checklistMemos:{},
   stockProfile:{strength:'',weakness:'',style:'',improve:'',history:[]},
   stockHomework:[],
   tempNoteImgs:{sc:[],sp:[],hw:[]},
@@ -1283,6 +1290,7 @@ function tradeNav(id){
   tabs[map[id]]?.classList.add('active');
   if(id==='t-dash')renderTDash();
   if(id==='t-trades')renderTrades();
+  if(id==='t-checklist')renderChecklist();
   if(id==='t-pattern')renderTPattern();
   if(id==='t-balance')renderTBalance();
   if(id==='t-diary')renderTDiaries();
@@ -1693,6 +1701,13 @@ function dashAddTodo(){const inp=document.getElementById('dash-quick-todo');if(!
 // ===== 습관 체크 - 월별 누적 방식 =====
 function getTodayKey(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;}
 function getYM(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;}
+let habitViewYear=new Date().getFullYear(),habitViewMonth=new Date().getMonth()+1;
+function changeHabitMonth(d){
+  habitViewMonth+=d;
+  if(habitViewMonth>12){habitViewMonth=1;habitViewYear++;}
+  if(habitViewMonth<1){habitViewMonth=12;habitViewYear--;}
+  renderPlannerHabits();
+}
 function isHabitDoneToday(h){
   const key=getTodayKey();
   if(!h.dailyChecks)h.dailyChecks={};
@@ -1719,41 +1734,65 @@ function toggleHabitDash(i){
 }
 function renderPlannerHabits(){
   const tbody=document.getElementById('planner-habits');if(!tbody)return;
-  const ym=getYM();
-  const[yr,mo]=ym.split('-').map(Number);
-  const daysInMonth=getDaysInMonth(ym);
-  const today=new Date().getDate();
-  // 이번 달 1일~오늘까지만 표시 (최대 31일이면 스크롤)
-  const showDays=Math.min(today,daysInMonth);
-  const startDay=Math.max(1,showDays-6); // 최근 7일만 표시
-  const dayLabels=[];
-  for(let d=startDay;d<=today;d++)dayLabels.push(d);
-  // 헤더 업데이트
-  const thead=tbody.closest('table').querySelector('thead tr');
-  if(thead){
-    const ths=['습관'];
-    dayLabels.forEach(d=>{
-      const date=new Date(yr,mo-1,d);
-      const dow=['일','월','화','수','목','금','토'][date.getDay()];
-      ths.push(`${d}<br><span style="font-size:9px">${dow}</span>`);
+  const yr=habitViewYear,mo=habitViewMonth;
+  const ym=`${yr}-${String(mo).padStart(2,'0')}`;
+  const daysInMonth=new Date(yr,mo,0).getDate();
+  const today=new Date();
+  const isCurrentMonth=(yr===today.getFullYear()&&mo===today.getMonth()+1);
+  const showDays=isCurrentMonth?today.getDate():daysInMonth;
+  // 월 레이블 업데이트
+  const lbl=document.getElementById('habit-month-label');
+  if(lbl)lbl.textContent=`${yr}.${String(mo).padStart(2,'0')}`;
+  // 이번 달 통계
+  const stats=document.getElementById('habit-month-stats');
+  if(stats&&state.habits.length){
+    const totalPossible=state.habits.length*showDays;
+    let totalDone=0;
+    state.habits.forEach(h=>{
+      if(!h.dailyChecks)h.dailyChecks={};
+      for(let d=1;d<=showDays;d++){
+        const k=`${yr}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        if(h.dailyChecks[k])totalDone++;
+      }
     });
-    ths.push('');
-    thead.innerHTML=ths.map((t,i)=>{
-      if(i===0)return`<th style="text-align:left">${t}</th>`;
-      if(i===ths.length-1)return`<th></th>`;
-      const date=new Date(yr,mo-1,dayLabels[i-1]);
-      const dow=date.getDay();
-      return`<th class="${dow===6?'sat':dow===0?'sun':''}">${t}</th>`;
-    }).join('');
+    const pct=totalPossible?Math.round(totalDone/totalPossible*100):0;
+    stats.textContent=`${totalDone}/${totalPossible} (${pct}%)`;
   }
+  // 헤더 생성
+  const theadRow=document.getElementById('habit-thead-row');
+  if(theadRow){
+    let ths='<th style="text-align:left;min-width:80px">습관</th>';
+    for(let d=1;d<=showDays;d++){
+      const date=new Date(yr,mo-1,d);
+      const dow=date.getDay();
+      const isToday=isCurrentMonth&&d===today.getDate();
+      const isFuture=isCurrentMonth&&d>today.getDate();
+      const color=dow===0?'var(--red)':dow===6?'var(--blue)':'inherit';
+      ths+=`<th class="${dow===6?'sat':dow===0?'sun':''}" style="font-size:9px;min-width:18px;${isToday?'color:var(--accent);font-weight:700;':''}">${d}</th>`;
+    }
+    ths+='<th></th>';
+    theadRow.innerHTML=ths;
+  }
+  // 바디 생성
   tbody.innerHTML=state.habits.length?state.habits.map((h,i)=>{
-    const cells=dayLabels.map(d=>{
+    if(!h.dailyChecks)h.dailyChecks={};
+    let doneCount=0;
+    const cells=Array.from({length:showDays},(_,idx)=>{
+      const d=idx+1;
       const key=`${yr}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const checked=h.dailyChecks&&h.dailyChecks[key];
-      return`<td><input type="checkbox" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer" ${checked?'checked':''} onchange="toggleHabitDay(${i},'${key}',this)"></td>`;
+      const checked=!!h.dailyChecks[key];
+      if(checked)doneCount++;
+      const isFuture=isCurrentMonth&&d>today.getDate();
+      const isToday=isCurrentMonth&&d===today.getDate();
+      return`<td style="${isToday?'background:var(--active);':''}">${isFuture?'<span style="color:#ddd;font-size:9px">-</span>':`<input type="checkbox" style="width:13px;height:13px;accent-color:var(--accent);cursor:pointer" ${checked?'checked':''} onchange="toggleHabitDay(${i},'${key}',this)">`}</td>`;
     }).join('');
-    return`<tr><td title="${h.name}">${h.name}</td>${cells}<td><button style="background:none;border:none;cursor:pointer;color:#ddd;font-size:11px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='#ddd'" onclick="delHabit(${i})">✕</button></td></tr>`;
-  }).join(''):`<tr><td colspan="9" style="font-size:12px;color:var(--text2);padding:8px 0">아래에서 습관을 추가하세요</td></tr>`;
+    const pct=showDays?Math.round(doneCount/showDays*100):0;
+    return`<tr>
+      <td title="${h.name}" style="font-size:11px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.name}<br><span style="font-size:9px;color:var(--text2)">${doneCount}/${showDays}(${pct}%)</span></td>
+      ${cells}
+      <td><button style="background:none;border:none;cursor:pointer;color:#ddd;font-size:11px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='#ddd'" onclick="delHabit(${i})">✕</button></td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="35" style="font-size:12px;color:var(--text2);padding:8px 0">아래에서 습관을 추가하세요</td></tr>`;
 }
 function toggleHabitDay(i,key,el){
   if(!state.habits[i].dailyChecks)state.habits[i].dailyChecks={};
@@ -1763,31 +1802,61 @@ function toggleHabitDay(i,key,el){
 function addHabit(){const inp=document.getElementById('new-habit');if(!inp.value.trim())return;state.habits.push({name:inp.value.trim(),dailyChecks:{}});inp.value='';renderPlannerHabits();renderDashHabits();save();}
 function delHabit(i){if(confirm(`"${state.habits[i].name}" 삭제할까요?`)){state.habits.splice(i,1);renderPlannerHabits();renderDashHabits();save();}}
 function openHabitStats(){
-  const ym=getYM();
   const el=document.getElementById('habit-stats-body');
   if(!state.habits.length){el.innerHTML='<p style="color:var(--text2);font-size:13px">등록된 습관이 없습니다.</p>';openModal('modal-habit-stats');return;}
-  const daysInMonth=getDaysInMonth(ym);
-  const today=new Date().getDate();
-  el.innerHTML=state.habits.map(h=>{
-    const dc=h.dailyChecks||{};
-    const monthCount=Object.keys(dc).filter(k=>k.startsWith(ym)&&dc[k]).length;
-    const totalCount=Object.values(dc).filter(Boolean).length;
-    const todayKey=getTodayKey();
-    const todayDone=!!dc[todayKey];
-    const streak=calcStreak(dc);
-    return`<div style="padding:9px 0;border-bottom:1px solid #f5ede0;font-size:13px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <span style="font-weight:600">${h.name}</span>
-        <div style="display:flex;gap:12px;font-size:12px">
-          <span>오늘 <b style="color:${todayDone?'var(--green)':'var(--red)'}">${todayDone?'✓':'✗'}</b></span>
-          <span>이번 달 <b style="color:var(--accent)">${monthCount}/${today}일</b></span>
-          <span>연속 <b style="color:var(--blue)">${streak}일</b></span>
-          <span>누적 <b>${totalCount}회</b></span>
-        </div>
-      </div>
-      <div style="display:flex;gap:3px;flex-wrap:wrap">${Array.from({length:today},(_,idx)=>{const k=`${ym}-${String(idx+1).padStart(2,'0')}`;const done=dc[k];return`<div style="width:18px;height:18px;border-radius:3px;background:${done?'var(--accent)':'#f0e8d8'};display:flex;align-items:center;justify-content:center;font-size:9px;color:${done?'#fff':'#ccc'}">${idx+1}</div>`}).join('')}</div>
-    </div>`;
-  }).join('');
+  const today=new Date();
+  const curYM=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  const curDay=today.getDate();
+  // 연간 12개월 생성
+  const months=[];
+  for(let i=11;i>=0;i--){
+    const d=new Date(today.getFullYear(),today.getMonth()-i,1);
+    months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+  }
+  el.innerHTML=`
+    <div style="margin-bottom:14px">
+      <div style="font-size:13px;color:var(--text2)">각 습관의 월별/연간 달성 현황을 확인하세요</div>
+    </div>
+    <div style="overflow-x:auto;margin-bottom:16px">
+      <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:600px">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:6px 8px;background:#1a2744;color:#fff;border-radius:7px 0 0 0">습관</th>
+            ${months.map(m=>`<th style="padding:6px 4px;background:#1a2744;color:#fff;text-align:center;font-size:10px;white-space:nowrap">${m.slice(5)}월</th>`).join('')}
+            <th style="padding:6px 8px;background:#1a2744;color:#c9a84c;text-align:center">연속</th>
+            <th style="padding:6px 8px;background:#1a2744;color:#c9a84c;text-align:center;border-radius:0 7px 0 0">누적</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.habits.map(h=>{
+            const dc=h.dailyChecks||{};
+            const streak=calcStreak(dc);
+            const total=Object.values(dc).filter(Boolean).length;
+            const cells=months.map(ym=>{
+              const[y,m]=ym.split('-').map(Number);
+              const days=new Date(y,m,0).getDate();
+              const possible=(ym===curYM)?curDay:days;
+              const done=Array.from({length:possible},(_,i)=>{
+                const k=`${ym}-${String(i+1).padStart(2,'0')}`;
+                return dc[k]?1:0;
+              }).reduce((a,b)=>a+b,0);
+              const pct=possible?Math.round(done/possible*100):0;
+              const bg=pct>=80?'#e8f5ee':pct>=50?'#fff8ec':pct>0?'#fde8e8':'#f5f0e8';
+              const col=pct>=80?'var(--green)':pct>=50?'var(--accent)':pct>0?'var(--red)':'#ccc';
+              return`<td style="text-align:center;padding:5px 3px;background:${bg}"><span style="font-weight:700;color:${col}">${pct?pct+'%':'-'}</span></td>`;
+            }).join('');
+            return`<tr>
+              <td style="padding:7px 8px;font-weight:600;font-size:12px;border-bottom:1px solid var(--border)">${h.name}</td>
+              ${cells}
+              <td style="text-align:center;padding:5px 8px;font-weight:700;color:var(--blue)">${streak}일</td>
+              <td style="text-align:center;padding:5px 8px;font-weight:700;color:var(--accent)">${total}회</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-top:8px">🟢 80%↑ &nbsp; 🟡 50%↑ &nbsp; 🔴 50%↓ &nbsp; 회색: 기록없음</div>
+  `;
   openModal('modal-habit-stats');
 }
 function calcStreak(dc){
@@ -2064,11 +2133,90 @@ function openNoteView(type,id){
 }
 
 // ===== 매매 원칙 =====
-function openRuleModal(){document.getElementById('rule-text').value='';document.getElementById('rule-reason').value='';openModal('modal-rule');}
+// ===== 체크리스트 (편집 가능) =====
+let clEditId=null;
+function renderChecklist(){
+  const el=document.getElementById('checklist-render');if(!el)return;
+  if(!state.tradeChecklist)state.tradeChecklist=[];
+  if(!state.checklistMemos)state.checklistMemos={};
+  const cats=[...new Set(state.tradeChecklist.map(c=>c.cat))];
+  const catColors={'시장 환경':'#1e40af','종목 선정':'#166534','타점 확인':'#92400e','리스크 관리':'#991b1b','심리 체크':'#6b21a8','기타':'#374151'};
+  el.innerHTML=cats.map(cat=>{
+    const items=state.tradeChecklist.filter(c=>c.cat===cat);
+    return`<div class="t-checklist-section" style="margin-bottom:12px">
+      <div class="t-checklist-header" style="background:${catColors[cat]||'#374151'};display:flex;justify-content:space-between;align-items:center">
+        <span>▶ ${cat}</span>
+      </div>
+      <div class="t-ci-wrap">
+        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div><div style="width:60px">수정/삭제</div></div>
+        ${items.map((item,idx)=>{
+          const memoVal=(state.checklistMemos[item.id]||'').replace(/"/g,'&quot;');
+          return`<div class="t-ci-row" style="grid-template-columns:30px 1fr 1fr 1fr 60px">
+            <div class="t-ci-num">${item.id}</div>
+            <div class="t-ci-name">${item.name}</div>
+            <div class="t-ci-std">${item.std}</div>
+            <div class="t-ci-memo"><input value="${memoVal}" placeholder="메모..." onchange="state.checklistMemos[${item.id}]=this.value;save()"></div>
+            <div style="display:flex;gap:4px;padding:5px;align-items:center">
+              <button style="background:none;border:none;cursor:pointer;font-size:12px;padding:2px" onclick="openCLItemModal(${item.id})" title="수정">✏️</button>
+              <button style="background:none;border:none;cursor:pointer;color:#ddd;font-size:12px;padding:2px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='#ddd'" onclick="if(confirm('삭제할까요?')){state.tradeChecklist=state.tradeChecklist.filter(c=>c.id!==${item.id});save();renderChecklist()}" title="삭제">✕</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+function openCLItemModal(id){
+  clEditId=id||null;
+  document.getElementById('cl-item-title').textContent=id?'✅ 항목 수정':'✅ 항목 추가';
+  if(id){
+    const item=state.tradeChecklist.find(c=>c.id===id);if(!item)return;
+    document.getElementById('cl-cat').value=item.cat;
+    document.getElementById('cl-name').value=item.name;
+    document.getElementById('cl-std').value=item.std;
+  } else {
+    document.getElementById('cl-name').value='';
+    document.getElementById('cl-std').value='';
+  }
+  openModal('modal-cl-item');
+}
+function saveCLItem(){
+  const name=document.getElementById('cl-name').value.trim();if(!name)return;
+  if(!state.tradeChecklist)state.tradeChecklist=[];
+  if(clEditId){
+    const idx=state.tradeChecklist.findIndex(c=>c.id===clEditId);
+    if(idx>=0){state.tradeChecklist[idx].cat=document.getElementById('cl-cat').value;state.tradeChecklist[idx].name=name;state.tradeChecklist[idx].std=document.getElementById('cl-std').value;}
+  } else {
+    const maxId=state.tradeChecklist.length?Math.max(...state.tradeChecklist.map(c=>c.id)):0;
+    state.tradeChecklist.push({id:maxId+1,cat:document.getElementById('cl-cat').value,name,std:document.getElementById('cl-std').value});
+  }
+  closeModal('modal-cl-item');save();renderChecklist();
+}
+
+// ===== 매매 원칙 수정 기능 =====
+let ruleEditId=null;
+function openRuleModal(id){
+  ruleEditId=id||null;
+  document.getElementById('modal-rule').querySelector('.modal-title').textContent=id?'📌 원칙 수정':'📌 매매 원칙 추가';
+  if(id){
+    const r=state.stockRules.find(x=>x.id===id);if(!r)return;
+    document.getElementById('rule-text').value=r.text;
+    document.getElementById('rule-reason').value=r.reason||'';
+  } else {
+    document.getElementById('rule-text').value='';
+    document.getElementById('rule-reason').value='';
+  }
+  openModal('modal-rule');
+}
 function saveRule(){
   const t=document.getElementById('rule-text').value.trim();if(!t)return;
   if(!state.stockRules)state.stockRules=[];
-  state.stockRules.unshift({id:Date.now(),text:t,reason:document.getElementById('rule-reason').value,date:new Date().toLocaleDateString('ko-KR')});
+  if(ruleEditId){
+    const idx=state.stockRules.findIndex(x=>x.id===ruleEditId);
+    if(idx>=0){state.stockRules[idx].text=t;state.stockRules[idx].reason=document.getElementById('rule-reason').value;}
+  } else {
+    state.stockRules.unshift({id:Date.now(),text:t,reason:document.getElementById('rule-reason').value,date:new Date().toLocaleDateString('ko-KR')});
+  }
   closeModal('modal-rule');save();renderRules();
 }
 function renderRules(){
@@ -2082,7 +2230,10 @@ function renderRules(){
         ${r.reason?`<div style="font-size:12px;color:var(--text2);line-height:1.6;white-space:pre-wrap">${r.reason}</div>`:''}
         <div style="font-size:10px;color:var(--text2);margin-top:4px">${r.date||''}</div>
       </div>
-      <button class="del-btn" onclick="state.stockRules.splice(${i},1);save();renderRules()">✕</button>
+      <div style="display:flex;gap:5px;flex-shrink:0">
+        <button style="background:none;border:none;cursor:pointer;font-size:13px;padding:3px" onclick="openRuleModal(${r.id})" title="수정">✏️</button>
+        <button class="del-btn" onclick="if(confirm('삭제할까요?')){state.stockRules.splice(${i},1);save();renderRules()}">✕</button>
+      </div>
     </div>`).join('');
 }
 
@@ -2162,6 +2313,10 @@ function saveProfile(){
   state.stockProfile.history.unshift(snap);
   save();
   renderProfileHistory();
+  // 저장 후 입력창 비우기
+  ['strength','weakness','style','improve'].forEach(k=>{
+    const el=document.getElementById('profile-'+k);if(el)el.value='';
+  });
   // 저장 완료 피드백
   const btn=document.querySelector('[onclick="saveProfile()"]');
   if(btn){const orig=btn.textContent;btn.textContent='✅ 저장됨!';setTimeout(()=>btn.textContent=orig,1500);}
@@ -2427,7 +2582,7 @@ function handleWatchImg(inp){
 }
 function renderWatchImgPrev(){
   const el=document.getElementById('w-img-prev');if(!el)return;
-  el.innerHTML=watchImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" onclick="showFullImg('${src}')"><button class="rm" onclick="watchImgs.splice(${i},1);renderWatchImgPrev()">✕</button></div>`).join('');
+  el.innerHTML=watchImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" style="cursor:pointer" onclick="showFullImg('${src}')"><button class="rm" onclick="watchImgs.splice(${i},1);renderWatchImgPrev()">✕</button></div>`).join('');
 }
 function saveWatch(){
   const name=document.getElementById('w-name').value.trim();if(!name)return;
@@ -2491,6 +2646,7 @@ function renderWatch(){
 }
 
 function openPilFull(i){const p=state.pilHistory[i];if(!p)return;document.getElementById('full-title').textContent='필사';document.getElementById('full-meta').textContent=p.date+' · '+p.theme+(p.intent?' · '+p.intent:'');document.getElementById('full-body').textContent=p.text;openModal('modal-full');}
+function showFullImg(src){document.getElementById('img-fullview-src').src=src;document.getElementById('img-fullview').classList.add('open');}
 </script>
 </body>
 </html>
