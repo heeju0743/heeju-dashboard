@@ -445,6 +445,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="tab" onclick="switchTab(this,'stock-words')">💬 한마디</div>
     <div class="tab" onclick="switchTab(this,'stock-profile')">🧠 나의 성향</div>
     <div class="tab" onclick="switchTab(this,'stock-homework')">📝 오늘의 숙제</div>
+    <div class="tab" onclick="switchTab(this,'stock-watch')">👁️ 종목체크</div>
   </div>
 
   <!-- 핵심 개념 -->
@@ -571,6 +572,58 @@ textarea{resize:vertical;min-height:80px}
         <button class="filter-btn" onclick="filterHW('완료',this)">✅ 완료</button>
       </div>
       <div id="homework-list"></div>
+    </div>
+  </div>
+
+  <!-- 종목체크 탭 -->
+  <div id="stock-watch" class="tab-content">
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div>
+          <div style="font-weight:700;font-size:15px">👁️ 종목체크</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">관심 종목 차트 및 매매 계획을 기록해요</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openWatchModal()">+ 종목 추가</button>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px" id="watch-filters">
+        <button class="filter-btn on" onclick="filterWatch('전체',this)">전체</button>
+        <button class="filter-btn" onclick="filterWatch('관심',this)">⭐ 관심</button>
+        <button class="filter-btn" onclick="filterWatch('진입대기',this)">⏳ 진입대기</button>
+        <button class="filter-btn" onclick="filterWatch('매수완료',this)">✅ 매수완료</button>
+        <button class="filter-btn" onclick="filterWatch('완료',this)">🏁 완료</button>
+      </div>
+      <div id="watch-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 종목체크 추가/수정 모달 -->
+<div id="modal-watch" class="modal-overlay">
+  <div class="modal" style="width:620px">
+    <div class="modal-title" id="watch-modal-title">👁️ 종목 추가</div>
+    <div class="mg2">
+      <div class="modal-row"><label>종목명</label><input id="w-name" placeholder="예: 삼성전자"></div>
+      <div class="modal-row"><label>상태</label><select id="w-status"><option>관심</option><option>진입대기</option><option>매수완료</option><option>완료</option></select></div>
+    </div>
+    <div class="mg3">
+      <div class="modal-row"><label>진입가 (원)</label><input id="w-entry" type="number" placeholder="예: 75000"></div>
+      <div class="modal-row"><label>손절가 (원)</label><input id="w-stop" type="number" placeholder="예: 73000"></div>
+      <div class="modal-row"><label>목표 매도가 (원)</label><input id="w-target" type="number" placeholder="예: 79000"></div>
+    </div>
+    <div class="modal-row"><label>매매 근거 / 시나리오</label><textarea id="w-reason" style="min-height:90px" placeholder="왜 이 종목을 보는가? 진입 시나리오, 패턴 등..."></textarea></div>
+    <div class="modal-row"><label>주의사항</label><textarea id="w-caution" style="min-height:60px" placeholder="이럴 때 포기한다, 주의할 것..."></textarea></div>
+    <div class="modal-row">
+      <label>📸 차트 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('w-img-in').click()">
+        <input type="file" id="w-img-in" accept="image/*" multiple style="display:none" onchange="handleWatchImg(this)">
+        📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="w-img-prev"></div>
+    </div>
+    <div class="modal-row"><label>메모</label><textarea id="w-memo" style="min-height:55px" placeholder="추가 메모..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-watch')">취소</button>
+      <button class="btn btn-primary" onclick="saveWatch()">저장</button>
     </div>
   </div>
 </div>
@@ -1086,6 +1139,7 @@ window.state={
   todos:[],events:[],books:[{title:'니체의 말',author:'니체/사이토 다카시 편역',cat:'철학',prog:45}],
   stockConcepts:[],stockPatterns:[],stockTrades:[],
   stockRules:[],stockGoals:{short:[],mid:[],long:[]},stockWords:[],
+  stockWatchlist:[],
   stockProfile:{strength:'',weakness:'',style:'',improve:'',history:[]},
   stockHomework:[],
   tempNoteImgs:{sc:[],sp:[],hw:[]},
@@ -1208,7 +1262,7 @@ function nav(id){
   document.getElementById('page-'+id)?.classList.add('active');
   const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,cond:6,stocks:7,journal:8,saju:9,diary:10,food:11,exercise:12,massage:13,budget:14};
   document.querySelectorAll('.sb-item')[map[id]]?.classList.add('active');
-  if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();}
+  if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();renderWatch();}
   if(id==='schedule')renderSchedCal();
   if(id==='food')renderFoodCal();
   if(id==='book')renderBooks();
@@ -1636,43 +1690,128 @@ function updateDashStats(){
 function dashAddTodo(){const inp=document.getElementById('dash-quick-todo');if(!inp.value.trim())return;state.todos.push({text:inp.value.trim(),done:false,cat:'기타',pri:'보통',due:''});inp.value='';save();updateDashStats();renderTodos();}
 
 // ===== HABITS =====
-const dayIdx=(new Date().getDay()+6)%7;
+// ===== 습관 체크 - 월별 누적 방식 =====
+function getTodayKey(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;}
+function getYM(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;}
+function isHabitDoneToday(h){
+  const key=getTodayKey();
+  if(!h.dailyChecks)h.dailyChecks={};
+  return !!h.dailyChecks[key];
+}
+function getDaysInMonth(ym){const[y,m]=ym.split('-').map(Number);return new Date(y,m,0).getDate();}
 function renderDashHabits(){
   const el=document.getElementById('dash-hab-chips');if(!el)return;
-  const done=state.habits.filter(h=>h.checks[dayIdx]).length,total=state.habits.length;
+  const done=state.habits.filter(h=>isHabitDoneToday(h)).length,total=state.habits.length;
   const pct=total?Math.round(done/total*100):0;
   document.getElementById('dash-hab-fill').style.width=pct+'%';
   document.getElementById('dash-hab-count').textContent=`${done}/${total} 완료`;
   el.innerHTML=state.habits.length?state.habits.map((h,i)=>`
-    <div class="habit-chip ${h.checks[dayIdx]?'done':''}" onclick="toggleHabitDash(${i})">
-      <div class="hc-circle">${h.checks[dayIdx]?'<span style="color:#fff;font-size:10px;font-weight:700">✓</span>':''}</div>
-      <span style="font-size:12px;${h.checks[dayIdx]?'color:var(--accent);font-weight:600':'color:var(--text)'}">${h.name}</span>
+    <div class="habit-chip ${isHabitDoneToday(h)?'done':''}" onclick="toggleHabitDash(${i})">
+      <div class="hc-circle">${isHabitDoneToday(h)?'<span style="color:#fff;font-size:10px;font-weight:700">✓</span>':''}</div>
+      <span style="font-size:12px;${isHabitDoneToday(h)?'color:var(--accent);font-weight:600':'color:var(--text)'}">${h.name}</span>
     </div>`).join(''):'<p style="font-size:12px;color:var(--text2)">등록된 습관이 없어요. <span style="color:var(--accent);cursor:pointer" onclick="nav(\'planner\')">플래너에서 추가 →</span></p>';
 }
-function toggleHabitDash(i){state.habits[i].checks[dayIdx]=!state.habits[i].checks[dayIdx];updateHabitStat(i,state.habits[i].checks[dayIdx]);save();renderDashHabits();renderPlannerHabits();}
-function updateHabitStat(i,checked){
-  const name=state.habits[i].name,ym=new Date().toISOString().slice(0,7);
-  if(!state.habitStats[name])state.habitStats[name]={monthly:{},total:0};
-  if(checked){state.habitStats[name].total++;if(!state.habitStats[name].monthly[ym])state.habitStats[name].monthly[ym]=0;state.habitStats[name].monthly[ym]++;}
-  else{state.habitStats[name].total=Math.max(0,state.habitStats[name].total-1);if(state.habitStats[name].monthly[ym])state.habitStats[name].monthly[ym]=Math.max(0,state.habitStats[name].monthly[ym]-1);}
+function toggleHabitDash(i){
+  const key=getTodayKey();
+  if(!state.habits[i].dailyChecks)state.habits[i].dailyChecks={};
+  state.habits[i].dailyChecks[key]=!state.habits[i].dailyChecks[key];
+  save();renderDashHabits();renderPlannerHabits();
 }
 function renderPlannerHabits(){
   const tbody=document.getElementById('planner-habits');if(!tbody)return;
-  tbody.innerHTML=state.habits.length?state.habits.map((h,i)=>`<tr><td title="${h.name}">${h.name}</td>${h.checks.map((c,j)=>`<td><input type="checkbox" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer" ${c?'checked':''} onchange="toggleHabitDay(${i},${j},this)"></td>`).join('')}<td><button style="background:none;border:none;cursor:pointer;color:#ddd;font-size:11px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='#ddd'" onclick="delHabit(${i})">✕</button></td></tr>`).join(''):`<tr><td colspan="9" style="font-size:12px;color:var(--text2);padding:8px 0">아래에서 습관을 추가하세요</td></tr>`;
+  const ym=getYM();
+  const[yr,mo]=ym.split('-').map(Number);
+  const daysInMonth=getDaysInMonth(ym);
+  const today=new Date().getDate();
+  // 이번 달 1일~오늘까지만 표시 (최대 31일이면 스크롤)
+  const showDays=Math.min(today,daysInMonth);
+  const startDay=Math.max(1,showDays-6); // 최근 7일만 표시
+  const dayLabels=[];
+  for(let d=startDay;d<=today;d++)dayLabels.push(d);
+  // 헤더 업데이트
+  const thead=tbody.closest('table').querySelector('thead tr');
+  if(thead){
+    const ths=['습관'];
+    dayLabels.forEach(d=>{
+      const date=new Date(yr,mo-1,d);
+      const dow=['일','월','화','수','목','금','토'][date.getDay()];
+      ths.push(`${d}<br><span style="font-size:9px">${dow}</span>`);
+    });
+    ths.push('');
+    thead.innerHTML=ths.map((t,i)=>{
+      if(i===0)return`<th style="text-align:left">${t}</th>`;
+      if(i===ths.length-1)return`<th></th>`;
+      const date=new Date(yr,mo-1,dayLabels[i-1]);
+      const dow=date.getDay();
+      return`<th class="${dow===6?'sat':dow===0?'sun':''}">${t}</th>`;
+    }).join('');
+  }
+  tbody.innerHTML=state.habits.length?state.habits.map((h,i)=>{
+    const cells=dayLabels.map(d=>{
+      const key=`${yr}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const checked=h.dailyChecks&&h.dailyChecks[key];
+      return`<td><input type="checkbox" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer" ${checked?'checked':''} onchange="toggleHabitDay(${i},'${key}',this)"></td>`;
+    }).join('');
+    return`<tr><td title="${h.name}">${h.name}</td>${cells}<td><button style="background:none;border:none;cursor:pointer;color:#ddd;font-size:11px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='#ddd'" onclick="delHabit(${i})">✕</button></td></tr>`;
+  }).join(''):`<tr><td colspan="9" style="font-size:12px;color:var(--text2);padding:8px 0">아래에서 습관을 추가하세요</td></tr>`;
 }
-function toggleHabitDay(i,j,el){state.habits[i].checks[j]=el.checked;updateHabitStat(i,el.checked);save();renderDashHabits();renderPlannerHabits();}
-function addHabit(){const inp=document.getElementById('new-habit');if(!inp.value.trim())return;state.habits.push({name:inp.value.trim(),checks:[false,false,false,false,false,false,false]});inp.value='';renderPlannerHabits();renderDashHabits();save();}
+function toggleHabitDay(i,key,el){
+  if(!state.habits[i].dailyChecks)state.habits[i].dailyChecks={};
+  state.habits[i].dailyChecks[key]=el.checked;
+  save();renderDashHabits();
+}
+function addHabit(){const inp=document.getElementById('new-habit');if(!inp.value.trim())return;state.habits.push({name:inp.value.trim(),dailyChecks:{}});inp.value='';renderPlannerHabits();renderDashHabits();save();}
 function delHabit(i){if(confirm(`"${state.habits[i].name}" 삭제할까요?`)){state.habits.splice(i,1);renderPlannerHabits();renderDashHabits();save();}}
 function openHabitStats(){
-  const ym=new Date().toISOString().slice(0,7);
+  const ym=getYM();
   const el=document.getElementById('habit-stats-body');
   if(!state.habits.length){el.innerHTML='<p style="color:var(--text2);font-size:13px">등록된 습관이 없습니다.</p>';openModal('modal-habit-stats');return;}
-  el.innerHTML=state.habits.map(h=>{const st=state.habitStats[h.name]||{monthly:{},total:0};return`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5ede0;font-size:13px"><span style="font-weight:600">${h.name}</span><div style="display:flex;gap:14px"><span>이번 주 <b>${h.checks.filter(Boolean).length}</b>/7</span><span>이번 달 <b>${st.monthly[ym]||0}</b>회</span><span>총 <b>${st.total||0}</b>회</span></div></div>`;}).join('');
+  const daysInMonth=getDaysInMonth(ym);
+  const today=new Date().getDate();
+  el.innerHTML=state.habits.map(h=>{
+    const dc=h.dailyChecks||{};
+    const monthCount=Object.keys(dc).filter(k=>k.startsWith(ym)&&dc[k]).length;
+    const totalCount=Object.values(dc).filter(Boolean).length;
+    const todayKey=getTodayKey();
+    const todayDone=!!dc[todayKey];
+    const streak=calcStreak(dc);
+    return`<div style="padding:9px 0;border-bottom:1px solid #f5ede0;font-size:13px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-weight:600">${h.name}</span>
+        <div style="display:flex;gap:12px;font-size:12px">
+          <span>오늘 <b style="color:${todayDone?'var(--green)':'var(--red)'}">${todayDone?'✓':'✗'}</b></span>
+          <span>이번 달 <b style="color:var(--accent)">${monthCount}/${today}일</b></span>
+          <span>연속 <b style="color:var(--blue)">${streak}일</b></span>
+          <span>누적 <b>${totalCount}회</b></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:3px;flex-wrap:wrap">${Array.from({length:today},(_,idx)=>{const k=`${ym}-${String(idx+1).padStart(2,'0')}`;const done=dc[k];return`<div style="width:18px;height:18px;border-radius:3px;background:${done?'var(--accent)':'#f0e8d8'};display:flex;align-items:center;justify-content:center;font-size:9px;color:${done?'#fff':'#ccc'}">${idx+1}</div>`}).join('')}</div>
+    </div>`;
+  }).join('');
   openModal('modal-habit-stats');
+}
+function calcStreak(dc){
+  const today=new Date();let streak=0;
+  for(let i=0;i<365;i++){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if(dc[k])streak++;else break;
+  }
+  return streak;
 }
 
 // ===== PLANNER =====
 function initPlanner(){
+  // 기존 checks 배열 → dailyChecks 마이그레이션
+  if(state.habits&&state.habits.length){
+    state.habits.forEach(h=>{
+      if(h.checks&&!h.dailyChecks){
+        h.dailyChecks={};
+        // 기존 데이터 버림 (주별 인덱스라 날짜 매핑 불가)
+      }
+      if(!h.dailyChecks)h.dailyChecks={};
+    });
+  }
   document.getElementById('planner-date').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
   const tt=document.getElementById('time-table');tt.innerHTML='';
   for(let h=6;h<=23;h++){const row=document.createElement('div');row.className='time-row';row.innerHTML=`<span class="time-label">${String(h).padStart(2,'0')}:00</span><input class="time-input" placeholder="비어있음" id="t${h}">`;tt.appendChild(row);}
@@ -1696,7 +1835,7 @@ function renderReviewHistory(){
   state.reviews.slice(0,5).map((r,i)=>`<div class="j-card" style="padding:9px 13px;margin-bottom:6px"><div style="display:flex;justify-content:space-between"><span class="j-date">${r.date}</span><button class="del-btn" onclick="delReview(${i})">✕</button></div><div style="font-size:12px;margin-top:4px">${r.text.slice(0,80)}${r.text.length>80?'...':''}</div></div>`).join('');
 }
 function delReview(i){state.reviews.splice(i,1);save();renderReviewHistory();}
-function resetPlanner(){if(confirm('초기화할까요?')){['p-goal','p-mood'].forEach(id=>{state[id]='';const el=document.getElementById(id);if(el)el.value='';});for(let h=6;h<=23;h++){state.plannerTimes['t'+h]='';const el=document.getElementById('t'+h);if(el)el.value='';}state.habits.forEach(h=>h.checks=h.checks.map(()=>false));renderPlannerHabits();renderDashHabits();save();}}
+function resetPlanner(){if(confirm('초기화할까요?')){['p-goal','p-mood'].forEach(id=>{state[id]='';const el=document.getElementById(id);if(el)el.value='';});for(let h=6;h<=23;h++){state.plannerTimes['t'+h]='';const el=document.getElementById('t'+h);if(el)el.value='';}renderPlannerHabits();renderDashHabits();save();}}
 
 // ===== TODO =====
 let todoFilter='전체';
@@ -1939,8 +2078,8 @@ function renderRules(){
     <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)">
       <div style="background:var(--accent);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${i+1}</div>
       <div style="flex:1">
-        <div style="font-weight:700;font-size:13px;margin-bottom:3px">${r.text}</div>
-        ${r.reason?`<div style="font-size:12px;color:var(--text2);line-height:1.6">${r.reason}</div>`:''}
+        <div style="font-weight:700;font-size:13px;margin-bottom:3px">${r.text.replace(/\n/g,'<br>')}</div>
+        ${r.reason?`<div style="font-size:12px;color:var(--text2);line-height:1.6;white-space:pre-wrap">${r.reason}</div>`:''}
         <div style="font-size:10px;color:var(--text2);margin-top:4px">${r.date||''}</div>
       </div>
       <button class="del-btn" onclick="state.stockRules.splice(${i},1);save();renderRules()">✕</button>
@@ -1963,10 +2102,20 @@ function renderGoals(){
     el.innerHTML=goals.map((g,i)=>`
       <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)">
         <input type="checkbox" ${g.done?'checked':''} style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer" onchange="toggleGoal('${type}',${i},this)">
-        <span style="flex:1;font-size:13px;${g.done?'text-decoration:line-through;color:var(--text2)':''}">${g.text}</span>
+        <span id="goal-text-${type}-${i}" style="flex:1;font-size:13px;${g.done?'text-decoration:line-through;color:var(--text2)':''}">${g.text}</span>
+        <button style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:11px;padding:2px 5px" onclick="editGoal('${type}',${i})" title="수정">✏️</button>
         <button class="del-btn" onclick="state.stockGoals['${type}'].splice(${i},1);save();renderGoals()">✕</button>
       </div>`).join('') || '<div style="font-size:12px;color:var(--text2);padding:8px 0">목표를 추가해보세요</div>';
   });
+}
+function editGoal(type,i){
+  const span=document.getElementById(`goal-text-${type}-${i}`);if(!span)return;
+  const inp=document.createElement('input');
+  inp.value=state.stockGoals[type][i].text;
+  inp.style.cssText='flex:1;font-size:13px;padding:2px 6px;border:1px solid var(--accent);border-radius:6px;outline:none;width:100%;';
+  inp.onblur=()=>{const v=inp.value.trim();if(v){state.stockGoals[type][i].text=v;save();}renderGoals();};
+  inp.onkeydown=(e)=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')renderGoals();};
+  span.replaceWith(inp);inp.focus();inp.select();
 }
 function toggleGoal(type,i,el){state.stockGoals[type][i].done=el.checked;save();renderGoals();}
 
@@ -2163,7 +2312,7 @@ function renderHW(){
 let pilTheme='풍요와 감사';
 function setPilTheme(el,theme){pilTheme=theme;document.querySelectorAll('#pil-themes .filter-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
 function savePil(){const txt=document.getElementById('pil-input').value.trim();if(!txt)return;if(!state.pilHistory)state.pilHistory=[];state.pilHistory.unshift({date:new Date().toLocaleDateString('ko-KR'),theme:pilTheme,intent:document.getElementById('pil-intent').value,text:txt});document.getElementById('pil-input').value='';save();renderPilList();}
-function renderPilList(){const el=document.getElementById('pil-list');if(!el)return;if(!state.pilHistory)state.pilHistory=[];document.getElementById('pil-count').textContent=`총 ${state.pilHistory.length}개`;el.innerHTML=state.pilHistory.map((p,i)=>`<div class="j-card"><div style="display:flex;justify-content:space-between"><div><span class="j-date">${p.date}</span><span class="badge badge-gray" style="margin-left:7px">${p.theme}</span></div><button class="del-btn" onclick="state.pilHistory.splice(${i},1);save();renderPilList()">✕</button></div>${p.intent?`<div style="font-size:11px;color:var(--accent);margin:4px 0">의도: ${p.intent}</div>`:''}<div style="font-size:13px;line-height:1.7;margin-top:5px">${p.text.slice(0,100)}${p.text.length>100?'...':''}</div>${p.text.length>100?`<button class="expand-btn" onclick="openFullModal('필사','${p.date} · ${p.theme}',this.closest('.j-card').dataset.full||'')">🔍 전체보기</button>`:''}</div>`).join('');}
+function renderPilList(){const el=document.getElementById('pil-list');if(!el)return;if(!state.pilHistory)state.pilHistory=[];document.getElementById('pil-count').textContent=`총 ${state.pilHistory.length}개`;el.innerHTML=state.pilHistory.map((p,i)=>{const safeText=p.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');return`<div class="j-card" data-idx="${i}"><div style="display:flex;justify-content:space-between"><div><span class="j-date">${p.date}</span><span class="badge badge-gray" style="margin-left:7px">${p.theme}</span></div><button class="del-btn" onclick="state.pilHistory.splice(${i},1);save();renderPilList()">✕</button></div>${p.intent?`<div style="font-size:11px;color:var(--accent);margin:4px 0">의도: ${p.intent}</div>`:''}<div style="font-size:13px;line-height:1.7;margin-top:5px">${p.text.slice(0,100).replace(/\n/g,'<br>')}${p.text.length>100?'...':''}</div>${p.text.length>100?`<button class="expand-btn" onclick="openPilFull(${i})">🔍 전체보기</button>`:''}</div>`;}).join('');}
 
 // ===== COND =====
 function saveCond(){const n=document.getElementById('cond-name').value.trim();if(!n)return;if(!state.condSaved)state.condSaved=[];state.condSaved.unshift({name:n,code:document.getElementById('cond-code').value,memo:document.getElementById('cond-memo').value,date:new Date().toLocaleDateString('ko-KR')});['cond-name','cond-code','cond-memo'].forEach(id=>document.getElementById(id).value='');save();renderCondSaved();}
@@ -2241,7 +2390,107 @@ function setDebtFilter(f,el){state.debtFilter=f;document.querySelectorAll('#debt
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function switchTab(el,id){const parent=el.closest('.page')||document;parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById(id).classList.add('active');}
-function openFullModal(title,meta,body){document.getElementById('full-title').textContent=title;document.getElementById('full-meta').textContent=meta;document.getElementById('full-body').textContent=body.replace(/\\n/g,'\n');openModal('modal-full');}
+function openFullModal(title,meta,body){document.getElementById('full-title').textContent=title;document.getElementById('full-meta').textContent=meta;document.getElementById('full-body').textContent=body;openModal('modal-full');}
+
+// ===== 종목체크 =====
+let watchEditId=null,watchImgs=[];
+let watchFilter='전체';
+function openWatchModal(id){
+  watchEditId=id||null;watchImgs=[];
+  document.getElementById('watch-modal-title').textContent=id?'👁️ 종목 수정':'👁️ 종목 추가';
+  ['w-name','w-reason','w-caution','w-memo'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('w-status').value='관심';
+  ['w-entry','w-stop','w-target'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('w-img-prev').innerHTML='';
+  if(id){
+    const w=state.stockWatchlist.find(x=>x.id===id);if(!w)return;
+    document.getElementById('w-name').value=w.name||'';
+    document.getElementById('w-status').value=w.status||'관심';
+    document.getElementById('w-entry').value=w.entry||'';
+    document.getElementById('w-stop').value=w.stop||'';
+    document.getElementById('w-target').value=w.target||'';
+    document.getElementById('w-reason').value=w.reason||'';
+    document.getElementById('w-caution').value=w.caution||'';
+    document.getElementById('w-memo').value=w.memo||'';
+    watchImgs=w.imgs?[...w.imgs]:[];
+    renderWatchImgPrev();
+  }
+  openModal('modal-watch');
+}
+function handleWatchImg(inp){
+  Array.from(inp.files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=e=>{watchImgs.push(e.target.result);renderWatchImgPrev();};
+    r.readAsDataURL(f);
+  });
+  inp.value='';
+}
+function renderWatchImgPrev(){
+  const el=document.getElementById('w-img-prev');if(!el)return;
+  el.innerHTML=watchImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" onclick="showFullImg('${src}')"><button class="rm" onclick="watchImgs.splice(${i},1);renderWatchImgPrev()">✕</button></div>`).join('');
+}
+function saveWatch(){
+  const name=document.getElementById('w-name').value.trim();if(!name)return;
+  if(!state.stockWatchlist)state.stockWatchlist=[];
+  const obj={
+    id:watchEditId||Date.now(),
+    name,
+    status:document.getElementById('w-status').value,
+    entry:document.getElementById('w-entry').value,
+    stop:document.getElementById('w-stop').value,
+    target:document.getElementById('w-target').value,
+    reason:document.getElementById('w-reason').value,
+    caution:document.getElementById('w-caution').value,
+    memo:document.getElementById('w-memo').value,
+    imgs:[...watchImgs],
+    date:watchEditId?(state.stockWatchlist.find(x=>x.id===watchEditId)||{}).date||new Date().toLocaleDateString('ko-KR'):new Date().toLocaleDateString('ko-KR')
+  };
+  if(watchEditId){const idx=state.stockWatchlist.findIndex(x=>x.id===watchEditId);if(idx>=0)state.stockWatchlist[idx]=obj;else state.stockWatchlist.unshift(obj);}
+  else state.stockWatchlist.unshift(obj);
+  closeModal('modal-watch');save();renderWatch();
+}
+function filterWatch(f,btn){
+  watchFilter=f;
+  document.querySelectorAll('#watch-filters .filter-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderWatch();
+}
+function renderWatch(){
+  if(!state.stockWatchlist)state.stockWatchlist=[];
+  const el=document.getElementById('watch-list');if(!el)return;
+  let list=state.stockWatchlist;
+  if(watchFilter!=='전체')list=list.filter(w=>w.status===watchFilter);
+  if(!list.length){el.innerHTML='<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">종목을 추가해보세요 👁️</div>';return;}
+  const statusColor={관심:'var(--accent)',진입대기:'var(--blue)',매수완료:'var(--green)',완료:'#aaa'};
+  el.innerHTML=list.map(w=>{
+    const rr=w.entry&&w.stop&&w.target?((w.target-w.entry)/(w.entry-w.stop)).toFixed(2):null;
+    return`<div style="border:1px solid var(--border);border-radius:13px;padding:16px;margin-bottom:12px;background:var(--card)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:16px;font-weight:700">${w.name}</span>
+          <span style="padding:2px 9px;border-radius:9px;font-size:11px;font-weight:600;background:${statusColor[w.status]||'#aaa'};color:#fff">${w.status}</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-outline btn-sm" onclick="openWatchModal(${w.id})">✏️ 수정</button>
+          <button class="del-btn" onclick="if(confirm('삭제할까요?')){state.stockWatchlist=state.stockWatchlist.filter(x=>x.id!==${w.id});save();renderWatch()}">✕</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">
+        ${w.entry?`<div style="background:#f5f0e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">진입가</div><div style="font-size:14px;font-weight:700;color:var(--blue)">${Number(w.entry).toLocaleString()}원</div></div>`:''}
+        ${w.stop?`<div style="background:#fde8e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">손절가</div><div style="font-size:14px;font-weight:700;color:var(--red)">${Number(w.stop).toLocaleString()}원</div></div>`:''}
+        ${w.target?`<div style="background:#e8f5ee;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">목표가</div><div style="font-size:14px;font-weight:700;color:var(--green)">${Number(w.target).toLocaleString()}원</div></div>`:''}
+        ${rr?`<div style="background:#e8ecfd;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">R:R</div><div style="font-size:14px;font-weight:700;color:var(--blue)">${rr}x</div></div>`:''}
+      </div>
+      ${w.reason?`<div style="margin-bottom:8px"><div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:3px">📍 매매 근거</div><div style="font-size:13px;white-space:pre-wrap;line-height:1.6">${w.reason}</div></div>`:''}
+      ${w.caution?`<div style="margin-bottom:8px;background:#fff8ec;border-radius:8px;padding:8px"><div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">⚠️ 주의사항</div><div style="font-size:12px;color:var(--text2);white-space:pre-wrap">${w.caution}</div></div>`:''}
+      ${w.imgs&&w.imgs.length?`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">${w.imgs.map(src=>`<img src="${src}" style="height:120px;border-radius:8px;cursor:pointer;object-fit:cover;border:1px solid var(--border)" onclick="showFullImg('${src}')">`).join('')}</div>`:''}
+      ${w.memo?`<div style="font-size:12px;color:var(--text2);padding-top:6px;border-top:1px solid var(--border)">${w.memo}</div>`:''}
+      <div style="font-size:10px;color:var(--text2);margin-top:6px">${w.date||''}</div>
+    </div>`;
+  }).join('');
+}
+
+function openPilFull(i){const p=state.pilHistory[i];if(!p)return;document.getElementById('full-title').textContent='필사';document.getElementById('full-meta').textContent=p.date+' · '+p.theme+(p.intent?' · '+p.intent:'');document.getElementById('full-body').textContent=p.text;openModal('modal-full');}
 </script>
 </body>
 </html>
