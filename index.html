@@ -2556,10 +2556,106 @@ function saveSaju(type){const txt=document.getElementById(`saju-${type}-in`).val
 function renderSajuSaved(){['today','quarter','invest','career','rel'].forEach(type=>{const el=document.getElementById(`saju-${type}-saved`);if(!el)return;const arr=state.sajuSaved?.[type]||[];el.innerHTML=arr.map((s,i)=>`<div class="j-card"><div style="display:flex;justify-content:space-between"><span class="j-date">${s.date}</span><button class="del-btn" onclick="state.sajuSaved.${type}.splice(${i},1);save();renderSajuSaved()">✕</button></div><div style="font-size:13px;line-height:1.7;margin-top:5px">${s.text.slice(0,120)}${s.text.length>120?'...':''}</div>${s.text.length>120?`<button class="expand-btn" onclick="openFullModal('운세','${s.date}','${s.text.replace(/'/g,"\\'").replace(/\n/g,'\\n')}')">🔍 전체보기</button>`:''}</div>`).join('');});}
 
 // ===== DIARY =====
-function openDiaryModal(type){state.currentDiaryType=type;const titles={diary:'📖 일기 쓰기',gratitude:'🌸 감사일기',doodle:'✏️ 끄적끄적'};document.getElementById('diary-modal-title').textContent=titles[type];document.getElementById('diary-modal-body').innerHTML=`<div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${new Date().toISOString().split('T')[0]}"></div><div class="modal-row"><label>내용</label><textarea id="dm-content" style="min-height:130px"></textarea></div>`;openModal('modal-diary');}
-function saveDiaryEntry(){const c=document.getElementById('dm-content').value.trim();if(!c)return;const type=state.currentDiaryType;const arr=type==='diary'?state.diaries:type==='gratitude'?state.gratitudes:state.doodles;arr.unshift({id:Date.now(),date:document.getElementById('dm-date').value,content:c});closeModal('modal-diary');save();renderDiaries();renderGratitudes();renderDoodles();}
-function renderDiaries(){const el=document.getElementById('diary-list');if(!el)return;el.innerHTML=state.diaries.map((d,i)=>`<div class="j-card"><div style="display:flex;justify-content:space-between"><span class="j-date">${d.date}</span><button class="del-btn" onclick="state.diaries.splice(${i},1);save();renderDiaries()">✕</button></div><div style="font-size:13px;margin-top:5px;line-height:1.7">${d.content.slice(0,100)}${d.content.length>100?'...':''}</div></div>`).join('');}
-function renderGratitudes(){const el=document.getElementById('grat-list');if(!el)return;el.innerHTML=state.gratitudes.map((d,i)=>`<div class="j-card"><div style="display:flex;justify-content:space-between"><span class="j-date">${d.date}</span><button class="del-btn" onclick="state.gratitudes.splice(${i},1);save();renderGratitudes()">✕</button></div><div style="font-size:13px;margin-top:5px;line-height:1.7">${d.content}</div></div>`).join('');}
+function openDiaryModal(type){
+  state.currentDiaryType=type;
+  const titles={diary:'📖 일기 쓰기',gratitude:'🌸 감사일기',doodle:'✏️ 끄적끄적'};
+  document.getElementById('diary-modal-title').textContent=titles[type];
+  const today=new Date().toISOString().split('T')[0];
+  if(type==='gratitude'){
+    document.getElementById('diary-modal-body').innerHTML=`
+      <div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${today}"></div>
+      <div style="margin-bottom:8px;font-size:11px;color:var(--text2);font-weight:600">오늘 감사한 3가지를 적어보세요 🌸</div>
+      <div class="modal-row">
+        <div style="display:flex;gap:9px;align-items:center;margin-bottom:9px">
+          <span style="background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span>
+          <input id="dm-grat-1" placeholder="첫 번째 감사한 것...">
+        </div>
+        <div style="display:flex;gap:9px;align-items:center;margin-bottom:9px">
+          <span style="background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span>
+          <input id="dm-grat-2" placeholder="두 번째 감사한 것...">
+        </div>
+        <div style="display:flex;gap:9px;align-items:center">
+          <span style="background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span>
+          <input id="dm-grat-3" placeholder="세 번째 감사한 것...">
+        </div>
+      </div>`;
+  } else {
+    document.getElementById('diary-modal-body').innerHTML=`
+      <div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${today}"></div>
+      <div class="modal-row"><label>내용</label><textarea id="dm-content" style="min-height:130px" placeholder="${type==='doodle'?'자유롭게 끄적여보세요...':'오늘 하루를 기록해보세요...'}"></textarea></div>`;
+  }
+  openModal('modal-diary');
+}
+function saveDiaryEntry(){
+  const type=state.currentDiaryType;
+  const dateEl=document.getElementById('dm-date');
+  const date=dateEl?dateEl.value:new Date().toISOString().split('T')[0];
+  if(type==='gratitude'){
+    const g1=(document.getElementById('dm-grat-1')?.value||'').trim();
+    const g2=(document.getElementById('dm-grat-2')?.value||'').trim();
+    const g3=(document.getElementById('dm-grat-3')?.value||'').trim();
+    if(!g1&&!g2&&!g3){alert('감사한 것을 하나 이상 입력해주세요');return;}
+    const items=[g1,g2,g3].filter(Boolean);
+    state.gratitudes.unshift({id:Date.now(),date,items,content:items.join('\n')});
+  } else {
+    const cEl=document.getElementById('dm-content');
+    const c=cEl?cEl.value.trim():'';
+    if(!c){alert('내용을 입력해주세요');return;}
+    const arr=type==='diary'?state.diaries:state.doodles;
+    arr.unshift({id:Date.now(),date,content:c});
+  }
+  closeModal('modal-diary');save();renderDiaries();renderGratitudes();renderDoodles();
+}
+function renderDiaries(){
+  const el=document.getElementById('diary-list');if(!el)return;
+  el.innerHTML=state.diaries.length?state.diaries.map((d,i)=>`
+    <div class="j-card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="j-date">${d.date}</span>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${d.content.length>80?`<button class="expand-btn" onclick="openDiaryFull(${i})">🔍 전체보기</button>`:''}
+          <button class="del-btn" onclick="state.diaries.splice(${i},1);save();renderDiaries()">✕</button>
+        </div>
+      </div>
+      <div style="font-size:13px;margin-top:7px;line-height:1.8;white-space:pre-wrap">${d.content.slice(0,120)}${d.content.length>120?'\n<span style="color:var(--text2);font-size:11px">... (전체보기를 클릭하세요)</span>':''}</div>
+    </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px;padding:30px">일기를 작성해보세요 📖</div>';
+}
+function openDiaryFull(i){
+  const d=state.diaries[i];if(!d)return;
+  document.getElementById('full-title').textContent='📖 일기';
+  document.getElementById('full-meta').textContent=d.date;
+  document.getElementById('full-body').textContent=d.content;
+  openModal('modal-full');
+}
+function renderGratitudes(){
+  const el=document.getElementById('grat-list');if(!el)return;
+  el.innerHTML=state.gratitudes.length?state.gratitudes.map((d,i)=>{
+    const hasItems=d.items&&d.items.length;
+    const preview=hasItems?
+      `<div style="margin-top:8px">${d.items.map((t,n)=>`<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f5ede0;font-size:13px;line-height:1.6"><span style="background:var(--accent);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${n+1}</span><span>${t}</span></div>`).join('')}</div>`:
+      `<div style="font-size:13px;margin-top:7px;line-height:1.8;white-space:pre-wrap">${(d.content||'').slice(0,100)}${(d.content||'').length>100?'...':''}</div>`;
+    const canExpand=hasItems&&d.items.join('').length>30||(d.content||'').length>100;
+    return`<div class="j-card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="j-date">🌸 ${d.date}</span>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${canExpand?`<button class="expand-btn" onclick="showGratFull(${i})">🔍 전체보기</button>`:''}
+          <button class="del-btn" onclick="state.gratitudes.splice(${i},1);save();renderGratitudes()">✕</button>
+        </div>
+      </div>
+      ${preview}
+    </div>`;
+  }).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px;padding:30px">감사일기를 작성해보세요 🌸</div>';
+}
+function showGratFull(i){
+  const d=state.gratitudes[i];if(!d)return;
+  const hasItems=d.items&&d.items.length;
+  const fullText=hasItems?d.items.map((t,n)=>`${n+1}. ${t}`).join('\n'):(d.content||'');
+  document.getElementById('full-title').textContent='🌸 감사일기';
+  document.getElementById('full-meta').textContent=d.date;
+  document.getElementById('full-body').textContent=fullText;
+  openModal('modal-full');
+}
 function renderDoodles(){const el=document.getElementById('doodle-list');if(!el)return;el.innerHTML=state.doodles.map((d,i)=>`<div class="j-card"><div style="display:flex;justify-content:space-between"><span class="j-date">${d.date}</span><button class="del-btn" onclick="state.doodles.splice(${i},1);save();renderDoodles()">✕</button></div><div style="font-size:13px;margin-top:5px;line-height:1.7">${d.content}</div></div>`).join('');}
 
 // ===== EXERCISE & MASSAGE =====
