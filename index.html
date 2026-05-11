@@ -786,6 +786,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="trade-nav-tab" onclick="tradeNav('t-review-good')">✅ 잘한 매매</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-review-bad')">❌ 실패 매매</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-review-log')">📔 매매 복기</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-review-chart')">📊 공부 차트 복기</div>
   </div>
 
   <!-- 대시보드 -->
@@ -936,6 +937,26 @@ textarea{resize:vertical;min-height:80px}
       <button class="filter-btn" onclick="filterReview('log','스윙',this)">스윙</button>
     </div>
     <div id="t-review-log-list"></div>
+  </div>
+
+  <!-- 공부 차트 복기 -->
+  <div id="t-review-chart" class="trade-page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--purple)">📊 공부 차트 복기</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">차트 분석, 패턴 공부, 복기 메모를 기록해요</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openChartReviewModal()">+ 차트 추가</button>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px" id="chart-review-filters">
+      <button class="filter-btn on" onclick="filterChartReview('전체',this)">전체</button>
+      <button class="filter-btn" onclick="filterChartReview('눌림',this)">눌림</button>
+      <button class="filter-btn" onclick="filterChartReview('돌파',this)">돌파</button>
+      <button class="filter-btn" onclick="filterChartReview('추세',this)">추세</button>
+      <button class="filter-btn" onclick="filterChartReview('횡보',this)">횡보</button>
+      <button class="filter-btn" onclick="filterChartReview('기타',this)">기타</button>
+    </div>
+    <div id="t-review-chart-list"></div>
   </div>
 </div>
 
@@ -1155,21 +1176,21 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="mg3">
       <div class="modal-row"><label>매매유형</label>
-        <select id="rv-type"><option>단타</option><option>스캘핑</option><option>스윙</option><option>장기</option><option>농사</option></select>
+        <input id="rv-type" placeholder="예: 단타, 스캘핑, 스윙...">
       </div>
       <div class="modal-row"><label>패턴</label>
-        <select id="rv-pattern"><option>눌림</option><option>돌파</option><option>추세</option><option>횡보</option><option>반등</option><option>실패</option><option>기타</option></select>
+        <input id="rv-pattern" placeholder="예: 눌림, 돌파, 추세...">
       </div>
       <div class="modal-row"><label>거래량</label>
-        <select id="rv-vol"><option>증가</option><option>감소</option><option>보통</option></select>
+        <input id="rv-vol" placeholder="예: 증가, 감소, 보통...">
       </div>
     </div>
     <div class="mg2">
-      <div class="modal-row"><label>손절가 (원)</label><input id="rv-stop" type="number" placeholder="예: 73000"></div>
-      <div class="modal-row"><label>익절가 (원)</label><input id="rv-target" type="number" placeholder="예: 79000"></div>
+      <div class="modal-row"><label>손절가 (원)</label><input id="rv-stop" placeholder="예: 73,000원 또는 -3%"></div>
+      <div class="modal-row"><label>익절가 (원)</label><input id="rv-target" placeholder="예: 79,000원 또는 +5%"></div>
     </div>
     <div class="modal-row"><label>😌 심리상태</label>
-      <select id="rv-psych"><option>안정</option><option>보통</option><option>조급</option><option>흥분</option><option>공포</option><option>탐욕</option></select>
+      <input id="rv-psych" placeholder="예: 안정, 조급, 흥분, 공포...">
     </div>
     <div class="modal-row"><label>📝 메모 / 복기 내용</label>
       <textarea id="rv-memo" style="min-height:120px" placeholder="왜 잘했는가 / 무엇을 배웠는가 / 다음에 어떻게 할 것인가..."></textarea>
@@ -1190,6 +1211,39 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <!-- 복기 전체보기 모달 -->
+<!-- 공부 차트 복기 추가/수정 모달 -->
+<div id="modal-chart-review" class="modal-overlay">
+  <div class="modal" style="width:620px">
+    <div class="modal-title" id="chart-review-modal-title">📊 공부 차트 복기 추가</div>
+    <div class="mg2">
+      <div class="modal-row"><label>날짜</label><input id="cr-date" type="date"></div>
+      <div class="modal-row"><label>종목명</label><input id="cr-stock" placeholder="예: 삼성전자 (없으면 빈칸)"></div>
+    </div>
+    <div class="mg2">
+      <div class="modal-row"><label>패턴 / 테마</label><input id="cr-pattern" placeholder="예: 눌림, 돌파, 갭상승..."></div>
+      <div class="modal-row"><label>시간봉</label><input id="cr-timeframe" placeholder="예: 5분봉, 일봉, 주봉..."></div>
+    </div>
+    <div class="modal-row"><label>📝 분석 내용 / 배운 점</label>
+      <textarea id="cr-memo" style="min-height:130px" placeholder="이 차트에서 무엇을 배웠는가?&#10;진입 타점은 어디인가?&#10;어떤 신호가 보였는가?..."></textarea>
+    </div>
+    <div class="modal-row"><label>⚠️ 주의사항 / 실수 포인트</label>
+      <textarea id="cr-caution" style="min-height:70px" placeholder="놓쳤거나 실수할 수 있는 포인트..."></textarea>
+    </div>
+    <div class="modal-row">
+      <label>📸 차트 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('cr-img-in').click()">
+        <input type="file" id="cr-img-in" accept="image/*" multiple style="display:none" onchange="handleChartReviewImg(this)">
+        📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="cr-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-chart-review')">취소</button>
+      <button class="btn btn-primary" onclick="saveChartReview()">저장</button>
+    </div>
+  </div>
+</div>
+
 <div id="modal-review-view" class="modal-overlay">
   <div class="modal" style="width:660px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -1287,6 +1341,8 @@ window.state={
   balanceRows:[],
   tradeDiaries:[],
   reviewData:{good:[],bad:[],log:[]},
+  chartReviews:[],
+  tempChartReviewImgs:[],
   tempReviewImgs:[],
   tempTradeDiaryImgs:[]
 };
@@ -1375,7 +1431,7 @@ function tradeNav(id){
   document.querySelectorAll('.trade-page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs=document.querySelectorAll('.trade-nav-tab');
-  const map={'t-dash':0,'t-trades':1,'t-checklist':2,'t-pattern':3,'t-balance':4,'t-review-good':5,'t-review-bad':6,'t-review-log':7};
+  const map={'t-dash':0,'t-trades':1,'t-checklist':2,'t-pattern':3,'t-balance':4,'t-review-good':5,'t-review-bad':6,'t-review-log':7,'t-review-chart':8};
   tabs[map[id]]?.classList.add('active');
   if(id==='t-dash')renderTDash();
   if(id==='t-trades')renderTrades();
@@ -1385,6 +1441,7 @@ function tradeNav(id){
   if(id==='t-review-good')renderReviews('good');
   if(id==='t-review-bad')renderReviews('bad');
   if(id==='t-review-log')renderReviews('log');
+  if(id==='t-review-chart')renderChartReviews();
 }
 
 // ===== 매매 대시보드 =====
@@ -1742,10 +1799,10 @@ function openReviewModal(type,editId){
   // 기본값 초기화
   document.getElementById('rv-date').value=new Date().toISOString().split('T')[0];
   ['rv-stock','rv-stop','rv-target','rv-memo'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('rv-type').value='단타';
-  document.getElementById('rv-pattern').value='눌림';
-  document.getElementById('rv-vol').value='증가';
-  document.getElementById('rv-psych').value='안정';
+  document.getElementById('rv-type').value='';
+  document.getElementById('rv-pattern').value='';
+  document.getElementById('rv-vol').value='';
+  document.getElementById('rv-psych').value='';
   if(editId){
     const item=(state.reviewData[type]||[]).find(x=>x.id===editId);
     if(!item)return;
@@ -1828,8 +1885,8 @@ function openReviewFull(type,id){
   if(item.tradeType)html+=`<div style="background:#f5f0e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">매매유형</div><div style="font-size:13px;font-weight:700">${item.tradeType}</div></div>`;
   if(item.pattern)html+=`<div style="background:#f5f0e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">패턴</div><div style="font-size:13px;font-weight:700">${item.pattern}</div></div>`;
   if(item.vol)html+=`<div style="background:#f5f0e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">거래량</div><div style="font-size:13px;font-weight:700">${item.vol}</div></div>`;
-  if(item.stop)html+=`<div style="background:#fde8e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">손절가</div><div style="font-size:13px;font-weight:700;color:var(--red)">${Number(item.stop).toLocaleString()}원</div></div>`;
-  if(item.target)html+=`<div style="background:#e8f5ee;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">익절가</div><div style="font-size:13px;font-weight:700;color:var(--green)">${Number(item.target).toLocaleString()}원</div></div>`;
+  if(item.stop)html+=`<div style="background:#fde8e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">손절가</div><div style="font-size:13px;font-weight:700;color:var(--red)">${item.stop}</div></div>`;
+  if(item.target)html+=`<div style="background:#e8f5ee;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">익절가</div><div style="font-size:13px;font-weight:700;color:var(--green)">${item.target}</div></div>`;
   if(item.psych)html+=`<div style="background:#e8ecfd;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">심리상태</div><div style="font-size:13px;font-weight:700;color:${psychColor[item.psych]||'var(--text2)'}">${item.psych}</div></div>`;
   html+='</div>';
   if(item.memo)html+=`<div style="background:${info.bg};border-radius:10px;padding:14px;margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:${info.color};margin-bottom:7px">📝 메모 / 복기</div><div style="font-size:13px;line-height:1.9;white-space:pre-wrap">${item.memo}</div></div>`;
@@ -1869,8 +1926,8 @@ function renderReviews(type){
         </div>
       </div>
       <div style="display:flex;gap:7px;margin-bottom:8px;flex-wrap:wrap">
-        ${item.stop?`<span style="font-size:11px;background:#fde8e8;color:var(--red);padding:2px 8px;border-radius:6px;font-weight:600">손절 ${Number(item.stop).toLocaleString()}원</span>`:''}
-        ${item.target?`<span style="font-size:11px;background:#e8f5ee;color:var(--green);padding:2px 8px;border-radius:6px;font-weight:600">익절 ${Number(item.target).toLocaleString()}원</span>`:''}
+        ${item.stop?`<span style="font-size:11px;background:#fde8e8;color:var(--red);padding:2px 8px;border-radius:6px;font-weight:600">손절 ${item.stop}</span>`:''}
+        ${item.target?`<span style="font-size:11px;background:#e8f5ee;color:var(--green);padding:2px 8px;border-radius:6px;font-weight:600">익절 ${item.target}</span>`:''}
         ${item.vol?`<span style="font-size:11px;background:#e8ecfd;color:var(--blue);padding:2px 8px;border-radius:6px">거래량 ${item.vol}</span>`:''}
       </div>
       ${item.memo?`<div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap">${item.memo.slice(0,120)}${item.memo.length>120?'\n<span style="font-size:11px;color:var(--accent)">...전체보기 클릭</span>':''}</div>`:''}
@@ -3014,6 +3071,119 @@ function renderWatch(){
 
 function openPilFull(i){const p=state.pilHistory[i];if(!p)return;document.getElementById('full-title').textContent='필사';document.getElementById('full-meta').textContent=p.date+' · '+p.theme+(p.intent?' · '+p.intent:'');document.getElementById('full-body').textContent=p.text;openModal('modal-full');}
 function showFullImg(src){document.getElementById('img-fullview-src').src=src;document.getElementById('img-fullview').classList.add('open');}
+
+// ===== 공부 차트 복기 =====
+let chartReviewEditId=null,chartReviewImgs=[];
+let chartReviewFilter='전체';
+function openChartReviewModal(editId){
+  chartReviewEditId=editId||null;
+  chartReviewImgs=[];
+  document.getElementById('chart-review-modal-title').textContent=editId?'📊 차트 복기 수정':'📊 공부 차트 복기 추가';
+  document.getElementById('cr-img-prev').innerHTML='';
+  document.getElementById('cr-date').value=new Date().toISOString().split('T')[0];
+  ['cr-stock','cr-pattern','cr-timeframe','cr-memo','cr-caution'].forEach(id=>document.getElementById(id).value='');
+  if(editId){
+    const item=(state.chartReviews||[]).find(x=>x.id===editId);if(!item)return;
+    document.getElementById('cr-date').value=item.date||'';
+    document.getElementById('cr-stock').value=item.stock||'';
+    document.getElementById('cr-pattern').value=item.pattern||'';
+    document.getElementById('cr-timeframe').value=item.timeframe||'';
+    document.getElementById('cr-memo').value=item.memo||'';
+    document.getElementById('cr-caution').value=item.caution||'';
+    chartReviewImgs=item.images?[...item.images]:[];
+    renderChartReviewImgPrev();
+  }
+  openModal('modal-chart-review');
+}
+function handleChartReviewImg(input){
+  Array.from(input.files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=e=>{chartReviewImgs.push(e.target.result);renderChartReviewImgPrev();};
+    r.readAsDataURL(f);
+  });
+  input.value='';
+}
+function renderChartReviewImgPrev(){
+  const el=document.getElementById('cr-img-prev');if(!el)return;
+  el.innerHTML=chartReviewImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" style="cursor:pointer" onclick="showFullImg('${src}')"><button class="rm" onclick="chartReviewImgs.splice(${i},1);renderChartReviewImgPrev()">✕</button></div>`).join('');
+}
+function saveChartReview(){
+  const memo=document.getElementById('cr-memo').value.trim();
+  const stock=document.getElementById('cr-stock').value.trim();
+  if(!memo&&!stock){alert('분석 내용 또는 종목명을 입력해주세요');return;}
+  if(!state.chartReviews)state.chartReviews=[];
+  const obj={
+    id:chartReviewEditId||Date.now(),
+    date:document.getElementById('cr-date').value,
+    stock,
+    pattern:document.getElementById('cr-pattern').value,
+    timeframe:document.getElementById('cr-timeframe').value,
+    memo,
+    caution:document.getElementById('cr-caution').value,
+    images:[...chartReviewImgs],
+    createdAt:new Date().toLocaleDateString('ko-KR'),
+  };
+  if(chartReviewEditId){
+    const idx=state.chartReviews.findIndex(x=>x.id===chartReviewEditId);
+    if(idx>=0)state.chartReviews[idx]=obj;else state.chartReviews.unshift(obj);
+  } else {
+    state.chartReviews.unshift(obj);
+  }
+  closeModal('modal-chart-review');save();renderChartReviews();
+}
+function delChartReview(id){
+  if(!confirm('삭제할까요?'))return;
+  state.chartReviews=state.chartReviews.filter(x=>x.id!==id);
+  save();renderChartReviews();
+}
+function filterChartReview(f,btn){
+  chartReviewFilter=f;
+  document.querySelectorAll('#chart-review-filters .filter-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderChartReviews();
+}
+function openChartReviewFull(id){
+  const item=(state.chartReviews||[]).find(x=>x.id===id);if(!item)return;
+  document.getElementById('full-title').textContent='📊 공부 차트 복기';
+  document.getElementById('full-meta').textContent=`${item.date}${item.stock?' · '+item.stock:''}${item.pattern?' · '+item.pattern:''}${item.timeframe?' · '+item.timeframe:''}`;
+  let body='';
+  if(item.memo)body+=item.memo;
+  if(item.caution)body+='\n\n⚠️ 주의사항\n'+item.caution;
+  document.getElementById('full-body').textContent=body;
+  openModal('modal-full');
+}
+function renderChartReviews(){
+  if(!state.chartReviews)state.chartReviews=[];
+  const el=document.getElementById('t-review-chart-list');if(!el)return;
+  const f=chartReviewFilter;
+  let items=[...state.chartReviews].sort((a,b)=>b.date>a.date?1:-1);
+  if(f!=='전체')items=items.filter(x=>x.pattern===f||(f==='기타'&&!['눌림','돌파','추세','횡보'].includes(x.pattern)));
+  if(!items.length){
+    el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">차트 복기를 추가해보세요 📊</div>';
+    return;
+  }
+  el.innerHTML=items.map(item=>`
+    <div style="border:1px solid var(--border);border-left:4px solid var(--purple);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--card)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            ${item.stock?`<span style="font-size:15px;font-weight:700">${item.stock}</span>`:''}
+            <span style="font-size:11px;color:var(--text2)">${item.date}</span>
+            ${item.pattern?`<span style="background:#f0e8d8;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:600">${item.pattern}</span>`:''}
+            ${item.timeframe?`<span style="background:#e8ecfd;color:var(--blue);border-radius:6px;padding:2px 7px;font-size:10px">${item.timeframe}</span>`:''}
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button class="expand-btn" onclick="openChartReviewFull(${item.id})">🔍 전체보기</button>
+          <button class="btn btn-outline btn-sm" onclick="openChartReviewModal(${item.id})" style="font-size:10px;padding:3px 8px">✏️</button>
+          <button class="del-btn" onclick="delChartReview(${item.id})">✕</button>
+        </div>
+      </div>
+      ${item.memo?`<div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap;margin-bottom:7px">${item.memo.slice(0,150)}${item.memo.length>150?'\n<span style="font-size:11px;color:var(--purple)">...전체보기 클릭</span>':''}</div>`:''}
+      ${item.caution?`<div style="background:#fff8ec;border-radius:7px;padding:7px 10px;font-size:12px;color:var(--accent);margin-bottom:7px">⚠️ ${item.caution.slice(0,80)}${item.caution.length>80?'...':''}</div>`:''}
+      ${item.images&&item.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${item.images.map(src=>`<img src="${src}" style="height:90px;border-radius:8px;cursor:pointer;object-fit:cover;border:1px solid var(--border)" onclick="showFullImg('${src}')">`).join('')}</div>`:''}
+    </div>`).join('');
+}
 </script>
 </body>
 </html>
