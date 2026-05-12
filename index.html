@@ -1528,11 +1528,11 @@ function nav(id){
   if(id==='budget')renderBudget();
   if(id==='journal'){renderTDash();renderTrades();}
   if(id==='sd-invest'){renderCurrentYoutuber();}
-  if(id==='sd-blog')renderSdGenPage('blog');
-  if(id==='sd-youtube')renderSdGenPage('youtube');
-  if(id==='sd-sidejob')renderSdGenPage('sidejob');
-  if(id==='sd-language')renderSdGenPage('language');
-  if(id==='sd-computer')renderSdGenPage('computer');
+  if(id==='sd-blog')setTimeout(()=>renderSdGenPage('blog'),0);
+  if(id==='sd-youtube')setTimeout(()=>renderSdGenPage('youtube'),0);
+  if(id==='sd-sidejob')setTimeout(()=>renderSdGenPage('sidejob'),0);
+  if(id==='sd-language')setTimeout(()=>renderSdGenPage('language'),0);
+  if(id==='sd-computer')setTimeout(()=>renderSdGenPage('computer'),0);
   if(id==='meditation'){renderMeditations();renderMedRecords();}
   updateDashStats();
 }
@@ -3261,26 +3261,29 @@ function renderCurrentYoutuber(){
 let sdNoteKey=null,sdNoteCats=[];
 function openSdNoteModal(key,youtuber,cats,editId){
   sdNoteKey=key;sdNoteCats=cats||[];sdnEditId=editId||null;sdnImgs=[];
-  document.getElementById('sdnote-modal-title').textContent=editId?`📝 ${youtuber} 노트 수정`:`📝 ${youtuber} 노트 추가`;
-  document.getElementById('sdn-cat-input').placeholder='예: '+sdNoteCats.join(', ')+'...';
-  // 분류 드롭다운 업데이트
+  const titleEl=document.getElementById('sdnote-modal-title');
+  if(titleEl)titleEl.textContent=editId?`📝 ${youtuber} 노트 수정`:`📝 ${youtuber} 노트 추가`;
+  const catInpEl=document.getElementById('sdn-cat-input');
+  if(catInpEl)catInpEl.placeholder='예: '+sdNoteCats.join(', ')+'...';
   const sel=document.getElementById('sdn-cat-sel');
-  sel.innerHTML='<option value="">-- 선택 --</option>'+sdNoteCats.map(c=>`<option>${c}</option>`).join('');
-  document.getElementById('sdn-img-prev').innerHTML='';
-  ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(id=>document.getElementById(id).value='');
-  sel.value='';
+  if(sel)sel.innerHTML='<option value="">-- 선택 --</option>'+sdNoteCats.map(c=>`<option>${c}</option>`).join('');
+  const prevEl=document.getElementById('sdn-img-prev');
+  if(prevEl)prevEl.innerHTML='';
+  ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  if(sel)sel.value='';
   if(editId){
+    if(!state.selfdevNotes)state.selfdevNotes={};
     const n=(state.selfdevNotes[key]||[]).find(x=>x.id===editId);if(!n)return;
-    document.getElementById('sdn-name').value=n.name||'';
-    // 분류 세팅: 목록에 있으면 select, 없으면 input
-    if(sdNoteCats.includes(n.cat||'')){sel.value=n.cat;}
-    else{document.getElementById('sdn-cat-input').value=n.cat||'';}
-    document.getElementById('sdn-desc').value=n.desc||'';
-    document.getElementById('sdn-url').value=n.url||'';
+    const nameEl=document.getElementById('sdn-name');if(nameEl)nameEl.value=n.name||'';
+    if(sel&&sdNoteCats.includes(n.cat||''))sel.value=n.cat;
+    else{const inp=document.getElementById('sdn-cat-input');if(inp)inp.value=n.cat||'';}
+    const descEl=document.getElementById('sdn-desc');if(descEl)descEl.value=n.desc||'';
+    const urlEl=document.getElementById('sdn-url');if(urlEl)urlEl.value=n.url||'';
     sdnImgs=n.images?[...n.images]:[];
     renderSdnImgPrev();
   }
-  document.getElementById('modal-sdnote').dataset.mode='invest';
+  const mEl=document.getElementById('modal-sdnote');
+  if(mEl)mEl.dataset.mode='invest';
   openModal('modal-sdnote');
 }
 function openSdNoteViewModal(key,id){
@@ -3305,15 +3308,21 @@ function renderSdnImgPrev(){
   el.innerHTML=sdnImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" style="cursor:pointer" onclick="showFullImg('${src}')"><button class="rm" onclick="sdnImgs.splice(${i},1);renderSdnImgPrev()">✕</button></div>`).join('');
 }
 function getSdnCat(){
-  const sel=document.getElementById('sdn-cat-sel').value;
-  const inp=document.getElementById('sdn-cat-input').value.trim();
+  const selEl=document.getElementById('sdn-cat-sel');
+  const inpEl=document.getElementById('sdn-cat-input');
+  const sel=selEl?selEl.value:'';
+  const inp=inpEl?inpEl.value.trim():'';
   return sel||inp;
 }
 function saveSdNote(){
-  const name=document.getElementById('sdn-name').value.trim();if(!name)return alert('이름을 입력해주세요');
-  const mode=document.getElementById('modal-sdnote').dataset.mode;
+  const nameEl=document.getElementById('sdn-name');
+  if(!nameEl||!nameEl.value.trim())return alert('이름을 입력해주세요');
+  const mEl=document.getElementById('modal-sdnote');
+  const mode=mEl?mEl.dataset.mode:'general';
   const cat=getSdnCat();
-  const obj={id:sdnEditId||Date.now(),name,cat,desc:document.getElementById('sdn-desc').value,url:document.getElementById('sdn-url').value,images:[...sdnImgs],date:new Date().toLocaleDateString('ko-KR')};
+  const descEl=document.getElementById('sdn-desc');
+  const urlEl=document.getElementById('sdn-url');
+  const obj={id:sdnEditId||Date.now(),name:nameEl.value.trim(),cat:cat||'',desc:descEl?descEl.value:'',url:urlEl?urlEl.value:'',images:[...sdnImgs],date:new Date().toLocaleDateString('ko-KR')};
   if(mode==='invest'){
     if(!state.selfdevNotes)state.selfdevNotes={};
     if(!state.selfdevNotes[sdNoteKey])state.selfdevNotes[sdNoteKey]=[];
@@ -3322,6 +3331,7 @@ function saveSdNote(){
     closeModal('modal-sdnote');save();renderCurrentYoutuber();
   } else {
     const s=sdGenCtx;
+    if(!s)return alert('저장할 섹션을 찾을 수 없어요');
     if(!state.selfdevGeneral)state.selfdevGeneral={blog:[],youtube:[],sidejob:[],language:[],computer:[]};
     if(!state.selfdevGeneral[s])state.selfdevGeneral[s]=[];
     if(sdnEditId){const idx=state.selfdevGeneral[s].findIndex(x=>x.id===sdnEditId);if(idx>=0)state.selfdevGeneral[s][idx]=obj;}
@@ -3363,12 +3373,15 @@ function renderSdGenPage(section){
       <div class="page-title" style="margin:0">${info.title}</div>
       <button class="btn btn-primary btn-sm" onclick="openSdGenModal('${section}')">+ 노트 추가</button>
     </div>
-    <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
-      <button class="filter-btn ${sdGenCatFilter==='전체'?'on':''}" onclick="sdGenCatFilter='전체';renderSdGenPage('${section}')">전체</button>
-      ${cats.map(c=>`<button class="filter-btn ${sdGenCatFilter===c?'on':''}" onclick="sdGenCatFilter='${c}';renderSdGenPage('${section}')">${c}
-        <span onclick="event.stopPropagation();delSdGenCat('${section}','${c}')" style="margin-left:4px;opacity:.5;font-size:9px">✕</span>
-      </button>`).join('')}
-      <button class="btn btn-outline btn-sm" style="font-size:10px;padding:3px 9px" onclick="addSdGenCat('${section}')">+ 분류 추가</button>
+    <div style="margin-bottom:14px">
+      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+        <button class="filter-btn ${sdGenCatFilter==='전체'?'on':''}" onclick="sdGenCatFilter='전체';renderSdGenPage('${section}')">전체</button>
+        ${cats.map(c=>`<button class="filter-btn ${sdGenCatFilter===c?'on':''}" onclick="sdGenCatFilter='${c}';renderSdGenPage('${section}')" style="display:inline-flex;align-items:center;gap:4px">${c}<span onclick="event.stopPropagation();delSdGenCat('${section}','${c}')" style="opacity:.5;font-size:9px;line-height:1;cursor:pointer">✕</span></button>`).join('')}
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input id="sd-cat-inp-${section}" placeholder="새 분류 이름..." style="max-width:180px;padding:5px 10px;font-size:12px" onkeydown="if(event.key==='Enter')addSdGenCatInline('${section}')">
+        <button class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 11px;white-space:nowrap" onclick="addSdGenCatInline('${section}')">+ 분류 추가</button>
+      </div>
     </div>
     ${filtered.length?filtered.map(n=>`
       <div class="concept-card" style="margin-bottom:11px">
@@ -3391,13 +3404,18 @@ function renderSdGenPage(section){
 }
 
 function addSdGenCat(section){
-  const name=prompt('새 분류 이름을 입력하세요:');
-  if(!name||!name.trim())return;
-  const trimmed=name.trim();
+  // legacy - not used
+}
+function addSdGenCatInline(section){
+  const inp=document.getElementById('sd-cat-inp-'+section);
+  if(!inp)return;
+  const trimmed=inp.value.trim();
+  if(!trimmed)return;
   if(!state.selfdevGenCats)state.selfdevGenCats={};
   if(!state.selfdevGenCats[section])state.selfdevGenCats[section]=[];
-  if(state.selfdevGenCats[section].includes(trimmed)){alert('이미 있는 분류예요!');return;}
+  if(state.selfdevGenCats[section].includes(trimmed)){inp.value='';return;}
   state.selfdevGenCats[section].push(trimmed);
+  inp.value='';
   save();renderSdGenPage(section);
 }
 function delSdGenCat(section,cat){
@@ -3409,25 +3427,31 @@ function delSdGenCat(section,cat){
 }
 function openSdGenModal(section,editId){
   sdGenCtx=section;sdGenEditId=editId||null;sdnImgs=[];
-  document.getElementById('sdnote-modal-title').textContent=editId?'📝 노트 수정':'📝 노트 추가';
-  document.getElementById('sdn-img-prev').innerHTML='';
-  ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(id=>document.getElementById(id).value='');
+  const titleEl=document.getElementById('sdnote-modal-title');
+  if(titleEl)titleEl.textContent=editId?'📝 노트 수정':'📝 노트 추가';
+  const prevEl=document.getElementById('sdn-img-prev');
+  if(prevEl)prevEl.innerHTML='';
+  ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   // 분류 드롭다운: 사용자 추가 분류
   const cats=(state.selfdevGenCats&&state.selfdevGenCats[section])||[];
   const sel=document.getElementById('sdn-cat-sel');
-  sel.innerHTML='<option value="">-- 선택 --</option>'+cats.map(c=>`<option>${c}</option>`).join('');
-  sel.value='';
+  if(sel){
+    sel.innerHTML='<option value="">-- 선택 --</option>'+cats.map(c=>`<option>${c}</option>`).join('');
+    sel.value='';
+  }
   if(editId){
+    if(!state.selfdevGeneral)state.selfdevGeneral={};
     const n=(state.selfdevGeneral[section]||[]).find(x=>x.id===editId);if(!n)return;
-    document.getElementById('sdn-name').value=n.name||'';
-    if(cats.includes(n.cat||''))sel.value=n.cat;
-    else document.getElementById('sdn-cat-input').value=n.cat||'';
-    document.getElementById('sdn-desc').value=n.desc||'';
-    document.getElementById('sdn-url').value=n.url||'';
+    const nameEl=document.getElementById('sdn-name');if(nameEl)nameEl.value=n.name||'';
+    if(sel&&cats.includes(n.cat||''))sel.value=n.cat;
+    else{const inp=document.getElementById('sdn-cat-input');if(inp)inp.value=n.cat||'';}
+    const descEl=document.getElementById('sdn-desc');if(descEl)descEl.value=n.desc||'';
+    const urlEl=document.getElementById('sdn-url');if(urlEl)urlEl.value=n.url||'';
     sdnImgs=n.images?[...n.images]:[];
     renderSdnImgPrev();
   }
-  document.getElementById('modal-sdnote').dataset.mode='general';
+  const mEl=document.getElementById('modal-sdnote');
+  if(mEl)mEl.dataset.mode='general';
   openModal('modal-sdnote');
 }
 function openSdGenViewModal(section,id){
