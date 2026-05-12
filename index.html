@@ -215,6 +215,8 @@ textarea{resize:vertical;min-height:80px}
 .img-fullview{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;align-items:center;justify-content:center;cursor:pointer}
 .img-fullview.open{display:flex}
 .img-fullview img{max-width:90vw;max-height:90vh;border-radius:12px;object-fit:contain}
+/* 자기계발 하위탭 */
+.inv-sub{display:none}.inv-sub.active{display:block}
 /* LOADING */
 #loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
 #loading-screen .logo{font-size:32px;font-weight:700;color:var(--accent);margin-bottom:12px}
@@ -243,15 +245,16 @@ textarea{resize:vertical;min-height:80px}
   <div class="sb-item" onclick="nav('pil')"><span class="icon">✍️</span><span>필사 생성기</span></div>
   <div class="sb-item" onclick="nav('book')"><span class="icon">📚</span><span>독서 노트</span></div>
   <div class="sb-section">투자</div>
-  <div class="sb-item" onclick="nav('cond')"><span class="icon">🔍</span><span>조건검색식</span></div>
   <div class="sb-item" onclick="nav('stocks')"><span class="icon">📊</span><span>주식 공부 노트</span></div>
   <div class="sb-item" onclick="nav('journal')"><span class="icon">💹</span><span>투자 일지</span></div>
-  <div class="sb-item" onclick="nav('saju')"><span class="icon">🔮</span><span>사주 / 운세</span></div>
+  <div class="sb-section">자기계발</div>
+  <div class="sb-item" onclick="nav('selfdev')"><span class="icon">🚀</span><span>자기계발 노트</span></div>
   <div class="sb-section">라이프</div>
   <div class="sb-item" onclick="nav('diary')"><span class="icon">📖</span><span>일기</span></div>
   <div class="sb-item" onclick="nav('food')"><span class="icon">🍳</span><span>요리</span></div>
   <div class="sb-item" onclick="nav('exercise')"><span class="icon">💪</span><span>운동</span></div>
   <div class="sb-item" onclick="nav('massage')"><span class="icon">🤲</span><span>마사지</span></div>
+  <div class="sb-item" onclick="nav('meditation')"><span class="icon">🧘</span><span>명상</span></div>
   <div class="sb-item" onclick="nav('budget')"><span class="icon">💰</span><span>가계부</span></div>
   <div class="sb-footer">"오늘도 한 걸음씩."</div>
 </div>
@@ -417,45 +420,14 @@ textarea{resize:vertical;min-height:80px}
   <div id="book-list"></div>
 </div>
 
-<!-- 조건검색식 -->
-<div id="page-cond" class="page">
-  <div class="page-title">🔍 조건검색식 도우미</div>
-  <div class="ai-notice">🔥 Claude.ai에서 조건식 생성 → 복사 → 아래에 붙여넣고 저장하세요</div>
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab(this,'cond-saved')">📋 저장된 조건식</div>
-    <div class="tab" onclick="switchTab(this,'cond-new')">➕ 새 조건식</div>
-    <div class="tab" onclick="switchTab(this,'cond-ref')">📖 HTS 문법</div>
-  </div>
-  <div id="cond-saved" class="tab-content active"><div class="card"><div id="cond-saved-list"><p style="color:var(--text2);font-size:13px">저장된 조건식이 없습니다</p></div></div></div>
-  <div id="cond-new" class="tab-content">
-    <div class="card">
-      <div class="modal-row"><label>전략명</label><input id="cond-name" placeholder="예: 5분봉 눌림목"></div>
-      <div class="modal-row"><label>조건식 코드</label><textarea id="cond-code" placeholder="조건식..." style="min-height:120px;font-family:monospace"></textarea></div>
-      <div class="modal-row"><label>해설/메모</label><textarea id="cond-memo" style="min-height:70px"></textarea></div>
-      <button class="btn btn-primary" onclick="saveCond()">💾 저장</button>
-    </div>
-  </div>
-  <div id="cond-ref" class="tab-content">
-    <div class="card" style="font-size:13px;line-height:2;color:var(--text2)">
-      <b style="color:var(--text)">기본 구조</b><br>
-      • 현재가 &gt; 이동평균(5) → 주가가 5이평 위<br>
-      • 거래량 &gt;= 이동평균거래량(5) * 1.5 → 거래량 급등<br><br>
-      <b style="color:var(--text)">자주 쓰는 함수</b><br>
-      • 이동평균(N) / 볼린저밴드상단(20,2) / RSI(14) / MACD(12,26,9)
-    </div>
-  </div>
-</div>
-
 <!-- 주식 공부 노트 -->
 <div id="page-stocks" class="page">
   <div class="page-title">📊 주식 공부 노트</div>
   <div class="tabs" style="flex-wrap:wrap">
     <div class="tab active" onclick="switchTab(this,'stock-concepts');renderCatFilters();renderSC()">📚 핵심 개념</div>
-    <div class="tab" onclick="switchTab(this,'stock-patterns');renderCatFilters();renderSP()">📈 패턴 노트</div>
     <div class="tab" onclick="switchTab(this,'stock-rules')">📌 매매 원칙</div>
     <div class="tab" onclick="switchTab(this,'stock-goals')">🎯 목표</div>
     <div class="tab" onclick="switchTab(this,'stock-words')">💬 한마디</div>
-    <div class="tab" onclick="switchTab(this,'stock-profile')">🧠 나의 성향</div>
     <div class="tab" onclick="switchTab(this,'stock-homework')">📝 오늘의 숙제</div>
     <div class="tab" onclick="switchTab(this,'stock-watch')">👁️ 종목체크</div>
   </div>
@@ -470,18 +442,6 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
     <div id="stock-concepts-list"></div>
-  </div>
-
-  <!-- 패턴 노트 -->
-  <div id="stock-patterns" class="tab-content">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center" id="sp-cat-filters"></div>
-      <div style="display:flex;gap:6px">
-        <button class="btn btn-outline btn-sm" onclick="manageCats('SP')">⚙️ 분류 관리</button>
-        <button class="btn btn-primary btn-sm" onclick="openSPModal()">+ 패턴 추가</button>
-      </div>
-    </div>
-    <div id="stock-patterns-list"></div>
   </div>
 
   <!-- 매매 원칙 -->
@@ -528,33 +488,6 @@ textarea{resize:vertical;min-height:80px}
       </div>
       <div id="stock-words-list"></div>
     </div>
-  </div>
-
-  <!-- 나의 성향 분석 -->
-  <div id="stock-profile" class="tab-content">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--green)">💪 나의 강점</div>
-        <textarea id="profile-strength" placeholder="잘하는 것, 강점..." style="min-height:120px"></textarea>
-      </div>
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--red)">⚠️ 개선할 점</div>
-        <textarea id="profile-weakness" placeholder="약점, 반복되는 실수..." style="min-height:120px"></textarea>
-      </div>
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--blue)">🎯 나의 매매 스타일</div>
-        <textarea id="profile-style" placeholder="선호하는 매매 유형, 시간대, 종목군..." style="min-height:120px"></textarea>
-      </div>
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--accent)">📈 이번 달 개선 목표</div>
-        <textarea id="profile-improve" placeholder="이번 달 집중적으로 개선할 것..." style="min-height:120px"></textarea>
-      </div>
-    </div>
-    <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
-      <button class="btn btn-primary" onclick="saveProfile()">💾 저장 (히스토리에 기록)</button>
-    </div>
-    <!-- 히스토리 -->
-    <div id="profile-history"></div>
   </div>
 
   <!-- 오늘의 숙제 -->
@@ -960,30 +893,6 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
-<!-- 사주/운세 -->
-<div id="page-saju" class="page">
-  <div class="page-title">🔮 사주 / 운세</div>
-  <div class="ai-notice">🔮 Claude.ai에서 운세 분석 → 복사 → 아래에 붙여넣고 저장하세요</div>
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab(this,'saju-today')">🌅 오늘의 운세</div>
-    <div class="tab" onclick="switchTab(this,'saju-quarter')">📊 2026 분기별</div>
-    <div class="tab" onclick="switchTab(this,'saju-invest')">💰 투자/재물</div>
-    <div class="tab" onclick="switchTab(this,'saju-career')">🏆 커리어</div>
-    <div class="tab" onclick="switchTab(this,'saju-rel')">💕 관계</div>
-  </div>
-  <div id="saju-today" class="tab-content active">
-    <div class="quarter-grid"><div class="q-card"><div class="q-score" style="color:#c9a84c">★</div><div class="q-label">전체운</div></div><div class="q-card"><div class="q-score" style="color:#5c9e6e">★</div><div class="q-label">재물운</div></div><div class="q-card"><div class="q-score" style="color:#5c7ae0">★</div><div class="q-label">건강운</div></div><div class="q-card"><div class="q-score" style="color:#e05c5c">★</div><div class="q-label">대인운</div></div></div>
-    <div class="card"><textarea id="saju-today-in" placeholder="오늘의 운세를 붙여넣으세요..." style="min-height:140px"></textarea><div style="display:flex;justify-content:flex-end;margin-top:9px"><button class="btn btn-primary btn-sm" onclick="saveSaju('today')">💾 저장</button></div><div id="saju-today-saved" style="margin-top:11px"></div></div>
-  </div>
-  <div id="saju-quarter" class="tab-content">
-    <div class="quarter-grid"><div class="q-card"><div class="q-score">78</div><div style="font-size:10px;color:var(--text2);margin-top:2px">1분기</div><div class="q-label">준비와 기초</div></div><div class="q-card"><div class="q-score">85</div><div style="font-size:10px;color:var(--text2);margin-top:2px">2분기</div><div class="q-label">행동과 기회</div></div><div class="q-card"><div class="q-score">72</div><div style="font-size:10px;color:var(--text2);margin-top:2px">3분기</div><div class="q-label">조정과 내실</div></div><div class="q-card"><div class="q-score">91</div><div style="font-size:10px;color:var(--text2);margin-top:2px">4분기</div><div class="q-label">수확과 도약</div></div></div>
-    <div class="card"><textarea id="saju-quarter-in" placeholder="분기별 운세를 붙여넣으세요..." style="min-height:140px"></textarea><div style="display:flex;justify-content:flex-end;margin-top:9px"><button class="btn btn-primary btn-sm" onclick="saveSaju('quarter')">💾 저장</button></div><div id="saju-quarter-saved" style="margin-top:11px"></div></div>
-  </div>
-  <div id="saju-invest" class="tab-content"><div class="card"><textarea id="saju-invest-in" placeholder="투자/재물운을 붙여넣으세요..." style="min-height:140px"></textarea><div style="display:flex;justify-content:flex-end;margin-top:9px"><button class="btn btn-primary btn-sm" onclick="saveSaju('invest')">💾 저장</button></div><div id="saju-invest-saved" style="margin-top:11px"></div></div></div>
-  <div id="saju-career" class="tab-content"><div class="card"><textarea id="saju-career-in" placeholder="커리어운을 붙여넣으세요..." style="min-height:140px"></textarea><div style="display:flex;justify-content:flex-end;margin-top:9px"><button class="btn btn-primary btn-sm" onclick="saveSaju('career')">💾 저장</button></div><div id="saju-career-saved" style="margin-top:11px"></div></div></div>
-  <div id="saju-rel" class="tab-content"><div class="card"><textarea id="saju-rel-in" placeholder="관계운을 붙여넣으세요..." style="min-height:140px"></textarea><div style="display:flex;justify-content:flex-end;margin-top:9px"><button class="btn btn-primary btn-sm" onclick="saveSaju('rel')">💾 저장</button></div><div id="saju-rel-saved" style="margin-top:11px"></div></div></div>
-</div>
-
 <!-- 일기 -->
 <div id="page-diary" class="page">
   <div class="page-title">📖 일기</div>
@@ -1058,6 +967,113 @@ textarea{resize:vertical;min-height:80px}
   <div id="mas-scalp" class="tab-content"><div id="ml-scalp"></div><div id="af-mas-scalp"></div></div>
 </div>
 
+<!-- 자기계발 -->
+<div id="page-selfdev" class="page">
+  <div class="page-title">🚀 자기계발 노트</div>
+  <div class="tabs" style="flex-wrap:wrap" id="selfdev-tabs">
+    <div class="tab active" onclick="switchSelfdev('invest')">💰 투자</div>
+    <div class="tab" onclick="switchSelfdev('blog')">📝 블로그</div>
+    <div class="tab" onclick="switchSelfdev('youtube')">📺 유튜브</div>
+    <div class="tab" onclick="switchSelfdev('sidejob')">💼 부업</div>
+    <div class="tab" onclick="switchSelfdev('language')">🌍 외국어</div>
+    <div class="tab" onclick="switchSelfdev('computer')">💻 컴퓨터</div>
+  </div>
+
+  <!-- 투자 섹션 -->
+  <div id="sd-invest" class="tab-content active">
+    <div class="tabs" style="flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:14px" id="invest-sub-tabs">
+      <div class="tab active" onclick="switchInvestSub('domestic')">🇰🇷 국내주식</div>
+      <div class="tab" onclick="switchInvestSub('us')">🇺🇸 미국주식</div>
+      <div class="tab" onclick="switchInvestSub('coin')">₿ 코인선물</div>
+      <div class="tab" onclick="switchInvestSub('futures')">📊 해외선물</div>
+    </div>
+
+    <!-- 국내주식 -->
+    <div id="inv-domestic" class="inv-sub active">
+      <div class="tabs" style="flex-wrap:wrap" id="domestic-youtuber-tabs">
+        <div class="tab active" onclick="switchYoutuber('단테',this,'domestic')">단테</div>
+        <div class="tab" onclick="switchYoutuber('돈깡',this,'domestic')">돈깡</div>
+        <div class="tab" onclick="switchYoutuber('만주',this,'domestic')">만주</div>
+        <div class="tab" onclick="switchYoutuber('대왕개미',this,'domestic')">대왕개미</div>
+      </div>
+      <div id="domestic-youtuber-content"></div>
+    </div>
+
+    <!-- 미국주식 -->
+    <div id="inv-us" class="inv-sub" style="display:none">
+      <div class="tabs" style="flex-wrap:wrap" id="us-youtuber-tabs">
+        <div class="tab active" onclick="switchYoutuber('개준석',this,'us')">개준석</div>
+        <div class="tab" onclick="switchYoutuber('또사이선생',this,'us')">또사이선생</div>
+      </div>
+      <div id="us-youtuber-content"></div>
+    </div>
+
+    <!-- 코인선물 -->
+    <div id="inv-coin" class="inv-sub" style="display:none">
+      <div class="tabs" style="flex-wrap:wrap" id="coin-youtuber-tabs">
+        <div class="tab active" onclick="switchYoutuber('쉽알남',this,'coin')">쉽알남</div>
+        <div class="tab" onclick="switchYoutuber('불장단타왕',this,'coin')">불장단타왕</div>
+      </div>
+      <div id="coin-youtuber-content"></div>
+    </div>
+
+    <!-- 해외선물 -->
+    <div id="inv-futures" class="inv-sub" style="display:none">
+      <div class="tabs" style="flex-wrap:wrap" id="futures-youtuber-tabs">
+        <div class="tab active" onclick="switchYoutuber('김직선',this,'futures')">김직선</div>
+      </div>
+      <div id="futures-youtuber-content"></div>
+    </div>
+  </div>
+
+  <!-- 블로그 -->
+  <div id="sd-blog" class="tab-content">
+    <div id="sd-blog-content"></div>
+  </div>
+
+  <!-- 유튜브 -->
+  <div id="sd-youtube" class="tab-content">
+    <div id="sd-youtube-content"></div>
+  </div>
+
+  <!-- 부업 -->
+  <div id="sd-sidejob" class="tab-content">
+    <div id="sd-sidejob-content"></div>
+  </div>
+
+  <!-- 외국어 -->
+  <div id="sd-language" class="tab-content">
+    <div id="sd-language-content"></div>
+  </div>
+
+  <!-- 컴퓨터 -->
+  <div id="sd-computer" class="tab-content">
+    <div id="sd-computer-content"></div>
+  </div>
+</div>
+
+<!-- 명상 -->
+<div id="page-meditation" class="page">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+    <div class="page-title" style="margin:0">🧘 명상</div>
+    <button class="btn btn-primary btn-sm" onclick="openMeditationModal()">+ 추가</button>
+  </div>
+  <div class="tabs" style="flex-wrap:wrap">
+    <div class="tab active" onclick="switchTab(this,'med-guide')">📖 명상 가이드</div>
+    <div class="tab" onclick="switchTab(this,'med-record')">📝 명상 기록</div>
+  </div>
+  <div id="med-guide" class="tab-content active">
+    <div id="meditation-list"></div>
+    <div class="card" style="border-style:dashed;margin-top:10px;text-align:center;color:var(--text2);font-size:13px;padding:20px" onclick="openMeditationModal()" style="cursor:pointer">+ 명상 가이드 추가</div>
+  </div>
+  <div id="med-record" class="tab-content">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:11px">
+      <button class="btn btn-primary btn-sm" onclick="openMedRecordModal()">+ 오늘 기록</button>
+    </div>
+    <div id="meditation-record-list"></div>
+  </div>
+</div>
+
 <!-- 가계부 -->
 <div id="page-budget" class="page">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:9px">
@@ -1119,6 +1135,76 @@ textarea{resize:vertical;min-height:80px}
 <div id="modal-budget-set" class="modal-overlay"><div class="modal"><div class="modal-title">🎯 예산 설정</div><div id="budget-set-inputs"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-budget-set')">취소</button><button class="btn btn-primary" onclick="saveBudgetSet()">저장</button></div></div></div>
 <div id="modal-debt" class="modal-overlay"><div class="modal"><div class="modal-title">🏦 부채 추가</div><div class="modal-row"><label>부채명</label><input id="d-name" placeholder="예: 신용대출"></div><div class="modal-row"><label>총 원금</label><input id="d-origin" type="number" placeholder="0"></div><div class="modal-row"><label>현재 남은 원금</label><input id="d-remain" type="number" placeholder="0"></div><div class="modal-row"><label>연 이자율 (%)</label><input id="d-rate" type="number" step="0.1" placeholder="예: 4.5"></div><div class="modal-row"><label>월 납입일</label><input id="d-day" type="number" min="1" max="31"></div><div class="modal-row"><label>메모</label><input id="d-memo"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-debt')">취소</button><button class="btn btn-primary" onclick="addDebt()">추가</button></div></div></div>
 <div id="modal-cat" class="modal-overlay"><div class="modal" style="width:520px"><div class="modal-title">🏷️ 카테고리 관리</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div><div style="font-weight:700;font-size:13px;margin-bottom:9px">💚 수입</div><div id="cat-inc-list"></div><div style="display:flex;gap:6px;margin-top:8px"><input id="new-inc-cat" placeholder="새 카테고리..."><button class="btn btn-primary btn-sm" onclick="addCat('inc')">+</button></div></div><div><div style="font-weight:700;font-size:13px;margin-bottom:9px">❤️ 지출</div><div id="cat-exp-list"></div><div style="display:flex;gap:6px;margin-top:8px"><input id="new-exp-cat" placeholder="새 카테고리..."><button class="btn btn-primary btn-sm" onclick="addCat('exp')">+</button></div></div></div><div class="modal-actions"><button class="btn btn-primary" onclick="closeModal('modal-cat');renderBudget()">완료</button></div></div></div>
+
+<!-- 자기계발 노트 추가/수정 모달 -->
+<div id="modal-sdnote" class="modal-overlay">
+  <div class="modal" style="width:600px">
+    <div class="modal-title" id="sdnote-modal-title">📝 노트 추가</div>
+    <div class="mg2">
+      <div class="modal-row"><label>이름 / 제목</label><input id="sdn-name" placeholder="예: 5분봉 눌림목 진입법"></div>
+      <div class="modal-row"><label>분류</label><input id="sdn-cat" placeholder="예: 기법, 검색식, 멘탈..."></div>
+    </div>
+    <div class="modal-row"><label>설명 / 내용</label>
+      <textarea id="sdn-desc" style="min-height:130px" placeholder="상세 내용을 적어주세요..."></textarea>
+    </div>
+    <div class="modal-row"><label>🔗 참고 URL</label>
+      <input id="sdn-url" placeholder="https://youtube.com/... 또는 블로그 링크">
+    </div>
+    <div class="modal-row">
+      <label>📸 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('sdn-img-in').click()">
+        <input type="file" id="sdn-img-in" accept="image/*" multiple style="display:none" onchange="handleSdnImg(this)">
+        📁 클릭하여 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="sdn-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-sdnote')">취소</button>
+      <button class="btn btn-primary" onclick="saveSdNote()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 명상 가이드 추가 모달 -->
+<div id="modal-meditation" class="modal-overlay">
+  <div class="modal" style="width:580px">
+    <div class="modal-title" id="meditation-modal-title">🧘 명상 추가</div>
+    <div class="modal-row"><label>이름 / 제목</label><input id="med-name" placeholder="예: 호흡 명상, 바디스캔 명상..."></div>
+    <div class="modal-row"><label>내용 / 방법</label>
+      <textarea id="med-content" style="min-height:130px" placeholder="명상 방법, 효과, 주의사항..."></textarea>
+    </div>
+    <div class="modal-row"><label>🔗 참고 URL (유튜브, 앱 등)</label>
+      <input id="med-url" placeholder="https://...">
+    </div>
+    <div class="modal-row">
+      <label>📸 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('med-img-in').click()">
+        <input type="file" id="med-img-in" accept="image/*" multiple style="display:none" onchange="handleMedImg(this)">
+        📁 클릭하여 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="med-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-meditation')">취소</button>
+      <button class="btn btn-primary" onclick="saveMeditation()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 명상 기록 모달 -->
+<div id="modal-med-record" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">📝 명상 기록</div>
+    <div class="modal-row"><label>날짜</label><input id="medr-date" type="date"></div>
+    <div class="modal-row"><label>명상 종류</label><input id="medr-type" placeholder="예: 호흡 명상, 10분 명상..."></div>
+    <div class="modal-row"><label>시간 (분)</label><input id="medr-min" type="number" placeholder="예: 10"></div>
+    <div class="modal-row"><label>소감 / 메모</label><textarea id="medr-memo" style="min-height:80px" placeholder="오늘 명상하면서 느낀 것..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-med-record')">취소</button>
+      <button class="btn btn-primary" onclick="saveMedRecord()">저장</button>
+    </div>
+  </div>
+</div>
 
 <!-- 매매 추가 모달 -->
 <div id="modal-trade" class="modal-overlay">
@@ -1342,6 +1428,12 @@ window.state={
   tradeDiaries:[],
   reviewData:{good:[],bad:[],log:[]},
   chartReviews:[],
+  selfdevNotes:{},  // {youtuber_category: [{id,name,cat,desc,url,images}]}
+  selfdevGeneral:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
+  meditations:[],
+  medRecords:[],
+  tempSdnImgs:[],
+  tempMedImgs:[],
   tempChartReviewImgs:[],
   tempReviewImgs:[],
   tempTradeDiaryImgs:[]
@@ -1398,6 +1490,8 @@ function initApp(){
   ['face','scalp'].forEach(cat=>{renderMas(cat);renderAddForm('mas',cat);});
   renderBudget();
   renderTDash();renderTrades();renderTBalance();
+  renderCurrentYoutuber();renderSelfdevGeneral('blog');
+  renderMeditations();renderMedRecords();
   if(state['stock-rules-text']){const el=document.getElementById('stock-rules-text');if(el)el.value=state['stock-rules-text'];}
   document.addEventListener('input',e=>{
     if(['p-goal','p-mood'].includes(e.target.id)){state[e.target.id]=e.target.value;save();}
@@ -1412,7 +1506,7 @@ function nav(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
   document.getElementById('page-'+id)?.classList.add('active');
-  const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,cond:6,stocks:7,journal:8,saju:9,diary:10,food:11,exercise:12,massage:13,budget:14};
+  const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,stocks:6,journal:7,selfdev:8,diary:9,food:10,exercise:11,massage:12,meditation:13,budget:14};
   document.querySelectorAll('.sb-item')[map[id]]?.classList.add('active');
   if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();renderWatch();renderCatFilters();}
   if(id==='schedule')renderSchedCal();
@@ -1422,6 +1516,8 @@ function nav(id){
   if(id==='saju')renderSajuSaved();
   if(id==='budget')renderBudget();
   if(id==='journal'){renderTDash();renderTrades();}
+  if(id==='selfdev'){renderCurrentYoutuber();renderSelfdevGeneral();}
+  if(id==='meditation'){renderMeditations();renderMedRecords();}
   updateDashStats();
 }
 
@@ -3070,6 +3166,321 @@ function renderWatch(){
 }
 
 function openPilFull(i){const p=state.pilHistory[i];if(!p)return;document.getElementById('full-title').textContent='필사';document.getElementById('full-meta').textContent=p.date+' · '+p.theme+(p.intent?' · '+p.intent:'');document.getElementById('full-body').textContent=p.text;openModal('modal-full');}
+
+// ===== 자기계발 노트 =====
+const sdInvestConfig={
+  domestic:{name:'국내주식',youtubers:['단테','돈깡','만주','대왕개미'],cats:{단테:['검색식','기법','멘탈','거래량','매매유형','화면세팅법','호가창','심법','보조지표','기타'],돈깡:['기법','멘탈','매매유형','기타'],만주:['기법','멘탈','매매유형','기타'],대왕개미:['기법','멘탈','매매유형','기타']}},
+  us:{name:'미국주식',youtubers:['개준석','또사이선생'],cats:{개준석:['기법','멘탈','매매유형','기타'],또사이선생:['기법','멘탈','매매유형','기타']}},
+  coin:{name:'코인선물',youtubers:['쉽알남','불장단타왕'],cats:{쉽알남:['기법','멘탈','매매유형','기타'],불장단타왕:['기법','멘탈','매매유형','기타']}},
+  futures:{name:'해외선물',youtubers:['김직선'],cats:{김직선:['기법','멘탈','매매유형','기타']}}
+};
+let currentSdSection='invest',currentInvestSub='domestic',currentYoutuber='단테';
+let sdnEditId=null,sdnImgs=[];
+
+function switchSelfdev(section){
+  currentSdSection=section;
+  document.querySelectorAll('#selfdev-tabs .tab').forEach(t=>t.classList.remove('active'));
+  const tabMap={invest:0,blog:1,youtube:2,sidejob:3,language:4,computer:5};
+  document.querySelectorAll('#selfdev-tabs .tab')[tabMap[section]]?.classList.add('active');
+  ['invest','blog','youtube','sidejob','language','computer'].forEach(s=>{
+    const el=document.getElementById('sd-'+s);if(el)el.classList.toggle('active',s===section);
+  });
+  if(section==='invest')renderCurrentYoutuber();
+  else renderSelfdevGeneral(section);
+}
+function switchInvestSub(sub){
+  currentInvestSub=sub;
+  document.querySelectorAll('#invest-sub-tabs .tab').forEach(t=>t.classList.remove('active'));
+  const subMap={domestic:0,us:1,coin:2,futures:3};
+  document.querySelectorAll('#invest-sub-tabs .tab')[subMap[sub]]?.classList.add('active');
+  ['domestic','us','coin','futures'].forEach(s=>{
+    const el=document.getElementById('inv-'+s);if(el)el.style.display=s===sub?'block':'none';
+  });
+  // 해당 섹션의 첫 유튜버 선택
+  const cfg=sdInvestConfig[sub];
+  currentYoutuber=cfg.youtubers[0];
+  renderCurrentYoutuber();
+}
+function switchYoutuber(youtuber,btn,market){
+  currentYoutuber=youtuber;
+  const tabsId=market+'-youtuber-tabs';
+  document.querySelectorAll('#'+tabsId+' .tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderCurrentYoutuber();
+}
+let sdCatFilter='전체';
+function renderCurrentYoutuber(){
+  const market=currentInvestSub;
+  const youtuber=currentYoutuber;
+  const cfg=sdInvestConfig[market];
+  const cats=cfg.cats[youtuber]||['기타'];
+  const contentId=market+'-youtuber-content';
+  const el=document.getElementById(contentId);if(!el)return;
+  const key=`${market}_${youtuber}`;
+  if(!state.selfdevNotes)state.selfdevNotes={};
+  if(!state.selfdevNotes[key])state.selfdevNotes[key]=[];
+  const notes=state.selfdevNotes[key];
+  const catColors={'검색식':'#dbeafe','기법':'#fef3c7','멘탈':'#f3e8ff','거래량':'#dcfce7','매매유형':'#ffe4e6','화면세팅법':'#e0f2fe','호가창':'#fef9c3','심법':'#f0fdf4','보조지표':'#fce7f3','기타':'#f3f4f6'};
+  const catTxtColors={'검색식':'#1e40af','기법':'#92400e','멘탈':'#7c3aed','거래량':'#166534','매매유형':'#9f1239','화면세팅법':'#0369a1','호가창':'#854d0e','심법':'#15803d','보조지표':'#9d174d','기타':'#374151'};
+  const filtered=sdCatFilter==='전체'?notes:notes.filter(n=>n.cat===sdCatFilter);
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 12px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="filter-btn ${sdCatFilter==='전체'?'on':''}" onclick="sdCatFilter='전체';renderCurrentYoutuber()">전체</button>
+        ${cats.map(c=>`<button class="filter-btn ${sdCatFilter===c?'on':''}" onclick="sdCatFilter='${c}';renderCurrentYoutuber()">${c}</button>`).join('')}
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openSdNoteModal('${key}','${youtuber}',${JSON.stringify(cats)})">+ 노트 추가</button>
+    </div>
+    ${filtered.length?filtered.map(n=>`
+      <div class="concept-card" style="margin-bottom:11px;border-left:4px solid ${catColors[n.cat]||'#e8dcc8'}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:${catColors[n.cat]||'#f3f4f6'};color:${catTxtColors[n.cat]||'#374151'}">${n.cat}</span>
+            <span style="font-weight:700;font-size:14px">${n.name}</span>
+          </div>
+          <div style="display:flex;gap:5px;flex-shrink:0">
+            <button class="btn btn-outline btn-sm" onclick="openSdNoteViewModal('${key}',${n.id})">🔍 전체보기</button>
+            <button class="btn btn-outline btn-sm" onclick="openSdNoteModal('${key}','${youtuber}',${JSON.stringify(cats)},${n.id})">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="delSdNote('${key}',${n.id})">삭제</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:7px;white-space:pre-wrap">${(n.desc||'').slice(0,120)}${(n.desc||'').length>120?'...':''}</div>
+        ${n.url?`<a href="${n.url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 ${n.url.slice(0,55)}${n.url.length>55?'...':''}</a>`:''}
+        ${n.images&&n.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="width:80px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`:''}
+        <div style="font-size:10px;color:var(--text2);margin-top:5px">${n.date||''}</div>
+      </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요 📝</div>'}`;
+}
+
+function renderSelfdevGeneral(section){
+  const s=section||currentSdSection;
+  if(s==='invest')return;
+  const key='sd_'+s;
+  if(!state.selfdevGeneral)state.selfdevGeneral={blog:[],youtube:[],sidejob:[],language:[],computer:[]};
+  const notes=state.selfdevGeneral[s]||[];
+  const icons={blog:'📝',youtube:'📺',sidejob:'💼',language:'🌍',computer:'💻'};
+  const names={blog:'블로그',youtube:'유튜브',sidejob:'부업',language:'외국어',computer:'컴퓨터'};
+  const el=document.getElementById('sd-'+s+'-content');if(!el)return;
+  el.innerHTML=`
+    <div style="display:flex;justify-content:flex-end;margin:10px 0 14px">
+      <button class="btn btn-primary btn-sm" onclick="openSdGeneralModal('${s}')">+ 노트 추가</button>
+    </div>
+    ${notes.length?notes.map(n=>`
+      <div class="concept-card" style="margin-bottom:11px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            ${n.cat?`<span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:var(--active);color:var(--accent);margin-right:7px">${n.cat}</span>`:''}
+            <span style="font-weight:700;font-size:14px">${n.name}</span>
+          </div>
+          <div style="display:flex;gap:5px">
+            <button class="btn btn-outline btn-sm" onclick="openSdGeneralViewModal('${s}',${n.id})">🔍 전체보기</button>
+            <button class="btn btn-outline btn-sm" onclick="openSdGeneralModal('${s}',${n.id})">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="delSdGeneral('${s}',${n.id})">삭제</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:7px;white-space:pre-wrap">${(n.desc||'').slice(0,120)}${(n.desc||'').length>120?'...':''}</div>
+        ${n.url?`<a href="${n.url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 ${n.url.slice(0,55)}${n.url.length>55?'...':''}</a>`:''}
+        ${n.images&&n.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="width:80px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`:''}
+      </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요 📝</div>'}`;
+}
+
+let sdGeneralCtx=null,sdGeneralEditId=null;
+function openSdGeneralModal(section,editId){
+  sdGeneralCtx=section;sdGeneralEditId=editId||null;sdnImgs=[];
+  document.getElementById('sdnote-modal-title').textContent=editId?'📝 노트 수정':'📝 노트 추가';
+  document.getElementById('sdn-img-prev').innerHTML='';
+  ['sdn-name','sdn-cat','sdn-desc','sdn-url'].forEach(id=>document.getElementById(id).value='');
+  if(editId){
+    const n=(state.selfdevGeneral[section]||[]).find(x=>x.id===editId);if(!n)return;
+    document.getElementById('sdn-name').value=n.name||'';
+    document.getElementById('sdn-cat').value=n.cat||'';
+    document.getElementById('sdn-desc').value=n.desc||'';
+    document.getElementById('sdn-url').value=n.url||'';
+    sdnImgs=n.images?[...n.images]:[];
+    renderSdnImgPrev();
+  }
+  document.getElementById('modal-sdnote').dataset.mode='general';
+  openModal('modal-sdnote');
+}
+function openSdGeneralViewModal(section,id){
+  const n=(state.selfdevGeneral[section]||[]).find(x=>x.id===id);if(!n)return;
+  document.getElementById('note-view-title').textContent=n.name;
+  let html='';
+  if(n.cat)html+=`<div style="margin-bottom:10px"><span style="padding:2px 8px;border-radius:9px;font-size:11px;font-weight:600;background:var(--active);color:var(--accent)">${n.cat}</span></div>`;
+  if(n.desc)html+=`<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">${n.desc}</div>`;
+  if(n.url)html+=`<div style="margin-bottom:12px"><a href="${n.url}" target="_blank" style="color:var(--blue);font-size:13px">🔗 ${n.url}</a></div>`;
+  if(n.images&&n.images.length)html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="max-width:100%;max-height:280px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`;
+  document.getElementById('note-view-body').innerHTML=html;
+  openModal('modal-note-view');
+}
+function delSdGeneral(section,id){
+  if(!confirm('삭제할까요?'))return;
+  state.selfdevGeneral[section]=state.selfdevGeneral[section].filter(x=>x.id!==id);
+  save();renderSelfdevGeneral(section);
+}
+
+let sdNoteKey=null,sdNoteCats=[];
+function openSdNoteModal(key,youtuber,cats,editId){
+  sdNoteKey=key;sdNoteCats=cats;sdnEditId=editId||null;sdnImgs=[];
+  const isEdit=!!editId;
+  document.getElementById('sdnote-modal-title').textContent=isEdit?`📝 ${youtuber} 노트 수정`:`📝 ${youtuber} 노트 추가`;
+  document.getElementById('sdn-cat').placeholder='예: '+cats.join(', ')+'...';
+  document.getElementById('sdn-img-prev').innerHTML='';
+  ['sdn-name','sdn-cat','sdn-desc','sdn-url'].forEach(id=>document.getElementById(id).value='');
+  if(editId){
+    const n=(state.selfdevNotes[key]||[]).find(x=>x.id===editId);if(!n)return;
+    document.getElementById('sdn-name').value=n.name||'';
+    document.getElementById('sdn-cat').value=n.cat||'';
+    document.getElementById('sdn-desc').value=n.desc||'';
+    document.getElementById('sdn-url').value=n.url||'';
+    sdnImgs=n.images?[...n.images]:[];
+    renderSdnImgPrev();
+  }
+  document.getElementById('modal-sdnote').dataset.mode='invest';
+  openModal('modal-sdnote');
+}
+function openSdNoteViewModal(key,id){
+  const n=(state.selfdevNotes[key]||[]).find(x=>x.id===id);if(!n)return;
+  const catColors={'검색식':'#dbeafe','기법':'#fef3c7','멘탈':'#f3e8ff','거래량':'#dcfce7','매매유형':'#ffe4e6','화면세팅법':'#e0f2fe','호가창':'#fef9c3','심법':'#f0fdf4','보조지표':'#fce7f3','기타':'#f3f4f6'};
+  const catTxtColors={'검색식':'#1e40af','기법':'#92400e','멘탈':'#7c3aed','거래량':'#166534','매매유형':'#9f1239','화면세팅법':'#0369a1','호가창':'#854d0e','심법':'#15803d','보조지표':'#9d174d','기타':'#374151'};
+  document.getElementById('note-view-title').textContent=n.name;
+  let html='';
+  if(n.cat)html+=`<div style="margin-bottom:10px"><span style="padding:2px 8px;border-radius:9px;font-size:11px;font-weight:600;background:${catColors[n.cat]||'#f3f4f6'};color:${catTxtColors[n.cat]||'#374151'}">${n.cat}</span></div>`;
+  if(n.desc)html+=`<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">${n.desc}</div>`;
+  if(n.url)html+=`<div style="margin-bottom:12px"><a href="${n.url}" target="_blank" style="color:var(--blue);font-size:13px">🔗 ${n.url}</a></div>`;
+  if(n.images&&n.images.length)html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="max-width:100%;max-height:280px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`;
+  document.getElementById('note-view-body').innerHTML=html;
+  openModal('modal-note-view');
+}
+function handleSdnImg(input){
+  Array.from(input.files).forEach(f=>{const r=new FileReader();r.onload=e=>{sdnImgs.push(e.target.result);renderSdnImgPrev();};r.readAsDataURL(f);});
+  input.value='';
+}
+function renderSdnImgPrev(){
+  const el=document.getElementById('sdn-img-prev');if(!el)return;
+  el.innerHTML=sdnImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" style="cursor:pointer" onclick="showFullImg('${src}')"><button class="rm" onclick="sdnImgs.splice(${i},1);renderSdnImgPrev()">✕</button></div>`).join('');
+}
+function saveSdNote(){
+  const name=document.getElementById('sdn-name').value.trim();if(!name)return alert('이름을 입력해주세요');
+  const mode=document.getElementById('modal-sdnote').dataset.mode;
+  const obj={id:sdnEditId||Date.now(),name,cat:document.getElementById('sdn-cat').value.trim(),desc:document.getElementById('sdn-desc').value,url:document.getElementById('sdn-url').value,images:[...sdnImgs],date:new Date().toLocaleDateString('ko-KR')};
+  if(mode==='invest'){
+    if(!state.selfdevNotes)state.selfdevNotes={};
+    if(!state.selfdevNotes[sdNoteKey])state.selfdevNotes[sdNoteKey]=[];
+    if(sdnEditId){const idx=state.selfdevNotes[sdNoteKey].findIndex(x=>x.id===sdnEditId);if(idx>=0)state.selfdevNotes[sdNoteKey][idx]=obj;}
+    else state.selfdevNotes[sdNoteKey].unshift(obj);
+    closeModal('modal-sdnote');save();renderCurrentYoutuber();
+  } else {
+    const s=sdGeneralCtx;
+    if(!state.selfdevGeneral)state.selfdevGeneral={blog:[],youtube:[],sidejob:[],language:[],computer:[]};
+    if(!state.selfdevGeneral[s])state.selfdevGeneral[s]=[];
+    if(sdGeneralEditId){const idx=state.selfdevGeneral[s].findIndex(x=>x.id===sdGeneralEditId);if(idx>=0)state.selfdevGeneral[s][idx]=obj;}
+    else state.selfdevGeneral[s].unshift(obj);
+    closeModal('modal-sdnote');save();renderSelfdevGeneral(s);
+  }
+}
+function delSdNote(key,id){
+  if(!confirm('삭제할까요?'))return;
+  state.selfdevNotes[key]=state.selfdevNotes[key].filter(x=>x.id!==id);
+  save();renderCurrentYoutuber();
+}
+
+// ===== 명상 =====
+let medEditId=null,medImgs=[];
+function openMeditationModal(editId){
+  medEditId=editId||null;medImgs=[];
+  document.getElementById('meditation-modal-title').textContent=editId?'🧘 명상 수정':'🧘 명상 추가';
+  document.getElementById('med-img-prev').innerHTML='';
+  ['med-name','med-content','med-url'].forEach(id=>document.getElementById(id).value='');
+  if(editId){
+    const m=(state.meditations||[]).find(x=>x.id===editId);if(!m)return;
+    document.getElementById('med-name').value=m.name||'';
+    document.getElementById('med-content').value=m.content||'';
+    document.getElementById('med-url').value=m.url||'';
+    medImgs=m.images?[...m.images]:[];
+    renderMedImgPrev();
+  }
+  openModal('modal-meditation');
+}
+function handleMedImg(input){
+  Array.from(input.files).forEach(f=>{const r=new FileReader();r.onload=e=>{medImgs.push(e.target.result);renderMedImgPrev();};r.readAsDataURL(f);});
+  input.value='';
+}
+function renderMedImgPrev(){
+  const el=document.getElementById('med-img-prev');if(!el)return;
+  el.innerHTML=medImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" style="cursor:pointer" onclick="showFullImg('${src}')"><button class="rm" onclick="medImgs.splice(${i},1);renderMedImgPrev()">✕</button></div>`).join('');
+}
+function saveMeditation(){
+  const name=document.getElementById('med-name').value.trim();if(!name)return alert('이름을 입력해주세요');
+  if(!state.meditations)state.meditations=[];
+  const obj={id:medEditId||Date.now(),name,content:document.getElementById('med-content').value,url:document.getElementById('med-url').value,images:[...medImgs],date:new Date().toLocaleDateString('ko-KR')};
+  if(medEditId){const idx=state.meditations.findIndex(x=>x.id===medEditId);if(idx>=0)state.meditations[idx]=obj;}
+  else state.meditations.unshift(obj);
+  closeModal('modal-meditation');save();renderMeditations();
+}
+function renderMeditations(){
+  if(!state.meditations)state.meditations=[];
+  const el=document.getElementById('meditation-list');if(!el)return;
+  if(!state.meditations.length){el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">명상 가이드를 추가해보세요 🧘</div>';return;}
+  el.innerHTML=state.meditations.map(m=>`
+    <div class="concept-card" style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <span style="font-weight:700;font-size:15px">${m.name}</span>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-outline btn-sm" onclick="openMedView(${m.id})">🔍 전체보기</button>
+          <button class="btn btn-outline btn-sm" onclick="openMeditationModal(${m.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="delMeditation(${m.id})">삭제</button>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-wrap;margin-bottom:7px">${(m.content||'').slice(0,120)}${(m.content||'').length>120?'...':''}</div>
+      ${m.url?`<a href="${m.url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 ${m.url.slice(0,55)}${m.url.length>55?'...':''}</a>`:''}
+      ${m.images&&m.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${m.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="width:80px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`:''}
+      <div style="font-size:10px;color:var(--text2);margin-top:5px">${m.date||''}</div>
+    </div>`).join('');
+}
+function openMedView(id){
+  const m=(state.meditations||[]).find(x=>x.id===id);if(!m)return;
+  document.getElementById('note-view-title').textContent='🧘 '+m.name;
+  let html='';
+  if(m.content)html+=`<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">${m.content}</div>`;
+  if(m.url)html+=`<div style="margin-bottom:12px"><a href="${m.url}" target="_blank" style="color:var(--blue);font-size:13px">🔗 ${m.url}</a></div>`;
+  if(m.images&&m.images.length)html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">${m.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="max-width:100%;max-height:280px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`;
+  document.getElementById('note-view-body').innerHTML=html;
+  openModal('modal-note-view');
+}
+function delMeditation(id){
+  if(!confirm('삭제할까요?'))return;
+  state.meditations=state.meditations.filter(x=>x.id!==id);
+  save();renderMeditations();
+}
+function openMedRecordModal(){
+  document.getElementById('medr-date').value=new Date().toISOString().split('T')[0];
+  ['medr-type','medr-min','medr-memo'].forEach(id=>document.getElementById(id).value='');
+  openModal('modal-med-record');
+}
+function saveMedRecord(){
+  const type=document.getElementById('medr-type').value.trim();
+  if(!type)return alert('명상 종류를 입력해주세요');
+  if(!state.medRecords)state.medRecords=[];
+  state.medRecords.unshift({id:Date.now(),date:document.getElementById('medr-date').value,type,min:document.getElementById('medr-min').value,memo:document.getElementById('medr-memo').value});
+  closeModal('modal-med-record');save();renderMedRecords();
+}
+function renderMedRecords(){
+  if(!state.medRecords)state.medRecords=[];
+  const el=document.getElementById('meditation-record-list');if(!el)return;
+  if(!state.medRecords.length){el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">명상 기록을 추가해보세요 📝</div>';return;}
+  el.innerHTML=state.medRecords.map((r,i)=>`
+    <div class="j-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="j-date">🧘 ${r.date}</span>
+          <span style="font-weight:700;font-size:13px">${r.type}</span>
+          ${r.min?`<span style="background:#e8ecfd;color:var(--blue);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">${r.min}분</span>`:''}
+        </div>
+        <button class="del-btn" onclick="state.medRecords.splice(${i},1);save();renderMedRecords()">✕</button>
+      </div>
+      ${r.memo?`<div style="font-size:13px;color:var(--text2);line-height:1.7">${r.memo}</div>`:''}
+    </div>`).join('');
+}
 function showFullImg(src){document.getElementById('img-fullview-src').src=src;document.getElementById('img-fullview').classList.add('open');}
 
 // ===== 공부 차트 복기 =====
