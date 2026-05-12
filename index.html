@@ -421,6 +421,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="tab" onclick="switchTab(this,'stock-goals')">🎯 목표</div>
     <div class="tab" onclick="switchTab(this,'stock-words')">💬 한마디</div>
     <div class="tab" onclick="switchTab(this,'stock-homework')">📝 오늘의 숙제</div>
+    <div class="tab" onclick="switchTab(this,'stock-watch')">👁️ 종목체크</div>
   </div>
 
   <!-- 핵심 개념 -->
@@ -502,6 +503,55 @@ textarea{resize:vertical;min-height:80px}
         <button class="filter-btn" onclick="filterHW('완료',this)">✅ 완료</button>
       </div>
       <div id="homework-list"></div>
+    </div>
+  </div>
+
+  <!-- 종목체크 탭 -->
+  <div id="stock-watch" class="tab-content">
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div><div style="font-weight:700;font-size:15px">👁️ 종목체크</div><div style="font-size:12px;color:var(--text2);margin-top:2px">관심 종목 차트 및 매매 계획을 기록해요</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openWatchModal()">+ 종목 추가</button>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px" id="watch-filters">
+        <button class="filter-btn on" onclick="filterWatch('전체',this)">전체</button>
+        <button class="filter-btn" onclick="filterWatch('관심',this)">⭐ 관심</button>
+        <button class="filter-btn" onclick="filterWatch('진입대기',this)">⏳ 진입대기</button>
+        <button class="filter-btn" onclick="filterWatch('매수완료',this)">✅ 매수완료</button>
+        <button class="filter-btn" onclick="filterWatch('완료',this)">🏁 완료</button>
+      </div>
+      <div id="watch-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 종목체크 추가/수정 모달 -->
+<div id="modal-watch" class="modal-overlay">
+  <div class="modal" style="width:620px">
+    <div class="modal-title" id="watch-modal-title">👁️ 종목 추가</div>
+    <div class="mg2">
+      <div class="modal-row"><label>종목명</label><input id="w-name" placeholder="예: 삼성전자"></div>
+      <div class="modal-row"><label>상태</label><select id="w-status"><option>관심</option><option>진입대기</option><option>매수완료</option><option>완료</option></select></div>
+    </div>
+    <div class="mg3">
+      <div class="modal-row"><label>진입가 (원)</label><input id="w-entry" type="number" placeholder="예: 75000"></div>
+      <div class="modal-row"><label>손절가 (원)</label><input id="w-stop" type="number" placeholder="예: 73000"></div>
+      <div class="modal-row"><label>목표 매도가 (원)</label><input id="w-target" type="number" placeholder="예: 79000"></div>
+    </div>
+    <div class="modal-row"><label>매매 근거 / 시나리오</label><textarea id="w-reason" style="min-height:90px" placeholder="왜 이 종목을 보는가?..."></textarea></div>
+    <div class="modal-row"><label>주의사항</label><textarea id="w-caution" style="min-height:60px" placeholder="이럴 때 포기한다..."></textarea></div>
+    <div class="modal-row">
+      <label>📸 차트 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('w-img-in').click()">
+        <input type="file" id="w-img-in" accept="image/*" multiple style="display:none" onchange="handleWatchImg(this)">
+        📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="w-img-prev"></div>
+    </div>
+    <div class="modal-row"><label>메모</label><textarea id="w-memo" style="min-height:55px" placeholder="추가 메모..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-watch')">취소</button>
+      <button class="btn btn-primary" onclick="saveWatch()">저장</button>
     </div>
   </div>
 </div>
@@ -626,7 +676,10 @@ textarea{resize:vertical;min-height:80px}
     <div class="trade-nav-tab" onclick="tradeNav('t-checklist')">✅ 체크리스트</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-pattern')">📈 패턴분석</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-balance')">📉 잔고추이</div>
-    <div class="trade-nav-tab" onclick="tradeNav('t-diary')">📔 매매일기</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-review-good')">✅ 잘한 매매</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-review-bad')">❌ 실패 매매</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-review-log')">📔 매매 복기</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-review-chart')">📊 공부 차트 복기</div>
   </div>
 
   <!-- 대시보드 -->
@@ -765,13 +818,66 @@ textarea{resize:vertical;min-height:80px}
     </div>
   </div>
 
-  <!-- 매매일기 -->
-  <div id="t-diary" class="trade-page">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div style="font-size:15px;font-weight:700">📔 매매일기</div>
-      <button class="btn btn-primary btn-sm" onclick="openTradeDiaryModal()">+ 일기 작성</button>
+  <!-- 잘한 매매 -->
+  <div id="t-review-good" class="trade-page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:700;color:var(--green)">✅ 잘한 매매</div><div style="font-size:12px;color:var(--text2);margin-top:2px">잘 지킨 원칙, 좋은 타점, 성공 패턴을 기록해요</div></div>
+      <button class="btn btn-primary btn-sm" onclick="openReviewModal('good')">+ 기록 추가</button>
     </div>
-    <div id="t-diary-list"></div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px">
+      <button class="filter-btn on" onclick="filterReview('good','전체',this)">전체</button>
+      <button class="filter-btn" onclick="filterReview('good','단타',this)">단타</button>
+      <button class="filter-btn" onclick="filterReview('good','스캘핑',this)">스캘핑</button>
+      <button class="filter-btn" onclick="filterReview('good','스윙',this)">스윙</button>
+    </div>
+    <div id="t-review-good-list"></div>
+  </div>
+
+  <!-- 실패 매매 -->
+  <div id="t-review-bad" class="trade-page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:700;color:var(--red)">❌ 실패 매매</div><div style="font-size:12px;color:var(--text2);margin-top:2px">어긴 원칙, 나쁜 타점, 반복 실수를 기록해요</div></div>
+      <button class="btn btn-primary btn-sm" onclick="openReviewModal('bad')">+ 기록 추가</button>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px">
+      <button class="filter-btn on" onclick="filterReview('bad','전체',this)">전체</button>
+      <button class="filter-btn" onclick="filterReview('bad','단타',this)">단타</button>
+      <button class="filter-btn" onclick="filterReview('bad','스캘핑',this)">스캘핑</button>
+      <button class="filter-btn" onclick="filterReview('bad','스윙',this)">스윙</button>
+    </div>
+    <div id="t-review-bad-list"></div>
+  </div>
+
+  <!-- 매매 복기 -->
+  <div id="t-review-log" class="trade-page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:700;color:var(--blue)">📔 매매 복기</div><div style="font-size:12px;color:var(--text2);margin-top:2px">매매 흐름, 심리, 개선점을 자유롭게 복기해요</div></div>
+      <button class="btn btn-primary btn-sm" onclick="openReviewModal('log')">+ 복기 추가</button>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px">
+      <button class="filter-btn on" onclick="filterReview('log','전체',this)">전체</button>
+      <button class="filter-btn" onclick="filterReview('log','단타',this)">단타</button>
+      <button class="filter-btn" onclick="filterReview('log','스캘핑',this)">스캘핑</button>
+      <button class="filter-btn" onclick="filterReview('log','스윙',this)">스윙</button>
+    </div>
+    <div id="t-review-log-list"></div>
+  </div>
+
+  <!-- 공부 차트 복기 -->
+  <div id="t-review-chart" class="trade-page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:700;color:var(--purple)">📊 공부 차트 복기</div><div style="font-size:12px;color:var(--text2);margin-top:2px">차트 분석, 패턴 공부, 복기 메모를 기록해요</div></div>
+      <button class="btn btn-primary btn-sm" onclick="openChartReviewModal()">+ 차트 추가</button>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px" id="chart-review-filters">
+      <button class="filter-btn on" onclick="filterChartReview('전체',this)">전체</button>
+      <button class="filter-btn" onclick="filterChartReview('눌림',this)">눌림</button>
+      <button class="filter-btn" onclick="filterChartReview('돌파',this)">돌파</button>
+      <button class="filter-btn" onclick="filterChartReview('추세',this)">추세</button>
+      <button class="filter-btn" onclick="filterChartReview('횡보',this)">횡보</button>
+      <button class="filter-btn" onclick="filterChartReview('기타',this)">기타</button>
+    </div>
+    <div id="t-review-chart-list"></div>
   </div>
 </div>
 
@@ -859,9 +965,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="tab active" onclick="switchTab(this,'med-guide')">📖 명상 가이드</div>
     <div class="tab" onclick="switchTab(this,'med-record')">📝 명상 기록</div>
   </div>
-  <div id="med-guide" class="tab-content active">
-    <div id="meditation-list"></div>
-  </div>
+  <div id="med-guide" class="tab-content active"><div id="meditation-list"></div></div>
   <div id="med-record" class="tab-content">
     <div style="display:flex;justify-content:flex-end;margin-bottom:11px">
       <button class="btn btn-primary btn-sm" onclick="openMedRecordModal()">+ 오늘 기록</button>
@@ -911,31 +1015,18 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <!-- 자기계발: 블로그 -->
-<div id="page-sd-blog" class="page">
-  <div id="sd-blog-wrap"></div>
-</div>
-
+<div id="page-sd-blog" class="page"><div id="sd-blog-wrap"></div></div>
 <!-- 자기계발: 유튜브 -->
-<div id="page-sd-youtube" class="page">
-  <div id="sd-youtube-wrap"></div>
-</div>
-
+<div id="page-sd-youtube" class="page"><div id="sd-youtube-wrap"></div></div>
 <!-- 자기계발: 부업 -->
-<div id="page-sd-sidejob" class="page">
-  <div id="sd-sidejob-wrap"></div>
-</div>
-
+<div id="page-sd-sidejob" class="page"><div id="sd-sidejob-wrap"></div></div>
 <!-- 자기계발: 외국어 -->
-<div id="page-sd-language" class="page">
-  <div id="sd-language-wrap"></div>
-</div>
-
+<div id="page-sd-language" class="page"><div id="sd-language-wrap"></div></div>
 <!-- 자기계발: 컴퓨터 -->
-<div id="page-sd-computer" class="page">
-  <div id="sd-computer-wrap"></div>
-</div>
+<div id="page-sd-computer" class="page"><div id="sd-computer-wrap"></div></div>
 
 
+<!-- 가계부 -->
 <div id="page-budget" class="page">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:9px">
     <div class="page-title" style="margin:0">💰 가계부</div>
@@ -983,72 +1074,6 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 </div><!-- end main -->
-
-<!-- 자기계발 노트 모달 -->
-<div id="modal-sdnote" class="modal-overlay">
-  <div class="modal" style="width:580px">
-    <div class="modal-title" id="sdnote-modal-title">📝 노트 추가</div>
-    <div class="modal-row"><label>이름 / 제목</label><input id="sdn-name" placeholder="예: 5분봉 눌림목 진입법"></div>
-    <div class="modal-row">
-      <label>분류 <span style="font-size:10px;color:var(--text2);font-weight:400">(목록 선택 또는 직접 입력)</span></label>
-      <div style="display:flex;gap:8px">
-        <select id="sdn-cat-sel" style="flex:1" onchange="if(this.value)document.getElementById('sdn-cat-input').value=''"><option value="">-- 선택 --</option></select>
-        <input id="sdn-cat-input" placeholder="직접 입력..." style="flex:1" oninput="if(this.value)document.getElementById('sdn-cat-sel').value=''">
-      </div>
-    </div>
-    <div class="modal-row"><label>설명 / 내용</label><textarea id="sdn-desc" style="min-height:130px" placeholder="상세 내용..."></textarea></div>
-    <div class="modal-row"><label>🔗 참고 URL</label><input id="sdn-url" placeholder="https://..."></div>
-    <div class="modal-row">
-      <label>📸 이미지 첨부</label>
-      <div class="img-upload-area" onclick="document.getElementById('sdn-img-in').click()">
-        <input type="file" id="sdn-img-in" accept="image/*" multiple style="display:none" onchange="handleSdnImg(this)">
-        📁 클릭하여 이미지 첨부
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="sdn-img-prev"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-sdnote')">취소</button>
-      <button class="btn btn-primary" onclick="saveSdNote()">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- 명상 가이드 모달 -->
-<div id="modal-meditation" class="modal-overlay">
-  <div class="modal" style="width:560px">
-    <div class="modal-title" id="med-modal-title">🧘 명상 추가</div>
-    <div class="modal-row"><label>이름</label><input id="med-name" placeholder="예: 호흡 명상, 바디스캔..."></div>
-    <div class="modal-row"><label>내용 / 방법</label><textarea id="med-content" style="min-height:130px" placeholder="명상 방법, 효과..."></textarea></div>
-    <div class="modal-row"><label>🔗 참고 URL</label><input id="med-url" placeholder="https://..."></div>
-    <div class="modal-row">
-      <label>📸 이미지</label>
-      <div class="img-upload-area" onclick="document.getElementById('med-img-in').click()">
-        <input type="file" id="med-img-in" accept="image/*" multiple style="display:none" onchange="handleMedImg(this)">
-        📁 클릭하여 이미지 첨부
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="med-img-prev"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-meditation')">취소</button>
-      <button class="btn btn-primary" onclick="saveMeditation()">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- 명상 기록 모달 -->
-<div id="modal-med-record" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">📝 명상 기록</div>
-    <div class="modal-row"><label>날짜</label><input id="medr-date" type="date"></div>
-    <div class="modal-row"><label>명상 종류</label><input id="medr-type" placeholder="예: 호흡 명상, 10분..."></div>
-    <div class="modal-row"><label>시간 (분)</label><input id="medr-min" type="number" placeholder="예: 10"></div>
-    <div class="modal-row"><label>소감</label><textarea id="medr-memo" style="min-height:70px" placeholder="오늘 명상 느낀 점..."></textarea></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-med-record')">취소</button>
-      <button class="btn btn-primary" onclick="saveMedRecord()">저장</button>
-    </div>
-  </div>
-</div>
 
 <!-- MODALS (원본 그대로) -->
 <div id="modal-todo" class="modal-overlay"><div class="modal"><div class="modal-title">✅ 새 할 일</div><div class="modal-row"><label>할 일</label><input id="todo-text-in"></div><div class="modal-row"><label>카테고리</label><select id="todo-cat"><option>주식</option><option>독서</option><option>생활</option><option>기타</option></select></div><div class="modal-row"><label>우선순위</label><select id="todo-pri"><option>보통</option><option>중요</option><option>낮음</option></select></div><div class="modal-row"><label>마감일</label><input id="todo-due" type="date"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-todo')">취소</button><button class="btn btn-primary" onclick="addTodo()">추가</button></div></div></div>
@@ -1109,24 +1134,148 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
-<!-- 매매일기 모달 -->
-<div id="modal-trade-diary" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">📔 매매일기 작성</div>
-    <div class="modal-row"><label>날짜</label><input id="td-date" type="date"></div>
-    <div class="modal-row"><label>제목</label><input id="td-title" placeholder="오늘의 매매 제목..."></div>
-    <div class="modal-row"><label>내용</label><textarea id="td-content" placeholder="오늘의 매매 일기를 작성하세요..." style="min-height:140px"></textarea></div>
+<!-- 매매 복기 모달 -->
+<div id="modal-review" class="modal-overlay">
+  <div class="modal" style="width:620px">
+    <div class="modal-title" id="review-modal-title">✅ 잘한 매매 기록</div>
+    <div class="mg2">
+      <div class="modal-row"><label>날짜</label><input id="rv-date" type="date"></div>
+      <div class="modal-row"><label>종목명</label><input id="rv-stock" placeholder="예: 삼성전자"></div>
+    </div>
+    <div class="mg3">
+      <div class="modal-row"><label>매매유형</label><input id="rv-type" placeholder="예: 단타, 스캘핑..."></div>
+      <div class="modal-row"><label>패턴</label><input id="rv-pattern" placeholder="예: 눌림, 돌파..."></div>
+      <div class="modal-row"><label>거래량</label><input id="rv-vol" placeholder="예: 증가, 감소..."></div>
+    </div>
+    <div class="mg2">
+      <div class="modal-row"><label>손절가</label><input id="rv-stop" placeholder="예: 73,000원 또는 -3%"></div>
+      <div class="modal-row"><label>익절가</label><input id="rv-target" placeholder="예: 79,000원 또는 +5%"></div>
+    </div>
+    <div class="modal-row"><label>😌 심리상태</label><input id="rv-psych" placeholder="예: 안정, 조급, 흥분..."></div>
+    <div class="modal-row"><label>📝 메모 / 복기 내용</label>
+      <textarea id="rv-memo" style="min-height:120px" placeholder="왜 잘했는가 / 무엇을 배웠는가..."></textarea>
+    </div>
     <div class="modal-row">
       <label>📸 차트 이미지 첨부</label>
-      <div class="img-upload-area" onclick="document.getElementById('td-img-in').click()">
-        <input type="file" id="td-img-in" accept="image/*" multiple style="display:none" onchange="handleTradeDiaryImg(this)">
+      <div class="img-upload-area" onclick="document.getElementById('rv-img-in').click()">
+        <input type="file" id="rv-img-in" accept="image/*" multiple style="display:none" onchange="handleReviewImg(this)">
         📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px" id="td-img-preview"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="rv-img-prev"></div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-trade-diary')">취소</button>
-      <button class="btn btn-primary" onclick="saveTradeDiary()">저장</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-review')">취소</button>
+      <button class="btn btn-primary" onclick="saveReview2()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 복기 전체보기 모달 -->
+<div id="modal-review-view" class="modal-overlay">
+  <div class="modal" style="width:660px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="modal-title" style="margin:0" id="rv-view-title"></div>
+      <button style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2)" onclick="closeModal('modal-review-view')">✕</button>
+    </div>
+    <div id="rv-view-body"></div>
+  </div>
+</div>
+
+<!-- 공부 차트 복기 모달 -->
+<div id="modal-chart-review" class="modal-overlay">
+  <div class="modal" style="width:620px">
+    <div class="modal-title" id="chart-review-modal-title">📊 공부 차트 복기 추가</div>
+    <div class="mg2">
+      <div class="modal-row"><label>날짜</label><input id="cr-date" type="date"></div>
+      <div class="modal-row"><label>종목명</label><input id="cr-stock" placeholder="예: 삼성전자 (없으면 빈칸)"></div>
+    </div>
+    <div class="mg2">
+      <div class="modal-row"><label>패턴 / 테마</label><input id="cr-pattern" placeholder="예: 눌림, 돌파..."></div>
+      <div class="modal-row"><label>시간봉</label><input id="cr-timeframe" placeholder="예: 5분봉, 일봉..."></div>
+    </div>
+    <div class="modal-row"><label>📝 분석 내용 / 배운 점</label>
+      <textarea id="cr-memo" style="min-height:130px" placeholder="이 차트에서 무엇을 배웠는가?..."></textarea>
+    </div>
+    <div class="modal-row"><label>⚠️ 주의사항 / 실수 포인트</label>
+      <textarea id="cr-caution" style="min-height:70px" placeholder="놓쳤거나 실수할 수 있는 포인트..."></textarea>
+    </div>
+    <div class="modal-row">
+      <label>📸 차트 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('cr-img-in').click()">
+        <input type="file" id="cr-img-in" accept="image/*" multiple style="display:none" onchange="handleChartReviewImg(this)">
+        📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="cr-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-chart-review')">취소</button>
+      <button class="btn btn-primary" onclick="saveChartReview()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 자기계발 노트 모달 -->
+<div id="modal-sdnote" class="modal-overlay">
+  <div class="modal" style="width:580px">
+    <div class="modal-title" id="sdnote-modal-title">📝 노트 추가</div>
+    <div class="modal-row"><label>이름 / 제목</label><input id="sdn-name" placeholder="예: 5분봉 눌림목 진입법"></div>
+    <div class="modal-row">
+      <label>분류 <span style="font-size:10px;color:var(--text2);font-weight:400">(목록 선택 또는 직접 입력)</span></label>
+      <div style="display:flex;gap:8px">
+        <select id="sdn-cat-sel" style="flex:1" onchange="if(this.value)document.getElementById('sdn-cat-input').value=''"><option value="">-- 선택 --</option></select>
+        <input id="sdn-cat-input" placeholder="직접 입력..." style="flex:1" oninput="if(this.value)document.getElementById('sdn-cat-sel').value=''">
+      </div>
+    </div>
+    <div class="modal-row"><label>설명 / 내용</label><textarea id="sdn-desc" style="min-height:130px" placeholder="상세 내용..."></textarea></div>
+    <div class="modal-row"><label>🔗 참고 URL</label><input id="sdn-url" placeholder="https://..."></div>
+    <div class="modal-row">
+      <label>📸 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('sdn-img-in').click()">
+        <input type="file" id="sdn-img-in" accept="image/*" multiple style="display:none" onchange="handleSdnImg(this)">
+        📁 클릭하여 이미지 첨부
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="sdn-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-sdnote')">취소</button>
+      <button class="btn btn-primary" onclick="saveSdNote()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 명상 가이드 모달 -->
+<div id="modal-meditation" class="modal-overlay">
+  <div class="modal" style="width:560px">
+    <div class="modal-title" id="med-modal-title">🧘 명상 추가</div>
+    <div class="modal-row"><label>이름</label><input id="med-name" placeholder="예: 호흡 명상..."></div>
+    <div class="modal-row"><label>내용 / 방법</label><textarea id="med-content" style="min-height:130px" placeholder="명상 방법, 효과..."></textarea></div>
+    <div class="modal-row"><label>🔗 참고 URL</label><input id="med-url" placeholder="https://..."></div>
+    <div class="modal-row">
+      <label>📸 이미지</label>
+      <div class="img-upload-area" onclick="document.getElementById('med-img-in').click()">
+        <input type="file" id="med-img-in" accept="image/*" multiple style="display:none" onchange="handleMedImg(this)">
+        📁 클릭하여 이미지 첨부
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="med-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-meditation')">취소</button>
+      <button class="btn btn-primary" onclick="saveMeditation()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 명상 기록 모달 -->
+<div id="modal-med-record" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">📝 명상 기록</div>
+    <div class="modal-row"><label>날짜</label><input id="medr-date" type="date"></div>
+    <div class="modal-row"><label>명상 종류</label><input id="medr-type" placeholder="예: 호흡 명상..."></div>
+    <div class="modal-row"><label>시간 (분)</label><input id="medr-min" type="number" placeholder="10"></div>
+    <div class="modal-row"><label>소감</label><textarea id="medr-memo" style="min-height:70px" placeholder="오늘 느낀 점..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-med-record')">취소</button>
+      <button class="btn btn-primary" onclick="saveMedRecord()">저장</button>
     </div>
   </div>
 </div>
@@ -1168,6 +1317,9 @@ window.state={
   expCats:['식비','카페','차량관리','쇼핑','의료/건강','문화/여가','투자','저축','대출상환(원금)','대출이자','기타'],
   catEmoji:{급여:'💼',투자수익:'📈',기타수입:'💰',식비:'🍽️',카페:'☕','차량관리':'🚗',쇼핑:'🛍️','의료/건강':'💊','문화/여가':'🎬',투자:'📊',저축:'🏦','대출상환(원금)':'💙','대출이자':'💳',기타:'📌'},
   bTxFilter:'전체',debtFilter:'전체',bTxType:'지출',
+  stockWatchlist:[],
+  reviewData:{good:[],bad:[],log:[]},
+  chartReviews:[],
   selfdevNotes:{},
   selfdevGeneral:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
   selfdevGenCats:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
@@ -1254,8 +1406,7 @@ function initApp(){
   ['cardio','diet','stretch','neck','leg','arm','waist'].forEach(cat=>{renderEx(cat);renderAddForm('ex',cat);});
   ['face','scalp'].forEach(cat=>{renderMas(cat);renderAddForm('mas',cat);});
   renderBudget();
-  renderTDash();renderTrades();renderTBalance();
-  renderCurrentYoutuber();renderTDiaries();
+  renderTDash();renderTrades();renderTBalance();renderTDiaries();
   if(state['stock-rules-text']){const el=document.getElementById('stock-rules-text');if(el)el.value=state['stock-rules-text'];}
   document.addEventListener('input',e=>{
     if(['p-goal','p-mood'].includes(e.target.id)){state[e.target.id]=e.target.value;save();}
@@ -1272,7 +1423,7 @@ function nav(id){
   document.getElementById('page-'+id)?.classList.add('active');
   const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,stocks:6,journal:7,'sd-invest':8,'sd-blog':9,'sd-youtube':10,'sd-sidejob':11,'sd-language':12,'sd-computer':13,diary:14,food:15,exercise:16,massage:17,meditation:18,budget:19};
   document.querySelectorAll('.sb-item')[map[id]]?.classList.add('active');
-  if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();}
+  if(id==='stocks'){renderSC();renderRules();renderGoals();renderWords();renderHW();renderWatch();}
   if(id==='schedule')renderSchedCal();
   if(id==='food')renderFoodCal();
   if(id==='book')renderBooks();
@@ -1296,13 +1447,16 @@ function tradeNav(id){
   document.querySelectorAll('.trade-page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs=document.querySelectorAll('.trade-nav-tab');
-  const map={'t-dash':0,'t-trades':1,'t-checklist':2,'t-pattern':3,'t-balance':4,'t-diary':5};
+  const map={'t-dash':0,'t-trades':1,'t-checklist':2,'t-pattern':3,'t-balance':4,'t-review-good':5,'t-review-bad':6,'t-review-log':7,'t-review-chart':8};
   tabs[map[id]]?.classList.add('active');
   if(id==='t-dash')renderTDash();
   if(id==='t-trades')renderTrades();
   if(id==='t-pattern')renderTPattern();
   if(id==='t-balance')renderTBalance();
-  if(id==='t-diary')renderTDiaries();
+  if(id==='t-review-good')renderReviews('good');
+  if(id==='t-review-bad')renderReviews('bad');
+  if(id==='t-review-log')renderReviews('log');
+  if(id==='t-review-chart')renderChartReviews();
 }
 
 // ===== 매매 대시보드 =====
@@ -2308,74 +2462,351 @@ function renderDebt(){
 function addDebt(){const n=document.getElementById('d-name').value.trim();if(!n)return;state.debts.push({name:n,origin:parseInt(document.getElementById('d-origin').value)||0,remain:parseInt(document.getElementById('d-remain').value)||0,rate:parseFloat(document.getElementById('d-rate').value)||0,day:parseInt(document.getElementById('d-day').value)||1,memo:document.getElementById('d-memo').value});closeModal('modal-debt');['d-name','d-origin','d-remain','d-rate','d-day','d-memo'].forEach(id=>document.getElementById(id).value='');save();renderDebt();}
 function setDebtFilter(f,el){state.debtFilter=f;document.querySelectorAll('#debt-filters .filter-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderDebt();}
 
-// ===== MODAL =====
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-function switchTab(el,id){const parent=el.closest('.page')||document;parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById(id).classList.add('active');}
-function openFullModal(title,meta,body){document.getElementById('full-title').textContent=title;document.getElementById('full-meta').textContent=meta;document.getElementById('full-body').textContent=body.replace(/\\n/g,'\n');openModal('modal-full');}
+
+// ===== 매매 복기 (잘한/실패/복기) =====
+var reviewEditId=null,reviewType='good',reviewImgs=[];
+var reviewFilters={good:'전체',bad:'전체',log:'전체'};
+var reviewTypeInfo={
+  good:{label:'✅ 잘한 매매',color:'var(--green)',bg:'#e8f5ee'},
+  bad:{label:'❌ 실패 매매',color:'var(--red)',bg:'#fde8e8'},
+  log:{label:'📔 매매 복기',color:'var(--blue)',bg:'#e8ecfd'}
+};
+function openReviewModal(type,editId){
+  reviewType=type;reviewEditId=editId||null;reviewImgs=[];
+  var info=reviewTypeInfo[type];
+  var tEl=document.getElementById('review-modal-title');if(tEl)tEl.textContent=editId?info.label+' 수정':info.label+' 추가';
+  var prevEl=document.getElementById('rv-img-prev');if(prevEl)prevEl.innerHTML='';
+  document.getElementById('rv-date').value=new Date().toISOString().split('T')[0];
+  ['rv-stock','rv-stop','rv-target','rv-memo','rv-type','rv-pattern','rv-vol','rv-psych'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+  if(editId){
+    if(!state.reviewData)state.reviewData={good:[],bad:[],log:[]};
+    var item=(state.reviewData[type]||[]).find(function(x){return x.id===editId;});
+    if(!item)return;
+    document.getElementById('rv-date').value=item.date||'';
+    document.getElementById('rv-stock').value=item.stock||'';
+    document.getElementById('rv-type').value=item.tradeType||'';
+    document.getElementById('rv-pattern').value=item.pattern||'';
+    document.getElementById('rv-vol').value=item.vol||'';
+    document.getElementById('rv-stop').value=item.stop||'';
+    document.getElementById('rv-target').value=item.target||'';
+    document.getElementById('rv-psych').value=item.psych||'';
+    document.getElementById('rv-memo').value=item.memo||'';
+    reviewImgs=item.images?item.images.slice():[];
+    renderReviewImgPrev();
+  }
+  openModal('modal-review');
+}
+function handleReviewImg(input){
+  Array.from(input.files).forEach(function(f){var r=new FileReader();r.onload=function(e){reviewImgs.push(e.target.result);renderReviewImgPrev();};r.readAsDataURL(f);});
+  input.value='';
+}
+function renderReviewImgPrev(){
+  var el=document.getElementById('rv-img-prev');if(!el)return;
+  el.innerHTML=reviewImgs.map(function(src,i){return'<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(\''+src+'\')"><button class="rm" onclick="reviewImgs.splice('+i+',1);renderReviewImgPrev()">✕</button></div>';}).join('');
+}
+function saveReview2(){
+  var stock=document.getElementById('rv-stock').value.trim();
+  var memo=document.getElementById('rv-memo').value.trim();
+  if(!stock&&!memo){alert('종목명 또는 메모를 입력해주세요');return;}
+  if(!state.reviewData)state.reviewData={good:[],bad:[],log:[]};
+  if(!state.reviewData[reviewType])state.reviewData[reviewType]=[];
+  var obj={id:reviewEditId||Date.now(),date:document.getElementById('rv-date').value,stock:stock,
+    tradeType:document.getElementById('rv-type').value,pattern:document.getElementById('rv-pattern').value,
+    vol:document.getElementById('rv-vol').value,stop:document.getElementById('rv-stop').value,
+    target:document.getElementById('rv-target').value,psych:document.getElementById('rv-psych').value,
+    memo:memo,images:reviewImgs.slice(),createdAt:new Date().toLocaleDateString('ko-KR')};
+  if(reviewEditId){var idx=state.reviewData[reviewType].findIndex(function(x){return x.id===reviewEditId;});if(idx>=0)state.reviewData[reviewType][idx]=obj;else state.reviewData[reviewType].unshift(obj);}
+  else state.reviewData[reviewType].unshift(obj);
+  closeModal('modal-review');save();renderReviews(reviewType);
+}
+function delReview2(type,id){
+  if(!confirm('삭제할까요?'))return;
+  state.reviewData[type]=state.reviewData[type].filter(function(x){return x.id!==id;});
+  save();renderReviews(type);
+}
+function filterReview(type,f,btn){
+  reviewFilters[type]=f;
+  var wrap=btn.closest('div');
+  wrap.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderReviews(type);
+}
+function openReviewFull(type,id){
+  if(!state.reviewData||!state.reviewData[type])return;
+  var item=state.reviewData[type].find(function(x){return x.id===id;});if(!item)return;
+  var info=reviewTypeInfo[type];
+  document.getElementById('rv-view-title').innerHTML='<span style="color:'+info.color+'">'+info.label+'</span> <span style="font-size:13px;font-weight:400;color:var(--text2);margin-left:8px">'+item.date+'</span>';
+  var html='';
+  if(item.stock)html+='<div style="font-size:17px;font-weight:700;margin-bottom:12px">'+item.stock+'</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">';
+  if(item.tradeType)html+='<div style="background:#f5f0e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">매매유형</div><div style="font-size:13px;font-weight:700">'+item.tradeType+'</div></div>';
+  if(item.pattern)html+='<div style="background:#f5f0e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">패턴</div><div style="font-size:13px;font-weight:700">'+item.pattern+'</div></div>';
+  if(item.vol)html+='<div style="background:#f5f0e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">거래량</div><div style="font-size:13px;font-weight:700">'+item.vol+'</div></div>';
+  if(item.stop)html+='<div style="background:#fde8e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">손절가</div><div style="font-size:13px;font-weight:700;color:var(--red)">'+item.stop+'</div></div>';
+  if(item.target)html+='<div style="background:#e8f5ee;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">익절가</div><div style="font-size:13px;font-weight:700;color:var(--green)">'+item.target+'</div></div>';
+  if(item.psych)html+='<div style="background:#e8ecfd;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">심리상태</div><div style="font-size:13px;font-weight:700;color:var(--blue)">'+item.psych+'</div></div>';
+  html+='</div>';
+  if(item.memo)html+='<div style="background:'+info.bg+';border-radius:10px;padding:14px;margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:'+info.color+';margin-bottom:7px">📝 메모 / 복기</div><div style="font-size:13px;line-height:1.9;white-space:pre-wrap">'+item.memo+'</div></div>';
+  if(item.images&&item.images.length)html+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">'+item.images.map(function(src){return'<img src="'+src+'" style="max-height:200px;border-radius:9px;cursor:pointer;object-fit:contain;border:1px solid var(--border)" onclick="showFullImg(\''+src+'\')">';}).join('')+'</div>';
+  document.getElementById('rv-view-body').innerHTML=html;
+  openModal('modal-review-view');
+}
+function renderReviews(type){
+  if(!state.reviewData)state.reviewData={good:[],bad:[],log:[]};
+  if(!state.reviewData[type])state.reviewData[type]=[];
+  var el=document.getElementById('t-review-'+type+'-list');if(!el)return;
+  var info=reviewTypeInfo[type];
+  var f=reviewFilters[type]||'전체';
+  var items=state.reviewData[type].slice().sort(function(a,b){return b.date>a.date?1:-1;});
+  if(f!=='전체')items=items.filter(function(x){return x.tradeType===f;});
+  if(!items.length){el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">'+info.label+' 기록을 추가해보세요</div>';return;}
+  el.innerHTML=items.map(function(item){return(
+    '<div style="border:1px solid var(--border);border-left:4px solid '+info.color+';border-radius:12px;padding:14px;margin-bottom:10px;background:var(--card)">'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px">'+
+    '<div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
+    (item.stock?'<span style="font-size:15px;font-weight:700">'+item.stock+'</span>':'')+
+    '<span style="font-size:11px;color:var(--text2)">'+item.date+'</span>'+
+    (item.tradeType?'<span style="background:#f0e8d8;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:600">'+item.tradeType+'</span>':'')+
+    (item.pattern?'<span style="background:#f0e8d8;border-radius:6px;padding:2px 7px;font-size:10px">'+item.pattern+'</span>':'')+
+    (item.psych?'<span style="font-size:11px;font-weight:600;color:var(--blue)">'+item.psych+'</span>':'')+
+    '</div></div>'+
+    '<div style="display:flex;gap:5px;flex-shrink:0">'+
+    '<button class="expand-btn" onclick="openReviewFull(\''+type+'\','+item.id+')">🔍 전체보기</button>'+
+    '<button class="btn btn-outline btn-sm" onclick="openReviewModal(\''+type+'\','+item.id+')" style="font-size:10px;padding:3px 8px">✏️</button>'+
+    '<button class="del-btn" onclick="delReview2(\''+type+'\','+item.id+')">✕</button>'+
+    '</div></div>'+
+    '<div style="display:flex;gap:7px;margin-bottom:8px;flex-wrap:wrap">'+
+    (item.stop?'<span style="font-size:11px;background:#fde8e8;color:var(--red);padding:2px 8px;border-radius:6px;font-weight:600">손절 '+item.stop+'</span>':'')+
+    (item.target?'<span style="font-size:11px;background:#e8f5ee;color:var(--green);padding:2px 8px;border-radius:6px;font-weight:600">익절 '+item.target+'</span>':'')+
+    (item.vol?'<span style="font-size:11px;background:#e8ecfd;color:var(--blue);padding:2px 8px;border-radius:6px">거래량 '+item.vol+'</span>':'')+
+    '</div>'+
+    (item.memo?'<div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap">'+(item.memo.length>120?item.memo.slice(0,120)+'\n<span style="font-size:11px;color:var(--accent)">...전체보기 클릭</span>':item.memo)+'</div>':'')+
+    (item.images&&item.images.length?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">'+item.images.map(function(src){return'<img src="'+src+'" style="height:80px;border-radius:7px;cursor:pointer;object-fit:cover;border:1px solid var(--border)" onclick="showFullImg(\''+src+'\')">';}).join('')+'</div>':'')+
+    '</div>');}).join('');
+}
+
+// ===== 공부 차트 복기 =====
+var chartReviewEditId=null,chartReviewImgs=[],chartReviewFilter='전체';
+function openChartReviewModal(editId){
+  chartReviewEditId=editId||null;chartReviewImgs=[];
+  var tEl=document.getElementById('chart-review-modal-title');
+  if(tEl)tEl.textContent=editId?'📊 차트 복기 수정':'📊 공부 차트 복기 추가';
+  document.getElementById('cr-img-prev').innerHTML='';
+  document.getElementById('cr-date').value=new Date().toISOString().split('T')[0];
+  ['cr-stock','cr-pattern','cr-timeframe','cr-memo','cr-caution'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+  if(editId){
+    var item=(state.chartReviews||[]).find(function(x){return x.id===editId;});if(!item)return;
+    document.getElementById('cr-date').value=item.date||'';
+    document.getElementById('cr-stock').value=item.stock||'';
+    document.getElementById('cr-pattern').value=item.pattern||'';
+    document.getElementById('cr-timeframe').value=item.timeframe||'';
+    document.getElementById('cr-memo').value=item.memo||'';
+    document.getElementById('cr-caution').value=item.caution||'';
+    chartReviewImgs=item.images?item.images.slice():[];
+    renderChartReviewImgPrev();
+  }
+  openModal('modal-chart-review');
+}
+function handleChartReviewImg(input){
+  Array.from(input.files).forEach(function(f){var r=new FileReader();r.onload=function(e){chartReviewImgs.push(e.target.result);renderChartReviewImgPrev();};r.readAsDataURL(f);});
+  input.value='';
+}
+function renderChartReviewImgPrev(){
+  var el=document.getElementById('cr-img-prev');if(!el)return;
+  el.innerHTML=chartReviewImgs.map(function(src,i){return'<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(\''+src+'\')"><button class="rm" onclick="chartReviewImgs.splice('+i+',1);renderChartReviewImgPrev()">✕</button></div>';}).join('');
+}
+function saveChartReview(){
+  var memo=document.getElementById('cr-memo').value.trim();
+  var stock=document.getElementById('cr-stock').value.trim();
+  if(!memo&&!stock){alert('분석 내용 또는 종목명을 입력해주세요');return;}
+  if(!state.chartReviews)state.chartReviews=[];
+  var obj={id:chartReviewEditId||Date.now(),date:document.getElementById('cr-date').value,stock:stock,
+    pattern:document.getElementById('cr-pattern').value,timeframe:document.getElementById('cr-timeframe').value,
+    memo:memo,caution:document.getElementById('cr-caution').value,images:chartReviewImgs.slice(),
+    createdAt:new Date().toLocaleDateString('ko-KR')};
+  if(chartReviewEditId){var idx=state.chartReviews.findIndex(function(x){return x.id===chartReviewEditId;});if(idx>=0)state.chartReviews[idx]=obj;else state.chartReviews.unshift(obj);}
+  else state.chartReviews.unshift(obj);
+  closeModal('modal-chart-review');save();renderChartReviews();
+}
+function filterChartReview(f,btn){
+  chartReviewFilter=f;
+  document.querySelectorAll('#chart-review-filters .filter-btn').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  renderChartReviews();
+}
+function renderChartReviews(){
+  if(!state.chartReviews)state.chartReviews=[];
+  var el=document.getElementById('t-review-chart-list');if(!el)return;
+  var items=state.chartReviews.slice().sort(function(a,b){return b.date>a.date?1:-1;});
+  if(chartReviewFilter!=='전체')items=items.filter(function(x){return x.pattern===chartReviewFilter||(chartReviewFilter==='기타'&&!['눌림','돌파','추세','횡보'].includes(x.pattern));});
+  if(!items.length){el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">차트 복기를 추가해보세요 📊</div>';return;}
+  el.innerHTML=items.map(function(item){return(
+    '<div style="border:1px solid var(--border);border-left:4px solid var(--purple);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--card)">'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px">'+
+    '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
+    (item.stock?'<span style="font-size:15px;font-weight:700">'+item.stock+'</span>':'')+
+    '<span style="font-size:11px;color:var(--text2)">'+item.date+'</span>'+
+    (item.pattern?'<span style="background:#f0e8d8;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:600">'+item.pattern+'</span>':'')+
+    (item.timeframe?'<span style="background:#e8ecfd;color:var(--blue);border-radius:6px;padding:2px 7px;font-size:10px">'+item.timeframe+'</span>':'')+
+    '</div>'+
+    '<div style="display:flex;gap:5px;flex-shrink:0">'+
+    '<button class="expand-btn" onclick="openChartReviewFull('+item.id+')">🔍 전체보기</button>'+
+    '<button class="btn btn-outline btn-sm" onclick="openChartReviewModal('+item.id+')" style="font-size:10px;padding:3px 8px">✏️</button>'+
+    '<button class="del-btn" onclick="delChartReview('+item.id+')">✕</button>'+
+    '</div></div>'+
+    (item.memo?'<div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap;margin-bottom:7px">'+(item.memo.length>150?item.memo.slice(0,150)+'...':item.memo)+'</div>':'')+
+    (item.caution?'<div style="background:#fff8ec;border-radius:7px;padding:7px 10px;font-size:12px;color:var(--accent);margin-bottom:7px">⚠️ '+(item.caution.length>80?item.caution.slice(0,80)+'...':item.caution)+'</div>':'')+
+    (item.images&&item.images.length?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">'+item.images.map(function(src){return'<img src="'+src+'" style="height:90px;border-radius:8px;cursor:pointer;object-fit:cover;border:1px solid var(--border)" onclick="showFullImg(\''+src+'\')">';}).join('')+'</div>':'')+
+    '</div>');}).join('');
+}
+function openChartReviewFull(id){
+  var item=(state.chartReviews||[]).find(function(x){return x.id===id;});if(!item)return;
+  document.getElementById('full-title').textContent='📊 공부 차트 복기';
+  document.getElementById('full-meta').textContent=item.date+(item.stock?' · '+item.stock:'')+(item.pattern?' · '+item.pattern:'')+(item.timeframe?' · '+item.timeframe:'');
+  var body=item.memo||'';
+  if(item.caution)body+='\n\n⚠️ 주의사항\n'+item.caution;
+  document.getElementById('full-body').textContent=body;
+  openModal('modal-full');
+}
+function delChartReview(id){
+  if(!confirm('삭제할까요?'))return;
+  state.chartReviews=state.chartReviews.filter(function(x){return x.id!==id;});
+  save();renderChartReviews();
+}
+
+// ===== 종목체크 =====
+var watchEditId=null,watchImgs=[],watchFilter='전체';
+function openWatchModal(id){
+  watchEditId=id||null;watchImgs=[];
+  document.getElementById('watch-modal-title').textContent=id?'👁️ 종목 수정':'👁️ 종목 추가';
+  ['w-name','w-reason','w-caution','w-memo'].forEach(function(i){var e=document.getElementById(i);if(e)e.value='';});
+  document.getElementById('w-status').value='관심';
+  ['w-entry','w-stop','w-target'].forEach(function(i){var e=document.getElementById(i);if(e)e.value='';});
+  document.getElementById('w-img-prev').innerHTML='';
+  if(id){
+    if(!state.stockWatchlist)state.stockWatchlist=[];
+    var w=state.stockWatchlist.find(function(x){return x.id===id;});if(!w)return;
+    document.getElementById('w-name').value=w.name||'';
+    document.getElementById('w-status').value=w.status||'관심';
+    document.getElementById('w-entry').value=w.entry||'';
+    document.getElementById('w-stop').value=w.stop||'';
+    document.getElementById('w-target').value=w.target||'';
+    document.getElementById('w-reason').value=w.reason||'';
+    document.getElementById('w-caution').value=w.caution||'';
+    document.getElementById('w-memo').value=w.memo||'';
+    watchImgs=w.imgs?w.imgs.slice():[];
+    renderWatchImgPrev();
+  }
+  openModal('modal-watch');
+}
+function handleWatchImg(inp){
+  Array.from(inp.files).forEach(function(f){var r=new FileReader();r.onload=function(e){watchImgs.push(e.target.result);renderWatchImgPrev();};r.readAsDataURL(f);});
+  inp.value='';
+}
+function renderWatchImgPrev(){
+  var el=document.getElementById('w-img-prev');if(!el)return;
+  el.innerHTML=watchImgs.map(function(src,i){return'<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(\''+src+'\')"><button class="rm" onclick="watchImgs.splice('+i+',1);renderWatchImgPrev()">✕</button></div>';}).join('');
+}
+function saveWatch(){
+  var name=document.getElementById('w-name').value.trim();if(!name)return;
+  if(!state.stockWatchlist)state.stockWatchlist=[];
+  var obj={id:watchEditId||Date.now(),name:name,status:document.getElementById('w-status').value,
+    entry:document.getElementById('w-entry').value,stop:document.getElementById('w-stop').value,
+    target:document.getElementById('w-target').value,reason:document.getElementById('w-reason').value,
+    caution:document.getElementById('w-caution').value,memo:document.getElementById('w-memo').value,
+    imgs:watchImgs.slice(),date:watchEditId?(state.stockWatchlist.find(function(x){return x.id===watchEditId;})||{}).date||new Date().toLocaleDateString('ko-KR'):new Date().toLocaleDateString('ko-KR')};
+  if(watchEditId){var idx=state.stockWatchlist.findIndex(function(x){return x.id===watchEditId;});if(idx>=0)state.stockWatchlist[idx]=obj;else state.stockWatchlist.unshift(obj);}
+  else state.stockWatchlist.unshift(obj);
+  closeModal('modal-watch');save();renderWatch();
+}
+function filterWatch(f,btn){
+  watchFilter=f;
+  document.querySelectorAll('#watch-filters .filter-btn').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  renderWatch();
+}
+function renderWatch(){
+  if(!state.stockWatchlist)state.stockWatchlist=[];
+  var el=document.getElementById('watch-list');if(!el)return;
+  var list=watchFilter==='전체'?state.stockWatchlist:state.stockWatchlist.filter(function(w){return w.status===watchFilter;});
+  if(!list.length){el.innerHTML='<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">종목을 추가해보세요 👁️</div>';return;}
+  var sColor={관심:'var(--accent)',진입대기:'var(--blue)',매수완료:'var(--green)',완료:'#aaa'};
+  el.innerHTML=list.map(function(w){
+    var rr=w.entry&&w.stop&&w.target?((w.target-w.entry)/(w.entry-w.stop)).toFixed(2):null;
+    return('<div style="border:1px solid var(--border);border-radius:13px;padding:16px;margin-bottom:12px;background:var(--card)">'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'+
+    '<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;font-weight:700">'+w.name+'</span>'+
+    '<span style="padding:2px 9px;border-radius:9px;font-size:11px;font-weight:600;background:'+(sColor[w.status]||'#aaa')+';color:#fff">'+w.status+'</span></div>'+
+    '<div style="display:flex;gap:6px">'+
+    '<button class="btn btn-outline btn-sm" onclick="openWatchModal('+w.id+')">✏️ 수정</button>'+
+    '<button class="del-btn" onclick="if(confirm(\'삭제할까요?\')){state.stockWatchlist=state.stockWatchlist.filter(function(x){return x.id!=='+w.id+';});save();renderWatch()}">✕</button>'+
+    '</div></div>'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">'+
+    (w.entry?'<div style="background:#f5f0e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">진입가</div><div style="font-size:14px;font-weight:700;color:var(--blue)">'+Number(w.entry).toLocaleString()+'원</div></div>':'')+
+    (w.stop?'<div style="background:#fde8e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">손절가</div><div style="font-size:14px;font-weight:700;color:var(--red)">'+Number(w.stop).toLocaleString()+'원</div></div>':'')+
+    (w.target?'<div style="background:#e8f5ee;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">목표가</div><div style="font-size:14px;font-weight:700;color:var(--green)">'+Number(w.target).toLocaleString()+'원</div></div>':'')+
+    (rr?'<div style="background:#e8ecfd;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">R:R</div><div style="font-size:14px;font-weight:700;color:var(--blue)">'+rr+'x</div></div>':'')+
+    '</div>'+
+    (w.reason?'<div style="margin-bottom:8px"><div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:3px">📍 매매 근거</div><div style="font-size:13px;white-space:pre-wrap;line-height:1.6">'+w.reason+'</div></div>':'')+
+    (w.caution?'<div style="margin-bottom:8px;background:#fff8ec;border-radius:8px;padding:8px"><div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">⚠️ 주의사항</div><div style="font-size:12px;color:var(--text2);white-space:pre-wrap">'+w.caution+'</div></div>':'')+
+    (w.imgs&&w.imgs.length?'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">'+w.imgs.map(function(src){return'<img src="'+src+'" style="height:120px;border-radius:8px;cursor:pointer;object-fit:cover;border:1px solid var(--border)" onclick="showFullImg(\''+src+'\')">';}).join('')+'</div>':'')+
+    (w.memo?'<div style="font-size:12px;color:var(--text2);padding-top:6px;border-top:1px solid var(--border)">'+w.memo+'</div>':'')+
+    '<div style="font-size:10px;color:var(--text2);margin-top:6px">'+(w.date||'')+'</div></div>');
+  }).join('');
+}
+function showFullImg(src){document.getElementById('img-fullview-src').src=src;document.getElementById('img-fullview').classList.add('open');}
+
 // ===== 자기계발: 투자 (유튜버별 노트) =====
-const sdInvestConfig={
+var sdInvestConfig={
   domestic:{youtubers:['단테','돈깡','만주','대왕개미'],cats:{단테:['검색식','기법','멘탈','거래량','매매유형','화면세팅법','호가창','심법','보조지표','기타'],돈깡:['기법','멘탈','매매유형','기타'],만주:['기법','멘탈','매매유형','기타'],대왕개미:['기법','멘탈','매매유형','기타']}},
   us:{youtubers:['개준석','또사이선생'],cats:{개준석:['기법','멘탈','매매유형','기타'],또사이선생:['기법','멘탈','매매유형','기타']}},
   coin:{youtubers:['쉽알남','불장단타왕'],cats:{쉽알남:['기법','멘탈','매매유형','기타'],불장단타왕:['기법','멘탈','매매유형','기타']}},
   futures:{youtubers:['김직선'],cats:{김직선:['기법','멘탈','매매유형','기타']}}
 };
-let curInvestSub='domestic',curYoutuber='단테',sdCatFilter='전체';
-let sdNoteKey=null,sdNoteYoutuber='',sdNoteCats=[],sdnEditId=null,sdnImgs=[];
+var curInvestSub='domestic',curYoutuber='단테',sdCatFilter='전체';
+var sdNoteKey=null,sdNoteYoutuber='',sdNoteCats=[],sdnEditId=null,sdnImgs=[];
 
 function switchInvestSub(sub){
   curInvestSub=sub;
-  document.querySelectorAll('#invest-sub-tabs .tab').forEach(t=>t.classList.remove('active'));
-  const map={domestic:0,us:1,coin:2,futures:3};
-  document.querySelectorAll('#invest-sub-tabs .tab')[map[sub]]?.classList.add('active');
-  ['domestic','us','coin','futures'].forEach(s=>{
-    const el=document.getElementById('inv-'+s);if(el)el.style.display=s===sub?'block':'none';
-  });
-  const cfg=sdInvestConfig[sub];
-  curYoutuber=cfg.youtubers[0];
-  sdCatFilter='전체';
-  // 탭 active 초기화
-  const tabsEl=document.getElementById(sub+'-youtuber-tabs');
-  if(tabsEl){tabsEl.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',i===0);});}
+  document.querySelectorAll('#invest-sub-tabs .tab').forEach(function(t){t.classList.remove('active');});
+  var map={domestic:0,us:1,coin:2,futures:3};
+  document.querySelectorAll('#invest-sub-tabs .tab')[map[sub]]&&document.querySelectorAll('#invest-sub-tabs .tab')[map[sub]].classList.add('active');
+  ['domestic','us','coin','futures'].forEach(function(s){var e=document.getElementById('inv-'+s);if(e)e.style.display=s===sub?'block':'none';});
+  curYoutuber=sdInvestConfig[sub].youtubers[0];sdCatFilter='전체';
+  var tabsEl=document.getElementById(sub+'-youtuber-tabs');
+  if(tabsEl)tabsEl.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',i===0);});
   renderCurrentYoutuber();
 }
 function switchYoutuber(youtuber,btn,market){
   curYoutuber=youtuber;
-  const tabsEl=document.getElementById(market+'-youtuber-tabs');
-  if(tabsEl)tabsEl.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  var tabsEl=document.getElementById(market+'-youtuber-tabs');
+  if(tabsEl)tabsEl.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   if(btn)btn.classList.add('active');
-  sdCatFilter='전체';
-  renderCurrentYoutuber();
+  sdCatFilter='전체';renderCurrentYoutuber();
 }
 function renderCurrentYoutuber(){
-  const market=curInvestSub;
-  const youtuber=curYoutuber;
-  const cfg=sdInvestConfig[market];
-  const cats=(cfg.cats[youtuber])||['기타'];
-  const contentId=market+'-youtuber-content';
-  const el=document.getElementById(contentId);if(!el)return;
-  const key=market+'_'+youtuber;
+  var market=curInvestSub,youtuber=curYoutuber;
+  var cats=sdInvestConfig[market].cats[youtuber]||['기타'];
+  var el=document.getElementById(market+'-youtuber-content');if(!el)return;
+  var key=market+'_'+youtuber;
   if(!state.selfdevNotes)state.selfdevNotes={};
   if(!state.selfdevNotes[key])state.selfdevNotes[key]=[];
-  const notes=state.selfdevNotes[key];
-  const filtered=sdCatFilter==='전체'?notes:notes.filter(n=>n.cat===sdCatFilter);
-  const cBg={'검색식':'#dbeafe','기법':'#fef3c7','멘탈':'#f3e8ff','거래량':'#dcfce7','매매유형':'#ffe4e6','화면세팅법':'#e0f2fe','호가창':'#fef9c3','심법':'#f0fdf4','보조지표':'#fce7f3','기타':'#f3f4f6'};
-  const cTxt={'검색식':'#1e40af','기법':'#92400e','멘탈':'#7c3aed','거래량':'#166534','매매유형':'#9f1239','화면세팅법':'#0369a1','호가창':'#854d0e','심법':'#15803d','보조지표':'#9d174d','기타':'#374151'};
+  var notes=state.selfdevNotes[key];
+  var filtered=sdCatFilter==='전체'?notes:notes.filter(function(n){return n.cat===sdCatFilter;});
+  var cBg={'검색식':'#dbeafe','기법':'#fef3c7','멘탈':'#f3e8ff','거래량':'#dcfce7','매매유형':'#ffe4e6','화면세팅법':'#e0f2fe','호가창':'#fef9c3','심법':'#f0fdf4','보조지표':'#fce7f3','기타':'#f3f4f6'};
+  var cTxt={'검색식':'#1e40af','기법':'#92400e','멘탈':'#7c3aed','거래량':'#166534','매매유형':'#9f1239','화면세팅법':'#0369a1','호가창':'#854d0e','심법':'#15803d','보조지표':'#9d174d','기타':'#374151'};
   el.innerHTML=
     '<div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0;flex-wrap:wrap;gap:8px">'+
     '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
     '<button class="filter-btn '+(sdCatFilter==='전체'?'on':'')+'" onclick="sdCatFilter=\'전체\';renderCurrentYoutuber()">전체</button>'+
-    cats.map(c=>'<button class="filter-btn '+(sdCatFilter===c?'on':'')+'" onclick="sdCatFilter=\''+c+'\';renderCurrentYoutuber()">'+c+'</button>').join('')+
-    '</div>'+
-    '<button class="btn btn-primary btn-sm" onclick="openSdNoteModal(\''+key+'\',\''+youtuber+'\','+JSON.stringify(cats)+')">+ 노트 추가</button>'+
-    '</div>'+
-    (filtered.length?filtered.map(n=>
+    cats.map(function(c){return'<button class="filter-btn '+(sdCatFilter===c?'on':'')+'" onclick="sdCatFilter=\''+c+'\';renderCurrentYoutuber()">'+c+'</button>';}).join('')+
+    '</div><button class="btn btn-primary btn-sm" onclick="openSdNoteModal(\''+key+'\',\''+youtuber+'\','+JSON.stringify(cats)+')">+ 노트 추가</button></div>'+
+    (filtered.length?filtered.map(function(n){return(
       '<div class="concept-card" style="margin-bottom:11px;border-left:4px solid '+(cBg[n.cat]||'#e8dcc8')+'">'+
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'+
       '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
       '<span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:'+(cBg[n.cat]||'#f3f4f6')+';color:'+(cTxt[n.cat]||'#374151')+'">'+n.cat+'</span>'+
-      '<span style="font-weight:700;font-size:14px">'+n.name+'</span>'+
-      '</div>'+
+      '<span style="font-weight:700;font-size:14px">'+n.name+'</span></div>'+
       '<div style="display:flex;gap:5px;flex-shrink:0">'+
       '<button class="expand-btn" onclick="openSdNoteView(\''+key+'\','+n.id+')">🔍 전체보기</button>'+
       '<button class="btn btn-outline btn-sm" onclick="openSdNoteModal(\''+key+'\',\''+youtuber+'\','+JSON.stringify(cats)+','+n.id+')" style="font-size:10px;padding:3px 8px">✏️</button>'+
@@ -2383,37 +2814,30 @@ function renderCurrentYoutuber(){
       '</div></div>'+
       (n.desc?'<div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:6px;white-space:pre-wrap">'+(n.desc.length>120?n.desc.slice(0,120)+'...':n.desc)+'</div>':'')+
       (n.url?'<a href="'+n.url+'" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 '+(n.url.length>55?n.url.slice(0,55)+'...':n.url)+'</a>':'')+
-      (n.images&&n.images.length?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">'+n.images.map(img=>'<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="width:80px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">').join('')+'</div>':'')+
-      '<div style="font-size:10px;color:var(--text2);margin-top:4px">'+(n.date||'')+'</div>'+
-      '</div>'
-    ).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요 📝</div>');
+      (n.images&&n.images.length?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">'+n.images.map(function(img){return'<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="width:80px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">';}).join('')+'</div>':'')+
+      '<div style="font-size:10px;color:var(--text2);margin-top:4px">'+(n.date||'')+'</div></div>');}).join(''):
+      '<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요 📝</div>');
 }
 function openSdNoteModal(key,youtuber,cats,editId){
   sdNoteKey=key;sdNoteYoutuber=youtuber;sdNoteCats=cats||[];sdnEditId=editId||null;sdnImgs=[];
-  const tEl=document.getElementById('sdnote-modal-title');
-  if(tEl)tEl.textContent=editId?'📝 '+youtuber+' 노트 수정':'📝 '+youtuber+' 노트 추가';
-  const sel=document.getElementById('sdn-cat-sel');
-  if(sel){sel.innerHTML='<option value="">-- 선택 --</option>'+sdNoteCats.map(c=>'<option>'+c+'</option>').join('');sel.value='';}
+  var tEl=document.getElementById('sdnote-modal-title');if(tEl)tEl.textContent=editId?'📝 '+youtuber+' 노트 수정':'📝 '+youtuber+' 노트 추가';
+  var sel=document.getElementById('sdn-cat-sel');
+  if(sel){sel.innerHTML='<option value="">-- 선택 --</option>'+sdNoteCats.map(function(c){return'<option>'+c+'</option>';}).join('');sel.value='';}
   ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
-  const prev=document.getElementById('sdn-img-prev');if(prev)prev.innerHTML='';
+  var prev=document.getElementById('sdn-img-prev');if(prev)prev.innerHTML='';
   if(editId){
-    if(!state.selfdevNotes)state.selfdevNotes={};
-    const n=(state.selfdevNotes[key]||[]).find(function(x){return x.id===editId;});
-    if(!n)return;
+    var n=(state.selfdevNotes[key]||[]).find(function(x){return x.id===editId;});if(!n)return;
     var ne=document.getElementById('sdn-name');if(ne)ne.value=n.name||'';
-    if(sel&&sdNoteCats.includes(n.cat||''))sel.value=n.cat;
+    if(sel&&sdNoteCats.indexOf(n.cat||'')>=0)sel.value=n.cat;
     else{var ci=document.getElementById('sdn-cat-input');if(ci)ci.value=n.cat||'';}
     var de=document.getElementById('sdn-desc');if(de)de.value=n.desc||'';
     var ue=document.getElementById('sdn-url');if(ue)ue.value=n.url||'';
-    sdnImgs=n.images?n.images.slice():[];
-    renderSdnImgPrev();
+    sdnImgs=n.images?n.images.slice():[];renderSdnImgPrev();
   }
-  var me=document.getElementById('modal-sdnote');
-  if(me){me.dataset.mode='invest';me.dataset.section='';}
+  var me=document.getElementById('modal-sdnote');if(me){me.dataset.mode='invest';me.dataset.section='';}
   openModal('modal-sdnote');
 }
 function openSdNoteView(key,id){
-  if(!state.selfdevNotes)return;
   var n=(state.selfdevNotes[key]||[]).find(function(x){return x.id===id;});if(!n)return;
   var cBg={'검색식':'#dbeafe','기법':'#fef3c7','멘탈':'#f3e8ff','거래량':'#dcfce7','매매유형':'#ffe4e6','화면세팅법':'#e0f2fe','호가창':'#fef9c3','심법':'#f0fdf4','보조지표':'#fce7f3','기타':'#f3f4f6'};
   var cTxt={'검색식':'#1e40af','기법':'#92400e','멘탈':'#7c3aed','거래량':'#166534','매매유형':'#9f1239','화면세팅법':'#0369a1','호가창':'#854d0e','심법':'#15803d','보조지표':'#9d174d','기타':'#374151'};
@@ -2423,42 +2847,32 @@ function openSdNoteView(key,id){
   if(n.desc)html+='<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">'+n.desc+'</div>';
   if(n.url)html+='<div style="margin-bottom:12px"><a href="'+n.url+'" target="_blank" style="color:var(--blue);font-size:13px">🔗 '+n.url+'</a></div>';
   if(n.images&&n.images.length)html+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">'+n.images.map(function(img){return'<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="max-width:100%;max-height:280px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">';}).join('')+'</div>';
-  document.getElementById('note-view-body').innerHTML=html;
-  openModal('modal-note-view');
+  document.getElementById('note-view-body').innerHTML=html;openModal('modal-note-view');
 }
 function handleSdnImg(input){
-  Array.from(input.files).forEach(function(f){var r=new FileReader();r.onload=function(e){sdnImgs.push(e.target.result);renderSdnImgPrev();};r.readAsDataURL(f);});
-  input.value='';
+  Array.from(input.files).forEach(function(f){var r=new FileReader();r.onload=function(e){sdnImgs.push(e.target.result);renderSdnImgPrev();};r.readAsDataURL(f);});input.value='';
 }
 function renderSdnImgPrev(){
   var el=document.getElementById('sdn-img-prev');if(!el)return;
-  el.innerHTML=sdnImgs.map(function(src,i){return'<div class="img-preview-item"><img src="'+src+'" style="cursor:pointer" onclick="showFullImg(\''+src+'\')"><button class="rm" onclick="sdnImgs.splice('+i+',1);renderSdnImgPrev()">✕</button></div>';}).join('');
+  el.innerHTML=sdnImgs.map(function(src,i){return'<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(\''+src+'\')"><button class="rm" onclick="sdnImgs.splice('+i+',1);renderSdnImgPrev()">✕</button></div>';}).join('');
 }
 function getSdnCat(){
-  var sel=document.getElementById('sdn-cat-sel');
-  var inp=document.getElementById('sdn-cat-input');
-  return (sel&&sel.value)||(inp&&inp.value.trim())||'';
+  var sel=document.getElementById('sdn-cat-sel');var inp=document.getElementById('sdn-cat-input');
+  return(sel&&sel.value)||(inp&&inp.value.trim())||'';
 }
 function saveSdNote(){
-  var ne=document.getElementById('sdn-name');
-  if(!ne||!ne.value.trim()){alert('이름을 입력해주세요');return;}
-  var me=document.getElementById('modal-sdnote');
-  var mode=me?me.dataset.mode:'invest';
-  var section=me?me.dataset.section:'';
-  var cat=getSdnCat();
-  var de=document.getElementById('sdn-desc');
-  var ue=document.getElementById('sdn-url');
+  var ne=document.getElementById('sdn-name');if(!ne||!ne.value.trim()){alert('이름을 입력해주세요');return;}
+  var me=document.getElementById('modal-sdnote');var mode=me?me.dataset.mode:'invest';var section=me?me.dataset.section:'';
+  var cat=getSdnCat();var de=document.getElementById('sdn-desc');var ue=document.getElementById('sdn-url');
   var obj={id:sdnEditId||Date.now(),name:ne.value.trim(),cat:cat,desc:de?de.value:'',url:ue?ue.value:'',images:sdnImgs.slice(),date:new Date().toLocaleDateString('ko-KR')};
   if(mode==='invest'){
-    if(!state.selfdevNotes)state.selfdevNotes={};
-    if(!state.selfdevNotes[sdNoteKey])state.selfdevNotes[sdNoteKey]=[];
+    if(!state.selfdevNotes)state.selfdevNotes={};if(!state.selfdevNotes[sdNoteKey])state.selfdevNotes[sdNoteKey]=[];
     if(sdnEditId){var idx=state.selfdevNotes[sdNoteKey].findIndex(function(x){return x.id===sdnEditId;});if(idx>=0)state.selfdevNotes[sdNoteKey][idx]=obj;}
     else state.selfdevNotes[sdNoteKey].unshift(obj);
     closeModal('modal-sdnote');save();renderCurrentYoutuber();
   } else {
-    if(!section){alert('섹션 정보가 없습니다');return;}
-    if(!state.selfdevGeneral)state.selfdevGeneral={};
-    if(!state.selfdevGeneral[section])state.selfdevGeneral[section]=[];
+    if(!section){alert('섹션 정보 없음');return;}
+    if(!state.selfdevGeneral)state.selfdevGeneral={};if(!state.selfdevGeneral[section])state.selfdevGeneral[section]=[];
     if(sdnEditId){var idx2=state.selfdevGeneral[section].findIndex(function(x){return x.id===sdnEditId;});if(idx2>=0)state.selfdevGeneral[section][idx2]=obj;}
     else state.selfdevGeneral[section].unshift(obj);
     closeModal('modal-sdnote');save();renderSdPage(section);
@@ -2466,55 +2880,37 @@ function saveSdNote(){
 }
 function delSdNote(key,id){
   if(!confirm('삭제할까요?'))return;
-  if(!state.selfdevNotes||!state.selfdevNotes[key])return;
-  state.selfdevNotes[key]=state.selfdevNotes[key].filter(function(x){return x.id!==id;});
+  if(state.selfdevNotes&&state.selfdevNotes[key])state.selfdevNotes[key]=state.selfdevNotes[key].filter(function(x){return x.id!==id;});
   save();renderCurrentYoutuber();
 }
 
-// ===== 자기계발: 일반 페이지 (블로그/유튜브/부업/외국어/컴퓨터) =====
-var sdPageInfo={
-  blog:{title:'📝 블로그',wrap:'sd-blog-wrap'},
-  youtube:{title:'📺 유튜브',wrap:'sd-youtube-wrap'},
-  sidejob:{title:'💼 부업',wrap:'sd-sidejob-wrap'},
-  language:{title:'🌍 외국어',wrap:'sd-language-wrap'},
-  computer:{title:'💻 컴퓨터',wrap:'sd-computer-wrap'}
-};
+// ===== 자기계발: 일반 페이지 =====
+var sdPageInfo={blog:{title:'📝 블로그',wrap:'sd-blog-wrap'},youtube:{title:'📺 유튜브',wrap:'sd-youtube-wrap'},sidejob:{title:'💼 부업',wrap:'sd-sidejob-wrap'},language:{title:'🌍 외국어',wrap:'sd-language-wrap'},computer:{title:'💻 컴퓨터',wrap:'sd-computer-wrap'}};
 var sdPageCatFilter='전체';
-
 function renderSdPage(section){
   var info=sdPageInfo[section];if(!info)return;
   var el=document.getElementById(info.wrap);if(!el)return;
-  if(!state.selfdevGeneral)state.selfdevGeneral={};
-  if(!state.selfdevGeneral[section])state.selfdevGeneral[section]=[];
-  if(!state.selfdevGenCats)state.selfdevGenCats={};
-  if(!state.selfdevGenCats[section])state.selfdevGenCats[section]=[];
-  var notes=state.selfdevGeneral[section];
-  var cats=state.selfdevGenCats[section];
+  if(!state.selfdevGeneral)state.selfdevGeneral={};if(!state.selfdevGeneral[section])state.selfdevGeneral[section]=[];
+  if(!state.selfdevGenCats)state.selfdevGenCats={};if(!state.selfdevGenCats[section])state.selfdevGenCats[section]=[];
+  var notes=state.selfdevGeneral[section];var cats=state.selfdevGenCats[section];
   var filtered=sdPageCatFilter==='전체'?notes:notes.filter(function(n){return n.cat===sdPageCatFilter;});
-  var html='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
-    '<div class="page-title" style="margin:0">'+info.title+'</div>'+
-    '<button class="btn btn-primary btn-sm" onclick="openSdPageModal(\''+section+'\')">+ 노트 추가</button>'+
-    '</div>'+
-    '<div style="margin-bottom:14px">'+
-    '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">'+
+  el.innerHTML=
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div class="page-title" style="margin:0">'+info.title+'</div>'+
+    '<button class="btn btn-primary btn-sm" onclick="openSdPageModal(\''+section+'\')">+ 노트 추가</button></div>'+
+    '<div style="margin-bottom:14px"><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">'+
     '<button class="filter-btn '+(sdPageCatFilter==='전체'?'on':'')+'" onclick="sdPageCatFilter=\'전체\';renderSdPage(\''+section+'\')">전체</button>'+
-    cats.map(function(c){return'<span style="display:inline-flex;align-items:center;gap:0">'+
+    cats.map(function(c){return'<span style="display:inline-flex;align-items:center">'+
       '<button class="filter-btn '+(sdPageCatFilter===c?'on':'')+'" onclick="sdPageCatFilter=\''+c+'\';renderSdPage(\''+section+'\')" style="border-radius:18px 0 0 18px;border-right:none">'+c+'</button>'+
-      '<button onclick="delSdPageCat(\''+section+'\',\''+c+'\')" style="padding:4px 7px;border:1px solid var(--border);border-left:none;border-radius:0 18px 18px 0;background:#fff;cursor:pointer;font-size:10px;color:#aaa" title="분류 삭제">✕</button>'+
-      '</span>';}).join('')+
-    '</div>'+
-    '<div style="display:flex;gap:6px;align-items:center">'+
+      '<button onclick="delSdPageCat(\''+section+'\',\''+c+'\')" style="padding:4px 7px;border:1px solid var(--border);border-left:none;border-radius:0 18px 18px 0;background:#fff;cursor:pointer;font-size:10px;color:#aaa">✕</button></span>';}).join('')+
+    '</div><div style="display:flex;gap:6px;align-items:center">'+
     '<input id="sd-cat-new-'+section+'" placeholder="새 분류 이름..." style="max-width:170px;padding:5px 10px;font-size:12px" onkeydown="if(event.key===\'Enter\')addSdPageCat(\''+section+'\')">'+
-    '<button class="btn btn-outline btn-sm" style="white-space:nowrap;font-size:11px" onclick="addSdPageCat(\''+section+'\')">+ 분류 추가</button>'+
-    '</div>'+
-    '</div>'+
+    '<button class="btn btn-outline btn-sm" style="white-space:nowrap;font-size:11px" onclick="addSdPageCat(\''+section+'\')">+ 분류 추가</button></div></div>'+
     (filtered.length?filtered.map(function(n){return(
       '<div class="concept-card" style="margin-bottom:11px">'+
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'+
       '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
       (n.cat?'<span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:var(--active);color:var(--accent)">'+n.cat+'</span>':'')+
-      '<span style="font-weight:700;font-size:14px">'+n.name+'</span>'+
-      '</div>'+
+      '<span style="font-weight:700;font-size:14px">'+n.name+'</span></div>'+
       '<div style="display:flex;gap:5px;flex-shrink:0">'+
       '<button class="expand-btn" onclick="openSdPageView(\''+section+'\','+n.id+')">🔍 전체보기</button>'+
       '<button class="btn btn-outline btn-sm" onclick="openSdPageModal(\''+section+'\','+n.id+')" style="font-size:10px;padding:3px 8px">✏️</button>'+
@@ -2523,49 +2919,40 @@ function renderSdPage(section){
       (n.desc?'<div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:6px;white-space:pre-wrap">'+(n.desc.length>120?n.desc.slice(0,120)+'...':n.desc)+'</div>':'')+
       (n.url?'<a href="'+n.url+'" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 '+(n.url.length>55?n.url.slice(0,55)+'...':n.url)+'</a>':'')+
       (n.images&&n.images.length?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">'+n.images.map(function(img){return'<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="width:80px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">';}).join('')+'</div>':'')+
-      '</div>');}).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요 📝<br><span style="font-size:11px;margin-top:5px;display:block">분류를 추가하면 필터가 생겨요 🏷️</span></div>');
-  el.innerHTML=html;
+      '</div>');}).join(''):
+      '<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요 📝<br><span style="font-size:11px;margin-top:5px;display:block">분류를 추가하면 필터가 생겨요 🏷️</span></div>');
 }
 function addSdPageCat(section){
   var inp=document.getElementById('sd-cat-new-'+section);if(!inp)return;
   var val=inp.value.trim();if(!val)return;
-  if(!state.selfdevGenCats)state.selfdevGenCats={};
-  if(!state.selfdevGenCats[section])state.selfdevGenCats[section]=[];
+  if(!state.selfdevGenCats)state.selfdevGenCats={};if(!state.selfdevGenCats[section])state.selfdevGenCats[section]=[];
   if(state.selfdevGenCats[section].indexOf(val)>=0){inp.value='';return;}
-  state.selfdevGenCats[section].push(val);
-  inp.value='';save();renderSdPage(section);
+  state.selfdevGenCats[section].push(val);inp.value='';save();renderSdPage(section);
 }
 function delSdPageCat(section,cat){
   if(!confirm('"'+cat+'" 분류를 삭제할까요?'))return;
-  if(state.selfdevGenCats&&state.selfdevGenCats[section])
-    state.selfdevGenCats[section]=state.selfdevGenCats[section].filter(function(c){return c!==cat;});
-  if(state.selfdevGeneral&&state.selfdevGeneral[section])
-    state.selfdevGeneral[section].forEach(function(n){if(n.cat===cat)n.cat='';});
+  if(state.selfdevGenCats&&state.selfdevGenCats[section])state.selfdevGenCats[section]=state.selfdevGenCats[section].filter(function(c){return c!==cat;});
+  if(state.selfdevGeneral&&state.selfdevGeneral[section])state.selfdevGeneral[section].forEach(function(n){if(n.cat===cat)n.cat='';});
   if(sdPageCatFilter===cat)sdPageCatFilter='전체';
   save();renderSdPage(section);
 }
 function openSdPageModal(section,editId){
   sdnEditId=editId||null;sdnImgs=[];
-  var tEl=document.getElementById('sdnote-modal-title');
-  if(tEl)tEl.textContent=editId?'📝 노트 수정':'📝 노트 추가';
+  var tEl=document.getElementById('sdnote-modal-title');if(tEl)tEl.textContent=editId?'📝 노트 수정':'📝 노트 추가';
   var cats=(state.selfdevGenCats&&state.selfdevGenCats[section])||[];
   var sel=document.getElementById('sdn-cat-sel');
   if(sel){sel.innerHTML='<option value="">-- 선택 --</option>'+cats.map(function(c){return'<option>'+c+'</option>';}).join('');sel.value='';}
   ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
   var prev=document.getElementById('sdn-img-prev');if(prev)prev.innerHTML='';
   if(editId){
-    var n=(state.selfdevGeneral&&state.selfdevGeneral[section]||[]).find(function(x){return x.id===editId;});
-    if(!n)return;
-    var ne2=document.getElementById('sdn-name');if(ne2)ne2.value=n.name||'';
-    if(sel&&cats.indexOf(n.cat||'')>=0)sel.value=n.cat;
-    else{var ci2=document.getElementById('sdn-cat-input');if(ci2)ci2.value=n.cat||'';}
-    var de2=document.getElementById('sdn-desc');if(de2)de2.value=n.desc||'';
-    var ue2=document.getElementById('sdn-url');if(ue2)ue2.value=n.url||'';
-    sdnImgs=n.images?n.images.slice():[];
-    renderSdnImgPrev();
+    var n=(state.selfdevGeneral&&state.selfdevGeneral[section]||[]).find(function(x){return x.id===editId;});if(!n)return;
+    var ne=document.getElementById('sdn-name');if(ne)ne.value=n.name||'';
+    if(sel&&cats.indexOf(n.cat||'')>=0)sel.value=n.cat;else{var ci=document.getElementById('sdn-cat-input');if(ci)ci.value=n.cat||'';}
+    var de=document.getElementById('sdn-desc');if(de)de.value=n.desc||'';
+    var ue=document.getElementById('sdn-url');if(ue)ue.value=n.url||'';
+    sdnImgs=n.images?n.images.slice():[];renderSdnImgPrev();
   }
-  var me2=document.getElementById('modal-sdnote');
-  if(me2){me2.dataset.mode='general';me2.dataset.section=section;}
+  var me=document.getElementById('modal-sdnote');if(me){me.dataset.mode='general';me.dataset.section=section;}
   openModal('modal-sdnote');
 }
 function openSdPageView(section,id){
@@ -2576,13 +2963,11 @@ function openSdPageView(section,id){
   if(n.desc)html+='<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">'+n.desc+'</div>';
   if(n.url)html+='<div style="margin-bottom:12px"><a href="'+n.url+'" target="_blank" style="color:var(--blue);font-size:13px">🔗 '+n.url+'</a></div>';
   if(n.images&&n.images.length)html+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">'+n.images.map(function(img){return'<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="max-width:100%;max-height:280px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">';}).join('')+'</div>';
-  document.getElementById('note-view-body').innerHTML=html;
-  openModal('modal-note-view');
+  document.getElementById('note-view-body').innerHTML=html;openModal('modal-note-view');
 }
 function delSdPage(section,id){
   if(!confirm('삭제할까요?'))return;
-  if(state.selfdevGeneral&&state.selfdevGeneral[section])
-    state.selfdevGeneral[section]=state.selfdevGeneral[section].filter(function(x){return x.id!==id;});
+  if(state.selfdevGeneral&&state.selfdevGeneral[section])state.selfdevGeneral[section]=state.selfdevGeneral[section].filter(function(x){return x.id!==id;});
   save();renderSdPage(section);
 }
 
@@ -2598,19 +2983,12 @@ function openMeditationModal(editId){
     var ne=document.getElementById('med-name');if(ne)ne.value=m.name||'';
     var ce=document.getElementById('med-content');if(ce)ce.value=m.content||'';
     var ue=document.getElementById('med-url');if(ue)ue.value=m.url||'';
-    medImgs=m.images?m.images.slice():[];
-    renderMedImgPrev();
+    medImgs=m.images?m.images.slice():[];renderMedImgPrev();
   }
   openModal('modal-meditation');
 }
-function handleMedImg(input){
-  Array.from(input.files).forEach(function(f){var r=new FileReader();r.onload=function(e){medImgs.push(e.target.result);renderMedImgPrev();};r.readAsDataURL(f);});
-  input.value='';
-}
-function renderMedImgPrev(){
-  var el=document.getElementById('med-img-prev');if(!el)return;
-  el.innerHTML=medImgs.map(function(src,i){return'<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(\''+src+'\')"><button class="rm" onclick="medImgs.splice('+i+',1);renderMedImgPrev()">✕</button></div>';}).join('');
-}
+function handleMedImg(input){Array.from(input.files).forEach(function(f){var r=new FileReader();r.onload=function(e){medImgs.push(e.target.result);renderMedImgPrev();};r.readAsDataURL(f);});input.value='';}
+function renderMedImgPrev(){var el=document.getElementById('med-img-prev');if(!el)return;el.innerHTML=medImgs.map(function(src,i){return'<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(\''+src+'\')"><button class="rm" onclick="medImgs.splice('+i+',1);renderMedImgPrev()">✕</button></div>';}).join('');}
 function saveMeditation(){
   var ne=document.getElementById('med-name');if(!ne||!ne.value.trim()){alert('이름을 입력해주세요');return;}
   if(!state.meditations)state.meditations=[];
@@ -2644,19 +3022,10 @@ function openMedView(id){
   if(m.content)html+='<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">'+m.content+'</div>';
   if(m.url)html+='<div style="margin-bottom:12px"><a href="'+m.url+'" target="_blank" style="color:var(--blue);font-size:13px">🔗 '+m.url+'</a></div>';
   if(m.images&&m.images.length)html+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">'+m.images.map(function(img){return'<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="max-width:100%;max-height:280px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">';}).join('')+'</div>';
-  document.getElementById('note-view-body').innerHTML=html;
-  openModal('modal-note-view');
+  document.getElementById('note-view-body').innerHTML=html;openModal('modal-note-view');
 }
-function delMeditation(id){
-  if(!confirm('삭제할까요?'))return;
-  state.meditations=state.meditations.filter(function(x){return x.id!==id;});
-  save();renderMeditations();
-}
-function openMedRecordModal(){
-  document.getElementById('medr-date').value=new Date().toISOString().split('T')[0];
-  ['medr-type','medr-min','medr-memo'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
-  openModal('modal-med-record');
-}
+function delMeditation(id){if(!confirm('삭제할까요?'))return;state.meditations=state.meditations.filter(function(x){return x.id!==id;});save();renderMeditations();}
+function openMedRecordModal(){document.getElementById('medr-date').value=new Date().toISOString().split('T')[0];['medr-type','medr-min','medr-memo'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});openModal('modal-med-record');}
 function saveMedRecord(){
   var te=document.getElementById('medr-type');if(!te||!te.value.trim()){alert('명상 종류를 입력해주세요');return;}
   if(!state.medRecords)state.medRecords=[];
@@ -2670,17 +3039,19 @@ function renderMedRecords(){
   el.innerHTML=state.medRecords.length?state.medRecords.map(function(r,i){return(
     '<div class="j-card">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'+
-    '<div style="display:flex;align-items:center;gap:8px">'+
-    '<span class="j-date">🧘 '+r.date+'</span>'+
+    '<div style="display:flex;align-items:center;gap:8px"><span class="j-date">🧘 '+r.date+'</span>'+
     '<span style="font-weight:700;font-size:13px">'+r.type+'</span>'+
     (r.min?'<span style="background:#e8ecfd;color:var(--blue);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">'+r.min+'분</span>':'')+
-    '</div>'+
-    '<button class="del-btn" onclick="state.medRecords.splice('+i+',1);save();renderMedRecords()">✕</button>'+
-    '</div>'+
+    '</div><button class="del-btn" onclick="state.medRecords.splice('+i+',1);save();renderMedRecords()">✕</button></div>'+
     (r.memo?'<div style="font-size:13px;color:var(--text2);line-height:1.7">'+r.memo+'</div>':'')+
     '</div>');}).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">명상 기록을 추가해보세요 📝</div>';
 }
 
+// ===== MODAL =====
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function switchTab(el,id){const parent=el.closest('.page')||document;parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById(id).classList.add('active');}
+function openFullModal(title,meta,body){document.getElementById('full-title').textContent=title;document.getElementById('full-meta').textContent=meta;document.getElementById('full-body').textContent=body.replace(/\\n/g,'\n');openModal('modal-full');}
 </script>
 </body>
 </html>
