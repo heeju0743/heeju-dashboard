@@ -248,7 +248,12 @@ textarea{resize:vertical;min-height:80px}
   <div class="sb-item" onclick="nav('stocks')"><span class="icon">📊</span><span>주식 공부 노트</span></div>
   <div class="sb-item" onclick="nav('journal')"><span class="icon">💹</span><span>투자 일지</span></div>
   <div class="sb-section">자기계발</div>
-  <div class="sb-item" onclick="nav('selfdev')"><span class="icon">🚀</span><span>자기계발 노트</span></div>
+  <div class="sb-item" onclick="nav('sd-invest')"><span class="icon">💰</span><span>투자</span></div>
+  <div class="sb-item" onclick="nav('sd-blog')"><span class="icon">📝</span><span>블로그</span></div>
+  <div class="sb-item" onclick="nav('sd-youtube')"><span class="icon">📺</span><span>유튜브</span></div>
+  <div class="sb-item" onclick="nav('sd-sidejob')"><span class="icon">💼</span><span>부업</span></div>
+  <div class="sb-item" onclick="nav('sd-language')"><span class="icon">🌍</span><span>외국어</span></div>
+  <div class="sb-item" onclick="nav('sd-computer')"><span class="icon">💻</span><span>컴퓨터</span></div>
   <div class="sb-section">라이프</div>
   <div class="sb-item" onclick="nav('diary')"><span class="icon">📖</span><span>일기</span></div>
   <div class="sb-item" onclick="nav('food')"><span class="icon">🍳</span><span>요리</span></div>
@@ -968,89 +973,87 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <!-- 자기계발 -->
-<div id="page-selfdev" class="page">
-  <div class="page-title">🚀 자기계발 노트</div>
-  <div class="tabs" style="flex-wrap:wrap" id="selfdev-tabs">
-    <div class="tab active" onclick="switchSelfdev('invest')">💰 투자</div>
-    <div class="tab" onclick="switchSelfdev('blog')">📝 블로그</div>
-    <div class="tab" onclick="switchSelfdev('youtube')">📺 유튜브</div>
-    <div class="tab" onclick="switchSelfdev('sidejob')">💼 부업</div>
-    <div class="tab" onclick="switchSelfdev('language')">🌍 외국어</div>
-    <div class="tab" onclick="switchSelfdev('computer')">💻 컴퓨터</div>
+<!-- 자기계발: 투자 -->
+<div id="page-sd-invest" class="page">
+  <div style="font-size:22px;font-weight:700;margin-bottom:16px">💰 투자</div>
+  <div class="tabs" style="flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:14px" id="invest-sub-tabs">
+    <div class="tab active" onclick="switchInvestSub('domestic')">🇰🇷 국내주식</div>
+    <div class="tab" onclick="switchInvestSub('us')">🇺🇸 미국주식</div>
+    <div class="tab" onclick="switchInvestSub('coin')">₿ 코인선물</div>
+    <div class="tab" onclick="switchInvestSub('futures')">📊 해외선물</div>
   </div>
 
-  <!-- 투자 섹션 -->
-  <div id="sd-invest" class="tab-content active">
-    <div class="tabs" style="flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:14px" id="invest-sub-tabs">
-      <div class="tab active" onclick="switchInvestSub('domestic')">🇰🇷 국내주식</div>
-      <div class="tab" onclick="switchInvestSub('us')">🇺🇸 미국주식</div>
-      <div class="tab" onclick="switchInvestSub('coin')">₿ 코인선물</div>
-      <div class="tab" onclick="switchInvestSub('futures')">📊 해외선물</div>
-    </div>
-
-    <!-- 국내주식 -->
-    <div id="inv-domestic" class="inv-sub active">
-      <div class="tabs" style="flex-wrap:wrap" id="domestic-youtuber-tabs">
+  <!-- 국내주식 -->
+  <div id="inv-domestic" class="inv-sub active">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;flex-wrap:wrap;gap:8px">
+      <div class="tabs" style="flex-wrap:wrap;border:none;margin:0" id="domestic-youtuber-tabs">
         <div class="tab active" onclick="switchYoutuber('단테',this,'domestic')">단테</div>
         <div class="tab" onclick="switchYoutuber('돈깡',this,'domestic')">돈깡</div>
         <div class="tab" onclick="switchYoutuber('만주',this,'domestic')">만주</div>
         <div class="tab" onclick="switchYoutuber('대왕개미',this,'domestic')">대왕개미</div>
       </div>
-      <div id="domestic-youtuber-content"></div>
     </div>
+    <div id="domestic-youtuber-content"></div>
+  </div>
 
-    <!-- 미국주식 -->
-    <div id="inv-us" class="inv-sub" style="display:none">
-      <div class="tabs" style="flex-wrap:wrap" id="us-youtuber-tabs">
+  <!-- 미국주식 -->
+  <div id="inv-us" class="inv-sub" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;flex-wrap:wrap;gap:8px">
+      <div class="tabs" style="flex-wrap:wrap;border:none;margin:0" id="us-youtuber-tabs">
         <div class="tab active" onclick="switchYoutuber('개준석',this,'us')">개준석</div>
         <div class="tab" onclick="switchYoutuber('또사이선생',this,'us')">또사이선생</div>
       </div>
-      <div id="us-youtuber-content"></div>
     </div>
+    <div id="us-youtuber-content"></div>
+  </div>
 
-    <!-- 코인선물 -->
-    <div id="inv-coin" class="inv-sub" style="display:none">
-      <div class="tabs" style="flex-wrap:wrap" id="coin-youtuber-tabs">
+  <!-- 코인선물 -->
+  <div id="inv-coin" class="inv-sub" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;flex-wrap:wrap;gap:8px">
+      <div class="tabs" style="flex-wrap:wrap;border:none;margin:0" id="coin-youtuber-tabs">
         <div class="tab active" onclick="switchYoutuber('쉽알남',this,'coin')">쉽알남</div>
         <div class="tab" onclick="switchYoutuber('불장단타왕',this,'coin')">불장단타왕</div>
       </div>
-      <div id="coin-youtuber-content"></div>
     </div>
+    <div id="coin-youtuber-content"></div>
+  </div>
 
-    <!-- 해외선물 -->
-    <div id="inv-futures" class="inv-sub" style="display:none">
-      <div class="tabs" style="flex-wrap:wrap" id="futures-youtuber-tabs">
+  <!-- 해외선물 -->
+  <div id="inv-futures" class="inv-sub" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;flex-wrap:wrap;gap:8px">
+      <div class="tabs" style="flex-wrap:wrap;border:none;margin:0" id="futures-youtuber-tabs">
         <div class="tab active" onclick="switchYoutuber('김직선',this,'futures')">김직선</div>
       </div>
-      <div id="futures-youtuber-content"></div>
     </div>
-  </div>
-
-  <!-- 블로그 -->
-  <div id="sd-blog" class="tab-content">
-    <div id="sd-blog-content"></div>
-  </div>
-
-  <!-- 유튜브 -->
-  <div id="sd-youtube" class="tab-content">
-    <div id="sd-youtube-content"></div>
-  </div>
-
-  <!-- 부업 -->
-  <div id="sd-sidejob" class="tab-content">
-    <div id="sd-sidejob-content"></div>
-  </div>
-
-  <!-- 외국어 -->
-  <div id="sd-language" class="tab-content">
-    <div id="sd-language-content"></div>
-  </div>
-
-  <!-- 컴퓨터 -->
-  <div id="sd-computer" class="tab-content">
-    <div id="sd-computer-content"></div>
+    <div id="futures-youtuber-content"></div>
   </div>
 </div>
+
+<!-- 자기계발: 블로그 -->
+<div id="page-sd-blog" class="page">
+  <div id="sd-blog-page-wrap"></div>
+</div>
+
+<!-- 자기계발: 유튜브 -->
+<div id="page-sd-youtube" class="page">
+  <div id="sd-youtube-page-wrap"></div>
+</div>
+
+<!-- 자기계발: 부업 -->
+<div id="page-sd-sidejob" class="page">
+  <div id="sd-sidejob-page-wrap"></div>
+</div>
+
+<!-- 자기계발: 외국어 -->
+<div id="page-sd-language" class="page">
+  <div id="sd-language-page-wrap"></div>
+</div>
+
+<!-- 자기계발: 컴퓨터 -->
+<div id="page-sd-computer" class="page">
+  <div id="sd-computer-page-wrap"></div>
+</div>
+
 
 <!-- 명상 -->
 <div id="page-meditation" class="page">
@@ -1140,9 +1143,16 @@ textarea{resize:vertical;min-height:80px}
 <div id="modal-sdnote" class="modal-overlay">
   <div class="modal" style="width:600px">
     <div class="modal-title" id="sdnote-modal-title">📝 노트 추가</div>
-    <div class="mg2">
-      <div class="modal-row"><label>이름 / 제목</label><input id="sdn-name" placeholder="예: 5분봉 눌림목 진입법"></div>
-      <div class="modal-row"><label>분류</label><input id="sdn-cat" placeholder="예: 기법, 검색식, 멘탈..."></div>
+    <div class="modal-row"><label>이름 / 제목</label><input id="sdn-name" placeholder="예: 5분봉 눌림목 진입법"></div>
+    <div class="modal-row">
+      <label>분류 <span style="font-size:10px;color:var(--text2);font-weight:400">(목록에서 선택하거나 직접 입력)</span></label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="sdn-cat-sel" style="flex:1" onchange="if(this.value)document.getElementById('sdn-cat-input').value=''">
+          <option value="">-- 선택 --</option>
+        </select>
+        <span style="color:var(--text2);font-size:12px;flex-shrink:0">또는</span>
+        <input id="sdn-cat-input" placeholder="직접 입력..." style="flex:1" oninput="if(this.value)document.getElementById('sdn-cat-sel').value=''">
+      </div>
     </div>
     <div class="modal-row"><label>설명 / 내용</label>
       <textarea id="sdn-desc" style="min-height:130px" placeholder="상세 내용을 적어주세요..."></textarea>
@@ -1429,6 +1439,7 @@ window.state={
   reviewData:{good:[],bad:[],log:[]},
   chartReviews:[],
   selfdevNotes:{},  // {youtuber_category: [{id,name,cat,desc,url,images}]}
+  selfdevGenCats:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
   selfdevGeneral:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
   meditations:[],
   medRecords:[],
@@ -1490,7 +1501,7 @@ function initApp(){
   ['face','scalp'].forEach(cat=>{renderMas(cat);renderAddForm('mas',cat);});
   renderBudget();
   renderTDash();renderTrades();renderTBalance();
-  renderCurrentYoutuber();renderSelfdevGeneral('blog');
+  renderCurrentYoutuber();
   renderMeditations();renderMedRecords();
   if(state['stock-rules-text']){const el=document.getElementById('stock-rules-text');if(el)el.value=state['stock-rules-text'];}
   document.addEventListener('input',e=>{
@@ -1506,7 +1517,7 @@ function nav(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
   document.getElementById('page-'+id)?.classList.add('active');
-  const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,stocks:6,journal:7,selfdev:8,diary:9,food:10,exercise:11,massage:12,meditation:13,budget:14};
+  const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,stocks:6,journal:7,'sd-invest':8,'sd-blog':9,'sd-youtube':10,'sd-sidejob':11,'sd-language':12,'sd-computer':13,diary:14,food:15,exercise:16,massage:17,meditation:18,budget:19};
   document.querySelectorAll('.sb-item')[map[id]]?.classList.add('active');
   if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();renderWatch();renderCatFilters();}
   if(id==='schedule')renderSchedCal();
@@ -1516,7 +1527,12 @@ function nav(id){
   if(id==='saju')renderSajuSaved();
   if(id==='budget')renderBudget();
   if(id==='journal'){renderTDash();renderTrades();}
-  if(id==='selfdev'){renderCurrentYoutuber();renderSelfdevGeneral();}
+  if(id==='sd-invest'){renderCurrentYoutuber();}
+  if(id==='sd-blog')renderSdGenPage('blog');
+  if(id==='sd-youtube')renderSdGenPage('youtube');
+  if(id==='sd-sidejob')renderSdGenPage('sidejob');
+  if(id==='sd-language')renderSdGenPage('language');
+  if(id==='sd-computer')renderSdGenPage('computer');
   if(id==='meditation'){renderMeditations();renderMedRecords();}
   updateDashStats();
 }
@@ -3174,20 +3190,11 @@ const sdInvestConfig={
   coin:{name:'코인선물',youtubers:['쉽알남','불장단타왕'],cats:{쉽알남:['기법','멘탈','매매유형','기타'],불장단타왕:['기법','멘탈','매매유형','기타']}},
   futures:{name:'해외선물',youtubers:['김직선'],cats:{김직선:['기법','멘탈','매매유형','기타']}}
 };
-let currentSdSection='invest',currentInvestSub='domestic',currentYoutuber='단테';
+let currentInvestSub='domestic',currentYoutuber='단테';
 let sdnEditId=null,sdnImgs=[];
+let sdCatFilter='전체';
 
-function switchSelfdev(section){
-  currentSdSection=section;
-  document.querySelectorAll('#selfdev-tabs .tab').forEach(t=>t.classList.remove('active'));
-  const tabMap={invest:0,blog:1,youtube:2,sidejob:3,language:4,computer:5};
-  document.querySelectorAll('#selfdev-tabs .tab')[tabMap[section]]?.classList.add('active');
-  ['invest','blog','youtube','sidejob','language','computer'].forEach(s=>{
-    const el=document.getElementById('sd-'+s);if(el)el.classList.toggle('active',s===section);
-  });
-  if(section==='invest')renderCurrentYoutuber();
-  else renderSelfdevGeneral(section);
-}
+// ===== 투자 (유튜버별 노트) =====
 function switchInvestSub(sub){
   currentInvestSub=sub;
   document.querySelectorAll('#invest-sub-tabs .tab').forEach(t=>t.classList.remove('active'));
@@ -3196,9 +3203,9 @@ function switchInvestSub(sub){
   ['domestic','us','coin','futures'].forEach(s=>{
     const el=document.getElementById('inv-'+s);if(el)el.style.display=s===sub?'block':'none';
   });
-  // 해당 섹션의 첫 유튜버 선택
   const cfg=sdInvestConfig[sub];
   currentYoutuber=cfg.youtubers[0];
+  sdCatFilter='전체';
   renderCurrentYoutuber();
 }
 function switchYoutuber(youtuber,btn,market){
@@ -3206,9 +3213,9 @@ function switchYoutuber(youtuber,btn,market){
   const tabsId=market+'-youtuber-tabs';
   document.querySelectorAll('#'+tabsId+' .tab').forEach(t=>t.classList.remove('active'));
   if(btn)btn.classList.add('active');
+  sdCatFilter='전체';
   renderCurrentYoutuber();
 }
-let sdCatFilter='전체';
 function renderCurrentYoutuber(){
   const market=currentInvestSub;
   const youtuber=currentYoutuber;
@@ -3220,116 +3227,54 @@ function renderCurrentYoutuber(){
   if(!state.selfdevNotes)state.selfdevNotes={};
   if(!state.selfdevNotes[key])state.selfdevNotes[key]=[];
   const notes=state.selfdevNotes[key];
-  const catColors={'검색식':'#dbeafe','기법':'#fef3c7','멘탈':'#f3e8ff','거래량':'#dcfce7','매매유형':'#ffe4e6','화면세팅법':'#e0f2fe','호가창':'#fef9c3','심법':'#f0fdf4','보조지표':'#fce7f3','기타':'#f3f4f6'};
-  const catTxtColors={'검색식':'#1e40af','기법':'#92400e','멘탈':'#7c3aed','거래량':'#166534','매매유형':'#9f1239','화면세팅법':'#0369a1','호가창':'#854d0e','심법':'#15803d','보조지표':'#9d174d','기타':'#374151'};
   const filtered=sdCatFilter==='전체'?notes:notes.filter(n=>n.cat===sdCatFilter);
+  const catColorMap={'검색식':'#dbeafe','기법':'#fef3c7','멘탈':'#f3e8ff','거래량':'#dcfce7','매매유형':'#ffe4e6','화면세팅법':'#e0f2fe','호가창':'#fef9c3','심법':'#f0fdf4','보조지표':'#fce7f3','기타':'#f3f4f6'};
+  const catTxtMap={'검색식':'#1e40af','기법':'#92400e','멘탈':'#7c3aed','거래량':'#166534','매매유형':'#9f1239','화면세팅법':'#0369a1','호가창':'#854d0e','심법':'#15803d','보조지표':'#9d174d','기타':'#374151'};
   el.innerHTML=`
-    <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 12px;flex-wrap:wrap;gap:8px">
-      <div style="display:flex;gap:7px;flex-wrap:wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="filter-btn ${sdCatFilter==='전체'?'on':''}" onclick="sdCatFilter='전체';renderCurrentYoutuber()">전체</button>
         ${cats.map(c=>`<button class="filter-btn ${sdCatFilter===c?'on':''}" onclick="sdCatFilter='${c}';renderCurrentYoutuber()">${c}</button>`).join('')}
       </div>
       <button class="btn btn-primary btn-sm" onclick="openSdNoteModal('${key}','${youtuber}',${JSON.stringify(cats)})">+ 노트 추가</button>
     </div>
     ${filtered.length?filtered.map(n=>`
-      <div class="concept-card" style="margin-bottom:11px;border-left:4px solid ${catColors[n.cat]||'#e8dcc8'}">
+      <div class="concept-card" style="margin-bottom:11px;border-left:4px solid ${catColorMap[n.cat]||'#e8dcc8'}">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:${catColors[n.cat]||'#f3f4f6'};color:${catTxtColors[n.cat]||'#374151'}">${n.cat}</span>
+            <span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:${catColorMap[n.cat]||'#f3f4f6'};color:${catTxtMap[n.cat]||'#374151'}">${n.cat}</span>
             <span style="font-weight:700;font-size:14px">${n.name}</span>
           </div>
           <div style="display:flex;gap:5px;flex-shrink:0">
-            <button class="btn btn-outline btn-sm" onclick="openSdNoteViewModal('${key}',${n.id})">🔍 전체보기</button>
-            <button class="btn btn-outline btn-sm" onclick="openSdNoteModal('${key}','${youtuber}',${JSON.stringify(cats)},${n.id})">✏️</button>
-            <button class="btn btn-danger btn-sm" onclick="delSdNote('${key}',${n.id})">삭제</button>
+            <button class="expand-btn" onclick="openSdNoteViewModal('${key}',${n.id})">🔍 전체보기</button>
+            <button class="btn btn-outline btn-sm" onclick="openSdNoteModal('${key}','${youtuber}',${JSON.stringify(cats)},${n.id})" style="font-size:10px;padding:3px 8px">✏️</button>
+            <button class="del-btn" onclick="delSdNote('${key}',${n.id})">✕</button>
           </div>
         </div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:7px;white-space:pre-wrap">${(n.desc||'').slice(0,120)}${(n.desc||'').length>120?'...':''}</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:6px;white-space:pre-wrap">${(n.desc||'').slice(0,120)}${(n.desc||'').length>120?'...':''}</div>
         ${n.url?`<a href="${n.url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 ${n.url.slice(0,55)}${n.url.length>55?'...':''}</a>`:''}
         ${n.images&&n.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="width:80px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`:''}
-        <div style="font-size:10px;color:var(--text2);margin-top:5px">${n.date||''}</div>
+        <div style="font-size:10px;color:var(--text2);margin-top:4px">${n.date||''}</div>
       </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요 📝</div>'}`;
-}
-
-function renderSelfdevGeneral(section){
-  const s=section||currentSdSection;
-  if(s==='invest')return;
-  const key='sd_'+s;
-  if(!state.selfdevGeneral)state.selfdevGeneral={blog:[],youtube:[],sidejob:[],language:[],computer:[]};
-  const notes=state.selfdevGeneral[s]||[];
-  const icons={blog:'📝',youtube:'📺',sidejob:'💼',language:'🌍',computer:'💻'};
-  const names={blog:'블로그',youtube:'유튜브',sidejob:'부업',language:'외국어',computer:'컴퓨터'};
-  const el=document.getElementById('sd-'+s+'-content');if(!el)return;
-  el.innerHTML=`
-    <div style="display:flex;justify-content:flex-end;margin:10px 0 14px">
-      <button class="btn btn-primary btn-sm" onclick="openSdGeneralModal('${s}')">+ 노트 추가</button>
-    </div>
-    ${notes.length?notes.map(n=>`
-      <div class="concept-card" style="margin-bottom:11px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-          <div>
-            ${n.cat?`<span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:var(--active);color:var(--accent);margin-right:7px">${n.cat}</span>`:''}
-            <span style="font-weight:700;font-size:14px">${n.name}</span>
-          </div>
-          <div style="display:flex;gap:5px">
-            <button class="btn btn-outline btn-sm" onclick="openSdGeneralViewModal('${s}',${n.id})">🔍 전체보기</button>
-            <button class="btn btn-outline btn-sm" onclick="openSdGeneralModal('${s}',${n.id})">✏️</button>
-            <button class="btn btn-danger btn-sm" onclick="delSdGeneral('${s}',${n.id})">삭제</button>
-          </div>
-        </div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:7px;white-space:pre-wrap">${(n.desc||'').slice(0,120)}${(n.desc||'').length>120?'...':''}</div>
-        ${n.url?`<a href="${n.url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 ${n.url.slice(0,55)}${n.url.length>55?'...':''}</a>`:''}
-        ${n.images&&n.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="width:80px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`:''}
-      </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요 📝</div>'}`;
-}
-
-let sdGeneralCtx=null,sdGeneralEditId=null;
-function openSdGeneralModal(section,editId){
-  sdGeneralCtx=section;sdGeneralEditId=editId||null;sdnImgs=[];
-  document.getElementById('sdnote-modal-title').textContent=editId?'📝 노트 수정':'📝 노트 추가';
-  document.getElementById('sdn-img-prev').innerHTML='';
-  ['sdn-name','sdn-cat','sdn-desc','sdn-url'].forEach(id=>document.getElementById(id).value='');
-  if(editId){
-    const n=(state.selfdevGeneral[section]||[]).find(x=>x.id===editId);if(!n)return;
-    document.getElementById('sdn-name').value=n.name||'';
-    document.getElementById('sdn-cat').value=n.cat||'';
-    document.getElementById('sdn-desc').value=n.desc||'';
-    document.getElementById('sdn-url').value=n.url||'';
-    sdnImgs=n.images?[...n.images]:[];
-    renderSdnImgPrev();
-  }
-  document.getElementById('modal-sdnote').dataset.mode='general';
-  openModal('modal-sdnote');
-}
-function openSdGeneralViewModal(section,id){
-  const n=(state.selfdevGeneral[section]||[]).find(x=>x.id===id);if(!n)return;
-  document.getElementById('note-view-title').textContent=n.name;
-  let html='';
-  if(n.cat)html+=`<div style="margin-bottom:10px"><span style="padding:2px 8px;border-radius:9px;font-size:11px;font-weight:600;background:var(--active);color:var(--accent)">${n.cat}</span></div>`;
-  if(n.desc)html+=`<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">${n.desc}</div>`;
-  if(n.url)html+=`<div style="margin-bottom:12px"><a href="${n.url}" target="_blank" style="color:var(--blue);font-size:13px">🔗 ${n.url}</a></div>`;
-  if(n.images&&n.images.length)html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="max-width:100%;max-height:280px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`;
-  document.getElementById('note-view-body').innerHTML=html;
-  openModal('modal-note-view');
-}
-function delSdGeneral(section,id){
-  if(!confirm('삭제할까요?'))return;
-  state.selfdevGeneral[section]=state.selfdevGeneral[section].filter(x=>x.id!==id);
-  save();renderSelfdevGeneral(section);
 }
 
 let sdNoteKey=null,sdNoteCats=[];
 function openSdNoteModal(key,youtuber,cats,editId){
-  sdNoteKey=key;sdNoteCats=cats;sdnEditId=editId||null;sdnImgs=[];
-  const isEdit=!!editId;
-  document.getElementById('sdnote-modal-title').textContent=isEdit?`📝 ${youtuber} 노트 수정`:`📝 ${youtuber} 노트 추가`;
-  document.getElementById('sdn-cat').placeholder='예: '+cats.join(', ')+'...';
+  sdNoteKey=key;sdNoteCats=cats||[];sdnEditId=editId||null;sdnImgs=[];
+  document.getElementById('sdnote-modal-title').textContent=editId?`📝 ${youtuber} 노트 수정`:`📝 ${youtuber} 노트 추가`;
+  document.getElementById('sdn-cat-input').placeholder='예: '+sdNoteCats.join(', ')+'...';
+  // 분류 드롭다운 업데이트
+  const sel=document.getElementById('sdn-cat-sel');
+  sel.innerHTML='<option value="">-- 선택 --</option>'+sdNoteCats.map(c=>`<option>${c}</option>`).join('');
   document.getElementById('sdn-img-prev').innerHTML='';
-  ['sdn-name','sdn-cat','sdn-desc','sdn-url'].forEach(id=>document.getElementById(id).value='');
+  ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(id=>document.getElementById(id).value='');
+  sel.value='';
   if(editId){
     const n=(state.selfdevNotes[key]||[]).find(x=>x.id===editId);if(!n)return;
     document.getElementById('sdn-name').value=n.name||'';
-    document.getElementById('sdn-cat').value=n.cat||'';
+    // 분류 세팅: 목록에 있으면 select, 없으면 input
+    if(sdNoteCats.includes(n.cat||'')){sel.value=n.cat;}
+    else{document.getElementById('sdn-cat-input').value=n.cat||'';}
     document.getElementById('sdn-desc').value=n.desc||'';
     document.getElementById('sdn-url').value=n.url||'';
     sdnImgs=n.images?[...n.images]:[];
@@ -3340,11 +3285,11 @@ function openSdNoteModal(key,youtuber,cats,editId){
 }
 function openSdNoteViewModal(key,id){
   const n=(state.selfdevNotes[key]||[]).find(x=>x.id===id);if(!n)return;
-  const catColors={'검색식':'#dbeafe','기법':'#fef3c7','멘탈':'#f3e8ff','거래량':'#dcfce7','매매유형':'#ffe4e6','화면세팅법':'#e0f2fe','호가창':'#fef9c3','심법':'#f0fdf4','보조지표':'#fce7f3','기타':'#f3f4f6'};
-  const catTxtColors={'검색식':'#1e40af','기법':'#92400e','멘탈':'#7c3aed','거래량':'#166534','매매유형':'#9f1239','화면세팅법':'#0369a1','호가창':'#854d0e','심법':'#15803d','보조지표':'#9d174d','기타':'#374151'};
+  const catColorMap={'검색식':'#dbeafe','기법':'#fef3c7','멘탈':'#f3e8ff','거래량':'#dcfce7','매매유형':'#ffe4e6','화면세팅법':'#e0f2fe','호가창':'#fef9c3','심법':'#f0fdf4','보조지표':'#fce7f3','기타':'#f3f4f6'};
+  const catTxtMap={'검색식':'#1e40af','기법':'#92400e','멘탈':'#7c3aed','거래량':'#166534','매매유형':'#9f1239','화면세팅법':'#0369a1','호가창':'#854d0e','심법':'#15803d','보조지표':'#9d174d','기타':'#374151'};
   document.getElementById('note-view-title').textContent=n.name;
   let html='';
-  if(n.cat)html+=`<div style="margin-bottom:10px"><span style="padding:2px 8px;border-radius:9px;font-size:11px;font-weight:600;background:${catColors[n.cat]||'#f3f4f6'};color:${catTxtColors[n.cat]||'#374151'}">${n.cat}</span></div>`;
+  if(n.cat)html+=`<div style="margin-bottom:10px"><span style="padding:2px 8px;border-radius:9px;font-size:11px;font-weight:600;background:${catColorMap[n.cat]||'#f3f4f6'};color:${catTxtMap[n.cat]||'#374151'}">${n.cat}</span></div>`;
   if(n.desc)html+=`<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">${n.desc}</div>`;
   if(n.url)html+=`<div style="margin-bottom:12px"><a href="${n.url}" target="_blank" style="color:var(--blue);font-size:13px">🔗 ${n.url}</a></div>`;
   if(n.images&&n.images.length)html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="max-width:100%;max-height:280px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`;
@@ -3359,10 +3304,16 @@ function renderSdnImgPrev(){
   const el=document.getElementById('sdn-img-prev');if(!el)return;
   el.innerHTML=sdnImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" style="cursor:pointer" onclick="showFullImg('${src}')"><button class="rm" onclick="sdnImgs.splice(${i},1);renderSdnImgPrev()">✕</button></div>`).join('');
 }
+function getSdnCat(){
+  const sel=document.getElementById('sdn-cat-sel').value;
+  const inp=document.getElementById('sdn-cat-input').value.trim();
+  return sel||inp;
+}
 function saveSdNote(){
   const name=document.getElementById('sdn-name').value.trim();if(!name)return alert('이름을 입력해주세요');
   const mode=document.getElementById('modal-sdnote').dataset.mode;
-  const obj={id:sdnEditId||Date.now(),name,cat:document.getElementById('sdn-cat').value.trim(),desc:document.getElementById('sdn-desc').value,url:document.getElementById('sdn-url').value,images:[...sdnImgs],date:new Date().toLocaleDateString('ko-KR')};
+  const cat=getSdnCat();
+  const obj={id:sdnEditId||Date.now(),name,cat,desc:document.getElementById('sdn-desc').value,url:document.getElementById('sdn-url').value,images:[...sdnImgs],date:new Date().toLocaleDateString('ko-KR')};
   if(mode==='invest'){
     if(!state.selfdevNotes)state.selfdevNotes={};
     if(!state.selfdevNotes[sdNoteKey])state.selfdevNotes[sdNoteKey]=[];
@@ -3370,12 +3321,12 @@ function saveSdNote(){
     else state.selfdevNotes[sdNoteKey].unshift(obj);
     closeModal('modal-sdnote');save();renderCurrentYoutuber();
   } else {
-    const s=sdGeneralCtx;
+    const s=sdGenCtx;
     if(!state.selfdevGeneral)state.selfdevGeneral={blog:[],youtube:[],sidejob:[],language:[],computer:[]};
     if(!state.selfdevGeneral[s])state.selfdevGeneral[s]=[];
-    if(sdGeneralEditId){const idx=state.selfdevGeneral[s].findIndex(x=>x.id===sdGeneralEditId);if(idx>=0)state.selfdevGeneral[s][idx]=obj;}
+    if(sdnEditId){const idx=state.selfdevGeneral[s].findIndex(x=>x.id===sdnEditId);if(idx>=0)state.selfdevGeneral[s][idx]=obj;}
     else state.selfdevGeneral[s].unshift(obj);
-    closeModal('modal-sdnote');save();renderSelfdevGeneral(s);
+    closeModal('modal-sdnote');save();renderSdGenPage(s);
   }
 }
 function delSdNote(key,id){
@@ -3384,6 +3335,117 @@ function delSdNote(key,id){
   save();renderCurrentYoutuber();
 }
 
+// ===== 일반 자기계발 페이지 (블로그/유튜브/부업/외국어/컴퓨터) =====
+// 분류를 직접 추가/삭제하면 필터가 자동 생성됨
+let sdGenCtx=null,sdGenCatFilter='전체',sdGenEditId=null;
+const sdGenInfo={
+  blog:{title:'📝 블로그',wrapId:'sd-blog-page-wrap'},
+  youtube:{title:'📺 유튜브',wrapId:'sd-youtube-page-wrap'},
+  sidejob:{title:'💼 부업',wrapId:'sd-sidejob-page-wrap'},
+  language:{title:'🌍 외국어',wrapId:'sd-language-page-wrap'},
+  computer:{title:'💻 컴퓨터',wrapId:'sd-computer-page-wrap'},
+};
+
+function renderSdGenPage(section){
+  sdGenCtx=section;
+  const info=sdGenInfo[section];
+  const el=document.getElementById(info.wrapId);if(!el)return;
+  if(!state.selfdevGeneral)state.selfdevGeneral={blog:[],youtube:[],sidejob:[],language:[],computer:[]};
+  if(!state.selfdevGeneral[section])state.selfdevGeneral[section]=[];
+  const notes=state.selfdevGeneral[section];
+  // 사용자가 추가한 분류 자동 수집
+  if(!state.selfdevGenCats)state.selfdevGenCats={blog:[],youtube:[],sidejob:[],language:[],computer:[]};
+  if(!state.selfdevGenCats[section])state.selfdevGenCats[section]=[];
+  const cats=state.selfdevGenCats[section];
+  const filtered=sdGenCatFilter==='전체'?notes:notes.filter(n=>n.cat===sdGenCatFilter);
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div class="page-title" style="margin:0">${info.title}</div>
+      <button class="btn btn-primary btn-sm" onclick="openSdGenModal('${section}')">+ 노트 추가</button>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+      <button class="filter-btn ${sdGenCatFilter==='전체'?'on':''}" onclick="sdGenCatFilter='전체';renderSdGenPage('${section}')">전체</button>
+      ${cats.map(c=>`<button class="filter-btn ${sdGenCatFilter===c?'on':''}" onclick="sdGenCatFilter='${c}';renderSdGenPage('${section}')">${c}
+        <span onclick="event.stopPropagation();delSdGenCat('${section}','${c}')" style="margin-left:4px;opacity:.5;font-size:9px">✕</span>
+      </button>`).join('')}
+      <button class="btn btn-outline btn-sm" style="font-size:10px;padding:3px 9px" onclick="addSdGenCat('${section}')">+ 분류 추가</button>
+    </div>
+    ${filtered.length?filtered.map(n=>`
+      <div class="concept-card" style="margin-bottom:11px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            ${n.cat?`<span style="padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600;background:var(--active);color:var(--accent)">${n.cat}</span>`:''}
+            <span style="font-weight:700;font-size:14px">${n.name}</span>
+          </div>
+          <div style="display:flex;gap:5px;flex-shrink:0">
+            <button class="expand-btn" onclick="openSdGenViewModal('${section}',${n.id})">🔍 전체보기</button>
+            <button class="btn btn-outline btn-sm" onclick="openSdGenModal('${section}',${n.id})" style="font-size:10px;padding:3px 8px">✏️</button>
+            <button class="del-btn" onclick="delSdGen('${section}',${n.id})">✕</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:6px;white-space:pre-wrap">${(n.desc||'').slice(0,120)}${(n.desc||'').length>120?'...':''}</div>
+        ${n.url?`<a href="${n.url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">🔗 ${n.url.slice(0,55)}${n.url.length>55?'...':''}</a>`:''}
+        ${n.images&&n.images.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="width:80px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`:''}
+        <div style="font-size:10px;color:var(--text2);margin-top:4px">${n.date||''}</div>
+      </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요<br><span style="font-size:11px;margin-top:6px;display:block">분류를 먼저 추가하면 필터가 생겨요 🏷️</span></div>'}`;
+}
+
+function addSdGenCat(section){
+  const name=prompt('새 분류 이름을 입력하세요:');
+  if(!name||!name.trim())return;
+  const trimmed=name.trim();
+  if(!state.selfdevGenCats)state.selfdevGenCats={};
+  if(!state.selfdevGenCats[section])state.selfdevGenCats[section]=[];
+  if(state.selfdevGenCats[section].includes(trimmed)){alert('이미 있는 분류예요!');return;}
+  state.selfdevGenCats[section].push(trimmed);
+  save();renderSdGenPage(section);
+}
+function delSdGenCat(section,cat){
+  if(!confirm(`"${cat}" 분류를 삭제할까요?\n이 분류의 노트는 분류 없음으로 변경됩니다.`))return;
+  state.selfdevGenCats[section]=state.selfdevGenCats[section].filter(c=>c!==cat);
+  (state.selfdevGeneral[section]||[]).forEach(n=>{if(n.cat===cat)n.cat='';});
+  if(sdGenCatFilter===cat)sdGenCatFilter='전체';
+  save();renderSdGenPage(section);
+}
+function openSdGenModal(section,editId){
+  sdGenCtx=section;sdGenEditId=editId||null;sdnImgs=[];
+  document.getElementById('sdnote-modal-title').textContent=editId?'📝 노트 수정':'📝 노트 추가';
+  document.getElementById('sdn-img-prev').innerHTML='';
+  ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(id=>document.getElementById(id).value='');
+  // 분류 드롭다운: 사용자 추가 분류
+  const cats=(state.selfdevGenCats&&state.selfdevGenCats[section])||[];
+  const sel=document.getElementById('sdn-cat-sel');
+  sel.innerHTML='<option value="">-- 선택 --</option>'+cats.map(c=>`<option>${c}</option>`).join('');
+  sel.value='';
+  if(editId){
+    const n=(state.selfdevGeneral[section]||[]).find(x=>x.id===editId);if(!n)return;
+    document.getElementById('sdn-name').value=n.name||'';
+    if(cats.includes(n.cat||''))sel.value=n.cat;
+    else document.getElementById('sdn-cat-input').value=n.cat||'';
+    document.getElementById('sdn-desc').value=n.desc||'';
+    document.getElementById('sdn-url').value=n.url||'';
+    sdnImgs=n.images?[...n.images]:[];
+    renderSdnImgPrev();
+  }
+  document.getElementById('modal-sdnote').dataset.mode='general';
+  openModal('modal-sdnote');
+}
+function openSdGenViewModal(section,id){
+  const n=(state.selfdevGeneral[section]||[]).find(x=>x.id===id);if(!n)return;
+  document.getElementById('note-view-title').textContent=n.name;
+  let html='';
+  if(n.cat)html+=`<div style="margin-bottom:10px"><span style="padding:2px 8px;border-radius:9px;font-size:11px;font-weight:600;background:var(--active);color:var(--accent)">${n.cat}</span></div>`;
+  if(n.desc)html+=`<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">${n.desc}</div>`;
+  if(n.url)html+=`<div style="margin-bottom:12px"><a href="${n.url}" target="_blank" style="color:var(--blue);font-size:13px">🔗 ${n.url}</a></div>`;
+  if(n.images&&n.images.length)html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">${n.images.map(img=>`<img src="${img}" onclick="showFullImg('${img}')" style="max-width:100%;max-height:280px;object-fit:contain;border-radius:9px;border:1px solid var(--border);cursor:pointer">`).join('')}</div>`;
+  document.getElementById('note-view-body').innerHTML=html;
+  openModal('modal-note-view');
+}
+function delSdGen(section,id){
+  if(!confirm('삭제할까요?'))return;
+  state.selfdevGeneral[section]=state.selfdevGeneral[section].filter(x=>x.id!==id);
+  save();renderSdGenPage(section);
+}
 // ===== 명상 =====
 let medEditId=null,medImgs=[];
 function openMeditationModal(editId){
