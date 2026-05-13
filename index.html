@@ -1398,7 +1398,7 @@ function initApp(){
   ['cardio','diet','stretch','neck','leg','arm','waist'].forEach(cat=>{renderEx(cat);renderAddForm('ex',cat);});
   ['face','scalp'].forEach(cat=>{renderMas(cat);renderAddForm('mas',cat);});
   renderBudget();
-  renderTDash();renderTrades();renderTBalance();renderTDiaries();
+  renderTDash();renderTrades();renderTBalance();
   if(state['stock-rules-text']){const el=document.getElementById('stock-rules-text');if(el)el.value=state['stock-rules-text'];}
   document.addEventListener('input',e=>{
     if(['p-goal','p-mood'].includes(e.target.id)){state[e.target.id]=e.target.value;save();}
@@ -1828,6 +1828,12 @@ function saveReview2(){
   else state.reviewData[_rvType].unshift(obj);
   closeModal('modal-review');save();renderReviews(_rvType);
 }
+function delReview2(type,id){
+  if(!confirm('삭제할까요?'))return;
+  if(!state.reviewData||!state.reviewData[type])return;
+  state.reviewData[type]=state.reviewData[type].filter(function(x){return x.id!==id;});
+  save();renderReviews(type);
+}
 function filterReview(type,f,btn){
   _rvFilters[type]=f;
   document.querySelectorAll('#rv-filter-'+type+' .filter-btn').forEach(function(b){b.classList.remove('on');});
@@ -1855,7 +1861,7 @@ function renderReviews(type){
     '</div>'+
     '<div style="display:flex;gap:5px;flex-shrink:0">'+
     '<button class="btn btn-outline btn-sm" onclick="openReviewModal(\''+type+'\','+item.id+')" style="font-size:10px;padding:3px 8px">✏️</button>'+
-    '<button class="del-btn" onclick="if(confirm(\'삭제?\\')){state.reviewData[\''+type+'\'].splice(state.reviewData[\''+type+'\'].indexOf(state.reviewData[\''+type+'\'].find(function(x){return x.id==='+item.id+';})),1);save();renderReviews(\''+type+'\')}">✕</button>'+
+    '<button class="del-btn" onclick="delReview2(\''+type+'\','+item.id+')">✕</button>'+
     '</div></div>'+
     '<div style="display:flex;gap:7px;margin-bottom:8px;flex-wrap:wrap">'+
     (item.stop?'<span style="font-size:11px;background:#fde8e8;color:#c0392b;padding:2px 8px;border-radius:6px;font-weight:600">손절 '+item.stop+'</span>':'')+
@@ -1981,7 +1987,7 @@ function renderWatch(){
     '<span style="padding:2px 9px;border-radius:9px;font-size:11px;font-weight:600;background:'+(sC[w.status]||'#aaa')+';color:#fff">'+w.status+'</span></div>'+
     '<div style="display:flex;gap:6px">'+
     '<button class="btn btn-outline btn-sm" onclick="openWatchModal('+w.id+')">✏️ 수정</button>'+
-    '<button class="del-btn" onclick="if(confirm(\'삭제?\''+')){state.stockWatchlist=state.stockWatchlist.filter(function(x){return x.id!=='+w.id+';});save();renderWatch()}">✕</button>'+
+    '<button class="del-btn" onclick="if(confirm(\'삭제?\'){state.stockWatchlist=state.stockWatchlist.filter(function(x){return x.id!=='+w.id+';});save();renderWatch()}">✕</button>'+
     '</div></div>'+
     '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">'+
     (w.entry?'<div style="background:#f5f0e8;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:3px">진입가</div><div style="font-size:13px;font-weight:700;color:var(--blue)">'+Number(w.entry).toLocaleString()+'원</div></div>':'')+
