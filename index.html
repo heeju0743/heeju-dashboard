@@ -229,30 +229,34 @@ textarea{resize:vertical;min-height:80px}
 #loading-screen .sub{font-size:14px;color:var(--text2)}
 /* ===== 모바일 (768px 이하) ===== */
 @media(max-width:768px){
-  /* 사이드바 완전 숨김 */
-  #sidebar{display:none !important}
-  /* 메인 영역 하단 탭바 여백 */
-  #main{padding:14px 12px 80px 12px}
-  /* 하단 탭바 표시 */
-  #mobile-tabbar{display:flex !important}
-  /* 그리드 1열 */
+  /* 사이드바 - 아이콘만 표시 (56px 유지) */
+  #sidebar{width:56px;min-width:56px}
+  .sb-item span,.sb-section,.sb-header .sb-sub,.sb-date-block,.sb-footer{display:none}
+  /* 메인 영역 */
+  #main{padding:14px 10px 14px 10px}
+  /* 그리드 정리 */
   .stat-grid,.budget-summary{grid-template-columns:repeat(2,1fr)}
   .dash-grid,.planner-grid,.cal-wrap,.balance-layout{grid-template-columns:1fr}
   .quarter-grid{grid-template-columns:repeat(2,1fr)}
   .mg2,.mg3{grid-template-columns:1fr}
   /* 카드 패딩 축소 */
-  .card{padding:14px}
-  /* 탭 스크롤 */
-  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
-  .tab{white-space:nowrap;flex-shrink:0}
-  /* 투자일지 테이블 */
-  .trade-table-wrap{overflow-x:auto}
+  .card{padding:12px}
+  /* 탭 가로 스크롤 */
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap;flex-shrink:0;font-size:12px;padding:6px 10px}
   /* 모달 */
-  .modal{width:95vw !important;max-height:85vh;border-radius:16px}
+  .modal{width:95vw !important;max-height:88vh;border-radius:16px}
   /* 페이지 타이틀 */
-  .page-title{font-size:18px}
+  .page-title{font-size:18px;margin-bottom:14px}
   /* 버튼 */
   .btn{font-size:12px}
+  /* 투자일지 테이블 */
+  .trade-table-wrap{overflow-x:auto}
+  /* 하단 탭바 표시 */
+  #mobile-tabbar{display:flex !important}
+  /* 하단 탭바 여백 */
+  body{padding-bottom:60px}
 }
 @media(max-width:900px){
   #sidebar{width:56px;min-width:56px}.sb-item span,.sb-section,.sb-header .sb-sub,.sb-date-block,.sb-footer{display:none}
