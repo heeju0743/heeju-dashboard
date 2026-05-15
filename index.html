@@ -1057,32 +1057,19 @@ textarea{resize:vertical;min-height:80px}
     <div class="tab" onclick="switchInvestSub('futures')">📊 해외선물</div>
   </div>
   <div id="inv-domestic" class="inv-sub active">
-    <div class="tabs" style="flex-wrap:wrap;border:none;margin:0 0 11px" id="domestic-youtuber-tabs">
-      <div class="tab active" onclick="switchYoutuber('단테',this,'domestic')">단테</div>
-      <div class="tab" onclick="switchYoutuber('돈깡',this,'domestic')">돈깡</div>
-      <div class="tab" onclick="switchYoutuber('만주',this,'domestic')">만주</div>
-      <div class="tab" onclick="switchYoutuber('대왕개미',this,'domestic')">대왕개미</div>
-    </div>
+    <div id="domestic-youtuber-tabs" style="margin-bottom:11px"></div>
     <div id="domestic-youtuber-content"></div>
   </div>
   <div id="inv-us" class="inv-sub" style="display:none">
-    <div class="tabs" style="flex-wrap:wrap;border:none;margin:0 0 11px" id="us-youtuber-tabs">
-      <div class="tab active" onclick="switchYoutuber('개준석',this,'us')">개준석</div>
-      <div class="tab" onclick="switchYoutuber('또사이선생',this,'us')">또사이선생</div>
-    </div>
+    <div id="us-youtuber-tabs" style="margin-bottom:11px"></div>
     <div id="us-youtuber-content"></div>
   </div>
   <div id="inv-coin" class="inv-sub" style="display:none">
-    <div class="tabs" style="flex-wrap:wrap;border:none;margin:0 0 11px" id="coin-youtuber-tabs">
-      <div class="tab active" onclick="switchYoutuber('쉽알남',this,'coin')">쉽알남</div>
-      <div class="tab" onclick="switchYoutuber('불장단타왕',this,'coin')">불장단타왕</div>
-    </div>
+    <div id="coin-youtuber-tabs" style="margin-bottom:11px"></div>
     <div id="coin-youtuber-content"></div>
   </div>
   <div id="inv-futures" class="inv-sub" style="display:none">
-    <div class="tabs" style="flex-wrap:wrap;border:none;margin:0 0 11px" id="futures-youtuber-tabs">
-      <div class="tab active" onclick="switchYoutuber('김직선',this,'futures')">김직선</div>
-    </div>
+    <div id="futures-youtuber-tabs" style="margin-bottom:11px"></div>
     <div id="futures-youtuber-content"></div>
   </div>
 </div>
@@ -1335,6 +1322,7 @@ window.state={
   ],
   balanceRows:[],tradeDiaries:[],
   selfdevNotes:{},selfdevInvestCats:{},
+  selfdevInvestYoutubers:{},
   selfdevGenCats:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
   selfdevGeneral:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
   meditations:[],medRecords:[],
@@ -1396,6 +1384,8 @@ function initApp(){
   ['face','scalp'].forEach(cat=>{renderMas(cat);renderAddForm('mas',cat);});
   renderBudget();
   renderTDash();renderTrades();renderTBalance();
+  // 유튜버 탭 초기 렌더
+  ['domestic','us','coin','futures'].forEach(function(m){renderYoutuberTabs(m);});
   renderCurrentYoutuber();
   renderMeditations();renderMedRecords();renderTDiaries();
   if(state['stock-rules-text']){const el=document.getElementById('stock-rules-text');if(el)el.value=state['stock-rules-text'];}
@@ -1421,7 +1411,7 @@ function nav(id){
   if(id==='diary')document.getElementById('diary-date-display').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
   if(id==='budget')renderBudget();
   if(id==='journal'){renderTDash();renderTrades();}
-  if(id==='sd-invest'){renderCurrentYoutuber();}
+  if(id==='sd-invest'){['domestic','us','coin','futures'].forEach(function(m){renderYoutuberTabs(m);});renderCurrentYoutuber();}
   if(id==='sd-blog')renderSdGenPage('blog');
   if(id==='sd-youtube')renderSdGenPage('youtube');
   if(id==='sd-sidejob')renderSdGenPage('sidejob');
@@ -2687,25 +2677,79 @@ const sdInvestConfig={
 let currentInvestSub='domestic',currentYoutuber='단테',sdCatFilter='전체';
 let sdnEditId=null,sdnImgs=[];
 
+function getYoutubers(market){
+  if(!state.selfdevInvestYoutubers)state.selfdevInvestYoutubers={};
+  if(state.selfdevInvestYoutubers[market]&&state.selfdevInvestYoutubers[market].length)
+    return state.selfdevInvestYoutubers[market];
+  return sdInvestConfig[market].youtubers.slice();
+}
+function renderYoutuberTabs(market){
+  const el=document.getElementById(market+'-youtuber-tabs');if(!el)return;
+  const youtubers=getYoutubers(market);
+  let html='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">';
+  youtubers.forEach(function(y){
+    const isActive=currentYoutuber===y&&currentInvestSub===market;
+    const activeCss=isActive?'background:var(--card);border-color:var(--border);color:var(--accent);font-weight:600':'background:#fff;border-color:var(--border);color:var(--text2)';
+    html+='<span style="display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:9px;overflow:hidden;'+activeCss+'">';
+    html+='<button onclick="switchYoutuber(\''+y+'\',this,\''+market+'\')" style="background:none;border:none;cursor:pointer;padding:6px 10px;font-size:13px;font-family:inherit;color:inherit;font-weight:inherit">'+y+'</button>';
+    html+='<button onclick="delYoutuber(\''+market+'\',\''+y+'\')" style="background:none;border:none;border-left:1px solid var(--border);cursor:pointer;padding:6px 8px;font-size:11px;color:#bbb;font-family:inherit" title="삭제">✕</button>';
+    html+='</span>';
+  });
+  html+='<button onclick="addYoutuber(\''+market+'\')" style="background:none;border:1px dashed var(--border);border-radius:9px;cursor:pointer;padding:6px 12px;font-size:12px;color:var(--text2);font-family:inherit">+ 추가</button>';
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function addYoutuber(market){
+  const name=prompt('추가할 이름을 입력하세요:');
+  if(!name||!name.trim())return;
+  const trimmed=name.trim();
+  if(!state.selfdevInvestYoutubers)state.selfdevInvestYoutubers={};
+  if(!state.selfdevInvestYoutubers[market])state.selfdevInvestYoutubers[market]=getYoutubers(market).slice();
+  if(state.selfdevInvestYoutubers[market].includes(trimmed)){alert('이미 있어요!');return;}
+  state.selfdevInvestYoutubers[market].push(trimmed);
+  save();renderYoutuberTabs(market);
+}
+function delYoutuber(market,name){
+  const defaults=sdInvestConfig[market].youtubers;
+  if(!confirm('"'+name+'" 를 삭제할까요?'))return;
+  if(!state.selfdevInvestYoutubers)state.selfdevInvestYoutubers={};
+  if(!state.selfdevInvestYoutubers[market])state.selfdevInvestYoutubers[market]=getYoutubers(market).slice();
+  state.selfdevInvestYoutubers[market]=state.selfdevInvestYoutubers[market].filter(function(y){return y!==name;});
+  if(!state.selfdevInvestYoutubers[market].length){
+    alert('최소 1개는 있어야 해요!');
+    state.selfdevInvestYoutubers[market]=[name];
+    return;
+  }
+  // 삭제된 유튜버가 현재 선택된 경우 첫번째로 이동
+  if(currentYoutuber===name){
+    currentYoutuber=state.selfdevInvestYoutubers[market][0];
+  }
+  save();renderYoutuberTabs(market);renderCurrentYoutuber();
+}
 function switchInvestSub(sub){
   currentInvestSub=sub;
-  document.querySelectorAll('#invest-sub-tabs .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#invest-sub-tabs .tab').forEach(function(t){t.classList.remove('active');});
   const subMap={domestic:0,us:1,coin:2,futures:3};
   document.querySelectorAll('#invest-sub-tabs .tab')[subMap[sub]]?.classList.add('active');
-  ['domestic','us','coin','futures'].forEach(s=>{
+  ['domestic','us','coin','futures'].forEach(function(s){
     const el=document.getElementById('inv-'+s);if(el)el.style.display=s===sub?'block':'none';
   });
-  currentYoutuber=sdInvestConfig[sub].youtubers[0];
+  const youtubers=getYoutubers(sub);
+  currentYoutuber=youtubers[0]||'';
   sdCatFilter='전체';
+  renderYoutuberTabs(sub);
   renderCurrentYoutuber();
 }
+
 function switchYoutuber(youtuber,btn,market){
   currentYoutuber=youtuber;
-  document.querySelectorAll('#'+market+'-youtuber-tabs .tab').forEach(t=>t.classList.remove('active'));
-  if(btn)btn.classList.add('active');
+  currentInvestSub=market;
   sdCatFilter='전체';
+  renderYoutuberTabs(market);
   renderCurrentYoutuber();
 }
+
 function getInvestCats(market,youtuber){
   const key=market+'_'+youtuber;
   if(!state.selfdevInvestCats)state.selfdevInvestCats={};
