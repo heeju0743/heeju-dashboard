@@ -2560,7 +2560,27 @@ function renderSajuSaved(){/* 사주 페이지 미사용 */}
 
 // ===== DIARY =====
 function openDiaryModal(type){state.currentDiaryType=type;const titles={diary:'📖 일기 쓰기',gratitude:'🌸 감사일기',doodle:'✏️ 끄적끄적'};document.getElementById('diary-modal-title').textContent=titles[type];document.getElementById('diary-modal-body').innerHTML=`<div class="modal-row"><label>날짜</label><input id="dm-date" type="date" value="${new Date().toISOString().split('T')[0]}"></div><div class="modal-row"><label>내용</label><textarea id="dm-content" style="min-height:130px"></textarea></div>`;openModal('modal-diary');}
-function saveDiaryEntry(){const c=document.getElementById('dm-content').value.trim();if(!c)return;const type=state.currentDiaryType;const arr=type==='diary'?state.diaries:type==='gratitude'?state.gratitudes:state.doodles;arr.unshift({id:Date.now(),date:document.getElementById('dm-date').value,content:c});closeModal('modal-diary');save();renderDiaries();renderGratitudes();renderDoodles();}
+function saveDiaryEntry(){
+  const type=state.currentDiaryType;
+  const dateEl=document.getElementById('dm-date');
+  const date=dateEl?dateEl.value:new Date().toISOString().split('T')[0];
+  if(type==='gratitude'){
+    const g1=(document.getElementById('dm-grat-1')?.value||'').trim();
+    const g2=(document.getElementById('dm-grat-2')?.value||'').trim();
+    const g3=(document.getElementById('dm-grat-3')?.value||'').trim();
+    if(!g1&&!g2&&!g3){alert('감사한 것을 하나 이상 입력해주세요');return;}
+    const items=[g1,g2,g3].filter(Boolean);
+    state.gratitudes.unshift({id:Date.now(),date,items,content:items.join('\n')});
+  } else {
+    const cEl=document.getElementById('dm-content');
+    const c=cEl?cEl.value.trim():'';
+    if(!c){alert('내용을 입력해주세요');return;}
+    const arr=type==='diary'?state.diaries:state.doodles;
+    arr.unshift({id:Date.now(),date,content:c});
+  }
+  closeModal('modal-diary');save();renderDiaries();renderGratitudes();renderDoodles();
+}
+
 function renderDiaries(){
   const el=document.getElementById('diary-list');if(!el)return;
   if(!state.diaries||!state.diaries.length){
@@ -2591,18 +2611,26 @@ function renderGratitudes(){
   }
   el.innerHTML=state.gratitudes.map(function(d,i){
     const hasItems=d.items&&d.items.length;
-    const preview=hasItems?
-      '<div style="margin-top:8px">'+d.items.map(function(t,n){
-        return '<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f5ede0;font-size:13px">'+
-          '<span style="background:var(--accent);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">'+(n+1)+'</span>'+
-          '<span>'+t+'</span></div>';
-      }).join('')+'</div>':
-      '<div style="font-size:13px;margin-top:7px;line-height:1.8">'+(d.content||'').slice(0,100)+'</div>';
+    let preview='';
+    if(hasItems){
+      preview='<div style="margin-top:10px">';
+      d.items.forEach(function(t,n){
+        preview+=
+          '<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f5ede0">'+
+            '<span style="min-width:24px;width:24px;height:24px;background:var(--accent);color:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;line-height:1">'+(n+1)+'</span>'+
+            '<span style="font-size:13px;line-height:1.6;padding-top:3px">'+t+'</span>'+
+          '</div>';
+      });
+      preview+='</div>';
+    } else {
+      preview='<div style="font-size:13px;margin-top:7px;line-height:1.8">'+(d.content||'').slice(0,150)+'</div>';
+    }
     return '<div class="j-card">'+
       '<div style="display:flex;justify-content:space-between;align-items:center">'+
         '<span class="j-date">🌸 '+d.date+'</span>'+
         '<button class="del-btn" onclick="state.gratitudes.splice('+i+',1);save();renderGratitudes()">✕</button>'+
-      '</div>'+preview+'</div>';
+      '</div>'+preview+
+    '</div>';
   }).join('');
 }
 
