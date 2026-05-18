@@ -1330,7 +1330,7 @@ window.state={
 };
 
 let saveTimer=null;
-function compressImg(base64,maxW,maxH,quality){
+window.compressImg=function(base64,maxW,maxH,quality){
   return new Promise(function(resolve){
     const img=new Image();
     img.onload=function(){
@@ -1343,7 +1343,7 @@ function compressImg(base64,maxW,maxH,quality){
     };
     img.src=base64;
   });
-}
+};
 window.syncSave=async function(){
   const bar=document.getElementById('sync-bar');
   bar.style.display='flex';bar.className='sync-bar saving';bar.textContent='💾 저장 중...';
@@ -2162,44 +2162,28 @@ function handleRecipeImg(input,cat){
   if(!window._recipeImgs)window._recipeImgs={};
   if(!window._recipeImgs[cat])window._recipeImgs[cat]=[];
   Array.from(input.files).forEach(function(f){
-    const r=new FileReader();
-    r.onload=function(e){
-      window._recipeImgs[cat].push(e.target.result);
-      const prevEl=document.getElementById('recipe-img-prev-'+cat);
-      if(prevEl){
-        const idx=window._recipeImgs[cat].length-1;
-        const div=document.createElement('div');div.className='img-preview-item';
-        div.innerHTML='<img src="'+e.target.result+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._recipeImgs[\''+cat+'\'].splice('+idx+',1);this.parentNode.remove()">✕</button>';
-        prevEl.appendChild(div);
-      }
+    const reader=new FileReader();
+    reader.onload=function(e){
+      window.compressImg(e.target.result,800,800,0.7).then(function(compressed){
+        window._recipeImgs[cat].push(compressed);
+        const prevEl=document.getElementById('recipe-img-prev-'+cat);
+        if(prevEl){
+          const div=document.createElement('div');div.className='img-preview-item';
+          const curIdx=window._recipeImgs[cat].length-1;
+          div.innerHTML='<img src="'+compressed+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._recipeImgs[\''+cat+'\'].splice('+curIdx+',1);this.parentNode.remove()">✕</button>';
+          prevEl.appendChild(div);
+        }
+      });
     };
-    r.readAsDataURL(f);
+    reader.readAsDataURL(f);
   });
   input.value='';
 }
-// 요리 수정 모달
-let recipeEditCat=null,recipeEditIdx=null,recipeEditImgs=[];
-function openRecipeEditModal(cat,idx){
-  recipeEditCat=cat;recipeEditIdx=idx;recipeEditImgs=[];
-  const r=state.recipes[cat][idx];if(!r)return;
-  document.getElementById('recipe-edit-name').value=r.name||'';
-  document.getElementById('recipe-edit-ing').value=r.ing||'';
-  document.getElementById('recipe-edit-method').value=r.method||'';
-  document.getElementById('recipe-edit-tip').value=r.tip||'';
-  recipeEditImgs=r.images?[...r.images]:[];
-  renderRecipeEditImgPrev();
-  openModal('modal-recipe-edit');
-}
-function renderRecipeEditImgPrev(){
-  const el=document.getElementById('recipe-edit-img-prev');if(!el)return;
-  el.innerHTML=recipeEditImgs.map(function(src,i){
-    return '<div class="img-preview-item"><img src="'+src+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="recipeEditImgs.splice('+i+',1);renderRecipeEditImgPrev()">✕</button></div>';
-  }).join('');
-}
+
 function handleRecipeEditImg(input){
   Array.from(input.files).forEach(function(f){
     const r=new FileReader();
-    r.onload=function(e){compressImg(e.target.result,800,800,0.7).then(function(c){recipeEditImgs.push(c);renderRecipeEditImgPrev();});};
+    r.onload=function(e){window.compressImg(e.target.result,800,800,0.7).then(function(c){recipeEditImgs.push(c);renderRecipeEditImgPrev();});};
     r.readAsDataURL(f);
   });
   input.value='';
@@ -2783,26 +2767,69 @@ function renderDoodles(){const el=document.getElementById('doodle-list');if(!el)
 function renderAddForm(prefix,cat){
   const el=document.getElementById('af-'+prefix+'-'+cat)||document.getElementById('af-'+cat);
   if(!el)return;
-  const imgPrevId='af-img-prev-'+prefix+'-'+cat;
-  el.innerHTML=
-    '<div class="card" style="border-style:dashed">'+
-      '<div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 루틴 추가</div>'+
-      '<div class="modal-row"><label>루틴명</label><input id="'+prefix+'n-'+cat+'"></div>'+
-      '<div class="modal-row"><label>설명</label><textarea id="'+prefix+'d-'+cat+'" style="min-height:65px"></textarea></div>'+
-      '<div class="modal-row"><label>유튜브 링크</label><input id="'+prefix+'y-'+cat+'" placeholder="https://youtube.com/..."></div>'+
-      '<div class="modal-row">'+
-        '<label>📸 이미지 첨부</label>'+
-        '<div class="img-upload-area" onclick="document.getElementById(\'af-img-in-'+prefix+'-'+cat+'\').click()" style="padding:12px;text-align:center;font-size:13px">'+
-          '<input type="file" id="af-img-in-'+prefix+'-'+cat+'" accept="image/*" multiple style="display:none" onchange="handleAddFormImg(this,\''+prefix+'\',\''+cat+'\')">'+
-          '📁 클릭하여 이미지 첨부'+
-        '</div>'+
-        '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="'+imgPrevId+'"></div>'+
-      '</div>'+
-      '<button class="btn btn-primary" onclick="addItem(\''+prefix+'\',\''+cat+'\')">저장</button>'+
-    '</div>';
-  // 임시 이미지 초기화
+  // 이미지 초기화
   if(!window._addFormImgs)window._addFormImgs={};
   window._addFormImgs[prefix+'-'+cat]=[];
+
+  // DOM 직접 생성 방식 (이스케이프 문제 없음)
+  const wrap=document.createElement('div');
+  wrap.className='card';wrap.style.borderStyle='dashed';
+  
+  const title=document.createElement('div');
+  title.style.cssText='font-weight:700;margin-bottom:9px;font-size:13px';
+  title.textContent='+ 루틴 추가';
+  wrap.appendChild(title);
+
+  // 루틴명
+  const row1=document.createElement('div');row1.className='modal-row';
+  const lbl1=document.createElement('label');lbl1.textContent='루틴명';
+  const inp1=document.createElement('input');inp1.id=prefix+'n-'+cat;
+  row1.appendChild(lbl1);row1.appendChild(inp1);wrap.appendChild(row1);
+
+  // 설명
+  const row2=document.createElement('div');row2.className='modal-row';
+  const lbl2=document.createElement('label');lbl2.textContent='설명';
+  const ta=document.createElement('textarea');ta.id=prefix+'d-'+cat;ta.style.minHeight='65px';
+  row2.appendChild(lbl2);row2.appendChild(ta);wrap.appendChild(row2);
+
+  // 유튜브
+  const row3=document.createElement('div');row3.className='modal-row';
+  const lbl3=document.createElement('label');lbl3.textContent='유튜브 링크';
+  const inp3=document.createElement('input');inp3.id=prefix+'y-'+cat;inp3.placeholder='https://youtube.com/...';
+  row3.appendChild(lbl3);row3.appendChild(inp3);wrap.appendChild(row3);
+
+  // 이미지 첨부
+  const row4=document.createElement('div');row4.className='modal-row';
+  const lbl4=document.createElement('label');lbl4.textContent='📸 이미지 첨부';
+  const uploadArea=document.createElement('div');uploadArea.className='img-upload-area';
+  uploadArea.style.cssText='padding:12px;text-align:center;font-size:13px';
+  
+  const fileInput=document.createElement('input');
+  fileInput.type='file';fileInput.accept='image/*';fileInput.multiple=true;
+  fileInput.style.display='none';
+  fileInput.id='af-img-in-'+prefix+'-'+cat;
+  fileInput.addEventListener('change',function(){handleAddFormImg(this,prefix,cat);});
+  
+  uploadArea.appendChild(fileInput);
+  uploadArea.appendChild(document.createTextNode('📁 클릭하여 이미지 첨부'));
+  uploadArea.addEventListener('click',function(){fileInput.click();});
+  
+  const prevDiv=document.createElement('div');
+  prevDiv.id='af-img-prev-'+prefix+'-'+cat;
+  prevDiv.style.cssText='display:flex;flex-wrap:wrap;gap:6px;margin-top:8px';
+  
+  row4.appendChild(lbl4);row4.appendChild(uploadArea);row4.appendChild(prevDiv);
+  wrap.appendChild(row4);
+
+  // 저장 버튼
+  const btn=document.createElement('button');
+  btn.className='btn btn-primary';
+  btn.textContent='저장';
+  btn.addEventListener('click',function(){addItem(prefix,cat);});
+  wrap.appendChild(btn);
+
+  el.innerHTML='';
+  el.appendChild(wrap);
 }
 
 function addItem(prefix,cat){
@@ -2830,18 +2857,20 @@ function handleAddFormImg(input,prefix,cat){
   const key=prefix+'-'+cat;
   if(!window._addFormImgs[key])window._addFormImgs[key]=[];
   Array.from(input.files).forEach(function(f){
-    const r=new FileReader();
-    r.onload=function(e){
-      window._addFormImgs[key].push(e.target.result);
-      const prevEl=document.getElementById('af-img-prev-'+prefix+'-'+cat);
-      if(prevEl){
-        const idx=window._addFormImgs[key].length-1;
-        const div=document.createElement('div');div.className='img-preview-item';
-        div.innerHTML='<img src="'+e.target.result+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._addFormImgs[\''+key+'\'].splice('+idx+',1);this.parentNode.remove()">✕</button>';
-        prevEl.appendChild(div);
-      }
+    const reader=new FileReader();
+    reader.onload=function(e){
+      window.compressImg(e.target.result,800,800,0.7).then(function(compressed){
+        window._addFormImgs[key].push(compressed);
+        const prevEl=document.getElementById('af-img-prev-'+prefix+'-'+cat);
+        if(prevEl){
+          const div=document.createElement('div');div.className='img-preview-item';
+          const curIdx=window._addFormImgs[key].length-1;
+          div.innerHTML='<img src="'+compressed+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._addFormImgs[\''+key+'\'].splice('+curIdx+',1);this.parentNode.remove()">✕</button>';
+          prevEl.appendChild(div);
+        }
+      });
     };
-    r.readAsDataURL(f);
+    reader.readAsDataURL(f);
   });
   input.value='';
 }
@@ -3400,7 +3429,7 @@ function renderLifeEditImgPrev(){
 function handleLifeEditImg(input){
   Array.from(input.files).forEach(function(f){
     const r=new FileReader();
-    r.onload=function(e){compressImg(e.target.result,800,800,0.7).then(function(c){lifeEditImgs.push(c);renderLifeEditImgPrev();});};
+    r.onload=function(e){window.compressImg(e.target.result,800,800,0.7).then(function(c){lifeEditImgs.push(c);renderLifeEditImgPrev();});};
     r.readAsDataURL(f);
   });
   input.value='';
