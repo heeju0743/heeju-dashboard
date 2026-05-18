@@ -959,13 +959,13 @@ textarea{resize:vertical;min-height:80px}
       <div id="food-cal-grid" class="cal-food-grid"></div>
     </div>
   </div>
-  <div id="food-main" class="tab-content"><div id="r-main"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-main"></div><div class="modal-row"><label>재료</label><input id="ri-main"></div><div class="modal-row"><label>조리법</label><textarea id="rm-main" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-main"></div><button class="btn btn-primary" onclick="addRecipe('main')">저장</button></div></div>
-  <div id="food-veg" class="tab-content"><div id="r-veg"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-veg"></div><div class="modal-row"><label>재료</label><input id="ri-veg"></div><div class="modal-row"><label>조리법</label><textarea id="rm-veg" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-veg"></div><button class="btn btn-primary" onclick="addRecipe('veg')">저장</button></div></div>
-  <div id="food-soup" class="tab-content"><div id="r-soup"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-soup"></div><div class="modal-row"><label>재료</label><input id="ri-soup"></div><div class="modal-row"><label>조리법</label><textarea id="rm-soup" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-soup"></div><button class="btn btn-primary" onclick="addRecipe('soup')">저장</button></div></div>
-  <div id="food-other" class="tab-content"><div id="r-other"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-other"></div><div class="modal-row"><label>재료</label><input id="ri-other"></div><div class="modal-row"><label>조리법</label><textarea id="rm-other" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-other"></div><button class="btn btn-primary" onclick="addRecipe('other')">저장</button></div></div>
-  <div id="food-diet" class="tab-content"><div id="r-diet"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-diet"></div><div class="modal-row"><label>재료</label><input id="ri-diet"></div><div class="modal-row"><label>조리법</label><textarea id="rm-diet" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-diet"></div><button class="btn btn-primary" onclick="addRecipe('diet')">저장</button></div></div>
-  <div id="food-snack" class="tab-content"><div id="r-snack"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-snack"></div><div class="modal-row"><label>재료</label><input id="ri-snack"></div><div class="modal-row"><label>조리법</label><textarea id="rm-snack" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-snack"></div><button class="btn btn-primary" onclick="addRecipe('snack')">저장</button></div></div>
-  <div id="food-breakfast" class="tab-content"><div id="r-breakfast"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-breakfast"></div><div class="modal-row"><label>재료</label><input id="ri-breakfast"></div><div class="modal-row"><label>조리법</label><textarea id="rm-breakfast" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-breakfast"></div><button class="btn btn-primary" onclick="addRecipe('breakfast')">저장</button></div></div>
+  <div id="food-main" class="tab-content"><div id="r-main"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-main"></div><div class="modal-row"><label>재료</label><input id="ri-main"></div><div class="modal-row"><label>조리법</label><textarea id="rm-main" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-main"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-main').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-main" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'main')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-main"></div></div><button class="btn btn-primary" onclick="addRecipe('main')">저장</button></div></div>
+  <div id="food-veg" class="tab-content"><div id="r-veg"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-veg"></div><div class="modal-row"><label>재료</label><input id="ri-veg"></div><div class="modal-row"><label>조리법</label><textarea id="rm-veg" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-veg"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-veg').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-veg" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'veg')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-veg"></div></div><button class="btn btn-primary" onclick="addRecipe('veg')">저장</button></div></div>
+  <div id="food-soup" class="tab-content"><div id="r-soup"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-soup"></div><div class="modal-row"><label>재료</label><input id="ri-soup"></div><div class="modal-row"><label>조리법</label><textarea id="rm-soup" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-soup"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-soup').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-soup" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'soup')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-soup"></div></div><button class="btn btn-primary" onclick="addRecipe('soup')">저장</button></div></div>
+  <div id="food-other" class="tab-content"><div id="r-other"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-other"></div><div class="modal-row"><label>재료</label><input id="ri-other"></div><div class="modal-row"><label>조리법</label><textarea id="rm-other" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-other"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-other').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-other" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'other')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-other"></div></div><button class="btn btn-primary" onclick="addRecipe('other')">저장</button></div></div>
+  <div id="food-diet" class="tab-content"><div id="r-diet"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-diet"></div><div class="modal-row"><label>재료</label><input id="ri-diet"></div><div class="modal-row"><label>조리법</label><textarea id="rm-diet" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-diet"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-diet').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-diet" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'diet')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-diet"></div></div><button class="btn btn-primary" onclick="addRecipe('diet')">저장</button></div></div>
+  <div id="food-snack" class="tab-content"><div id="r-snack"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-snack"></div><div class="modal-row"><label>재료</label><input id="ri-snack"></div><div class="modal-row"><label>조리법</label><textarea id="rm-snack" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-snack"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-snack').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-snack" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'snack')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-snack"></div></div><button class="btn btn-primary" onclick="addRecipe('snack')">저장</button></div></div>
+  <div id="food-breakfast" class="tab-content"><div id="r-breakfast"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-breakfast"></div><div class="modal-row"><label>재료</label><input id="ri-breakfast"></div><div class="modal-row"><label>조리법</label><textarea id="rm-breakfast" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-breakfast"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-breakfast').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-breakfast" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'breakfast')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-breakfast"></div></div><button class="btn btn-primary" onclick="addRecipe('breakfast')">저장</button></div></div>
 </div>
 
 <!-- 운동 -->
@@ -2126,9 +2126,108 @@ function renderFoodCal(){
 function changeFoodMonth(d){state.foodCalMonth+=d;if(state.foodCalMonth>11){state.foodCalMonth=0;state.foodCalYear++;}else if(state.foodCalMonth<0){state.foodCalMonth=11;state.foodCalYear--;}renderFoodCal();}
 function openFoodDayModal(key){state.currentFoodDay=key;const fd=state.foodData[key]||{};document.getElementById('food-modal-title').textContent=`${key} 식단`;['breakfast','lunch','dinner','snack'].forEach(k=>document.getElementById('fd-'+k).value=fd[k]||'');openModal('modal-food-day');}
 function saveFoodDay(){state.foodData[state.currentFoodDay]={breakfast:document.getElementById('fd-breakfast').value,lunch:document.getElementById('fd-lunch').value,dinner:document.getElementById('fd-dinner').value,snack:document.getElementById('fd-snack').value};closeModal('modal-food-day');save();renderFoodCal();}
-function addRecipe(cat){const n=document.getElementById('rn-'+cat).value.trim();if(!n)return;state.recipes[cat].push({name:n,ing:document.getElementById('ri-'+cat).value,method:document.getElementById('rm-'+cat).value,tip:document.getElementById('rt-'+cat).value});['rn-','ri-','rm-','rt-'].forEach(p=>document.getElementById(p+cat).value='');save();renderRecipes(cat);}
+function addRecipe(cat){
+  const n=document.getElementById('rn-'+cat).value.trim();if(!n)return;
+  const imgs=(window._recipeImgs&&window._recipeImgs[cat])||[];
+  state.recipes[cat].push({
+    name:n,
+    ing:document.getElementById('ri-'+cat).value,
+    method:document.getElementById('rm-'+cat).value,
+    tip:document.getElementById('rt-'+cat).value,
+    images:[...imgs]
+  });
+  ['rn-','ri-','rm-','rt-'].forEach(function(p){
+    const el=document.getElementById(p+cat);if(el)el.value='';
+  });
+  if(window._recipeImgs)window._recipeImgs[cat]=[];
+  const prevEl=document.getElementById('recipe-img-prev-'+cat);
+  if(prevEl)prevEl.innerHTML='';
+  save();renderRecipes(cat);
+}
+function handleRecipeImg(input,cat){
+  if(!window._recipeImgs)window._recipeImgs={};
+  if(!window._recipeImgs[cat])window._recipeImgs[cat]=[];
+  Array.from(input.files).forEach(function(f){
+    const r=new FileReader();
+    r.onload=function(e){
+      window._recipeImgs[cat].push(e.target.result);
+      const prevEl=document.getElementById('recipe-img-prev-'+cat);
+      if(prevEl){
+        const idx=window._recipeImgs[cat].length-1;
+        const div=document.createElement('div');div.className='img-preview-item';
+        div.innerHTML='<img src="'+e.target.result+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._recipeImgs[\''+cat+'\'].splice('+idx+',1);this.parentNode.remove()">✕</button>';
+        prevEl.appendChild(div);
+      }
+    };
+    r.readAsDataURL(f);
+  });
+  input.value='';
+}
+// 요리 수정 모달
+let recipeEditCat=null,recipeEditIdx=null,recipeEditImgs=[];
+function openRecipeEditModal(cat,idx){
+  recipeEditCat=cat;recipeEditIdx=idx;recipeEditImgs=[];
+  const r=state.recipes[cat][idx];if(!r)return;
+  document.getElementById('recipe-edit-name').value=r.name||'';
+  document.getElementById('recipe-edit-ing').value=r.ing||'';
+  document.getElementById('recipe-edit-method').value=r.method||'';
+  document.getElementById('recipe-edit-tip').value=r.tip||'';
+  recipeEditImgs=r.images?[...r.images]:[];
+  renderRecipeEditImgPrev();
+  openModal('modal-recipe-edit');
+}
+function renderRecipeEditImgPrev(){
+  const el=document.getElementById('recipe-edit-img-prev');if(!el)return;
+  el.innerHTML=recipeEditImgs.map(function(src,i){
+    return '<div class="img-preview-item"><img src="'+src+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="recipeEditImgs.splice('+i+',1);renderRecipeEditImgPrev()">✕</button></div>';
+  }).join('');
+}
+function handleRecipeEditImg(input){
+  Array.from(input.files).forEach(function(f){
+    const r=new FileReader();
+    r.onload=function(e){recipeEditImgs.push(e.target.result);renderRecipeEditImgPrev();};
+    r.readAsDataURL(f);
+  });
+  input.value='';
+}
+function saveRecipeEdit(){
+  const name=document.getElementById('recipe-edit-name').value.trim();
+  if(!name)return alert('레시피명을 입력해주세요');
+  state.recipes[recipeEditCat][recipeEditIdx]={
+    name,
+    ing:document.getElementById('recipe-edit-ing').value,
+    method:document.getElementById('recipe-edit-method').value,
+    tip:document.getElementById('recipe-edit-tip').value,
+    images:[...recipeEditImgs]
+  };
+  closeModal('modal-recipe-edit');save();renderRecipes(recipeEditCat);
+}
+
 function delRecipe(cat,i){state.recipes[cat].splice(i,1);save();renderRecipes(cat);}
-function renderRecipes(cat){const el=document.getElementById('r-'+cat);if(!el)return;el.innerHTML=state.recipes[cat].map((r,i)=>`<details class="recipe-item"><summary>${r.name}<div style="display:flex;gap:5px"><button class="btn btn-danger btn-sm" onclick="event.preventDefault();delRecipe('${cat}',${i})">삭제</button><span>▼</span></div></summary><div style="padding-top:9px;font-size:13px;color:var(--text2);line-height:1.7">${r.ing?`<b>재료:</b> ${r.ing}<br><br>`:''}${r.method?`<b>조리법:</b><br>${r.method.replace(/\n/g,'<br>')}<br><br>`:''}${r.tip?`<b>💡 팁:</b> ${r.tip}`:''}</div></details>`).join('');}
+function renderRecipes(cat){
+  const el=document.getElementById('r-'+cat);if(!el)return;
+  el.innerHTML=state.recipes[cat].map(function(r,i){
+    const imgs=r.images&&r.images.length?
+      '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">'+
+        r.images.map(function(img){return '<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="width:80px;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer">';}).join('')+
+      '</div>':'';
+    return '<details class="recipe-item">'+
+      '<summary>'+r.name+
+        '<div style="display:flex;gap:5px">'+
+          '<button class="btn btn-outline btn-sm" onclick="event.preventDefault();openRecipeEditModal(\''+cat+'\','+i+')" style="font-size:11px">✏️</button>'+
+          '<button class="btn btn-danger btn-sm" onclick="event.preventDefault();delRecipe(\''+cat+'\','+i+')">삭제</button>'+
+          '<span>▼</span>'+
+        '</div>'+
+      '</summary>'+
+      '<div style="padding-top:9px;font-size:13px;color:var(--text2);line-height:1.7">'+
+        (r.ing?'<b>재료:</b> '+r.ing+'<br><br>':'')+
+        (r.method?'<b>조리법:</b><br>'+r.method.replace(/\n/g,'<br>')+'<br><br>':'')+
+        (r.tip?'<b>💡 팁:</b> '+r.tip:'')+
+        imgs+
+      '</div>'+
+    '</details>';
+  }).join('');
+}
 
 // ===== BOOKS =====
 function renderBooks(){
@@ -2667,10 +2766,122 @@ function renderGratitudes(){
 function renderDoodles(){const el=document.getElementById('doodle-list');if(!el)return;el.innerHTML=state.doodles.map((d,i)=>`<div class="j-card"><div style="display:flex;justify-content:space-between"><span class="j-date">${d.date}</span><button class="del-btn" onclick="state.doodles.splice(${i},1);save();renderDoodles()">✕</button></div><div style="font-size:13px;margin-top:5px;line-height:1.7">${d.content}</div></div>`).join('');}
 
 // ===== EXERCISE & MASSAGE =====
-function renderAddForm(prefix,cat){const el=document.getElementById('af-'+prefix+'-'+cat)||document.getElementById('af-'+cat);if(!el)return;el.innerHTML=`<div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 루틴 추가</div><div class="modal-row"><label>루틴명</label><input id="${prefix}n-${cat}"></div><div class="modal-row"><label>설명</label><textarea id="${prefix}d-${cat}" style="min-height:65px"></textarea></div><div class="modal-row"><label>유튜브 링크</label><input id="${prefix}y-${cat}" placeholder="https://youtube.com/..."></div><button class="btn btn-primary" onclick="addItem('${prefix}','${cat}')">저장</button></div>`;}
-function addItem(prefix,cat){const key=prefix==='ex'?'exercises':'massages';const n=document.getElementById(`${prefix}n-${cat}`).value.trim();if(!n)return;state[key][cat].push({name:n,desc:document.getElementById(`${prefix}d-${cat}`).value,yt:document.getElementById(`${prefix}y-${cat}`).value});[`${prefix}n-${cat}`,`${prefix}d-${cat}`,`${prefix}y-${cat}`].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});save();prefix==='ex'?renderEx(cat):renderMas(cat);}
-function renderEx(cat){const el=document.getElementById('el-'+cat);if(!el)return;el.innerHTML=state.exercises[cat].map((r,i)=>`<div class="routine-card"><div class="routine-header"><div><div style="font-weight:700;font-size:14px">${r.name}</div>${r.desc?`<div style="font-size:12px;color:var(--text2);margin-top:3px">${r.desc}</div>`:''}</div><button class="del-btn" onclick="state.exercises['${cat}'].splice(${i},1);save();renderEx('${cat}')">✕</button></div>${r.yt?`<iframe class="yt-embed" src="${r.yt.replace('watch?v=','embed/')}" allowfullscreen></iframe>`:''}</div>`).join('');}
-function renderMas(cat){const el=document.getElementById('ml-'+cat);if(!el)return;el.innerHTML=state.massages[cat].map((r,i)=>`<div class="routine-card"><div class="routine-header"><div><div style="font-weight:700;font-size:14px">${r.name}</div>${r.desc?`<div style="font-size:12px;color:var(--text2);margin-top:3px">${r.desc}</div>`:''}</div><button class="del-btn" onclick="state.massages['${cat}'].splice(${i},1);save();renderMas('${cat}')">✕</button></div>${r.yt?`<iframe class="yt-embed" src="${r.yt.replace('watch?v=','embed/')}" allowfullscreen></iframe>`:''}</div>`).join('');}
+function renderAddForm(prefix,cat){
+  const el=document.getElementById('af-'+prefix+'-'+cat)||document.getElementById('af-'+cat);
+  if(!el)return;
+  const imgPrevId='af-img-prev-'+prefix+'-'+cat;
+  el.innerHTML=
+    '<div class="card" style="border-style:dashed">'+
+      '<div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 루틴 추가</div>'+
+      '<div class="modal-row"><label>루틴명</label><input id="'+prefix+'n-'+cat+'"></div>'+
+      '<div class="modal-row"><label>설명</label><textarea id="'+prefix+'d-'+cat+'" style="min-height:65px"></textarea></div>'+
+      '<div class="modal-row"><label>유튜브 링크</label><input id="'+prefix+'y-'+cat+'" placeholder="https://youtube.com/..."></div>'+
+      '<div class="modal-row">'+
+        '<label>📸 이미지 첨부</label>'+
+        '<div class="img-upload-area" onclick="document.getElementById(\'af-img-in-'+prefix+'-'+cat+'\').click()" style="padding:12px;text-align:center;font-size:13px">'+
+          '<input type="file" id="af-img-in-'+prefix+'-'+cat+'" accept="image/*" multiple style="display:none" onchange="handleAddFormImg(this,\''+prefix+'\',\''+cat+'\')">'+
+          '📁 클릭하여 이미지 첨부'+
+        '</div>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="'+imgPrevId+'"></div>'+
+      '</div>'+
+      '<button class="btn btn-primary" onclick="addItem(\''+prefix+'\',\''+cat+'\')">저장</button>'+
+    '</div>';
+  // 임시 이미지 초기화
+  if(!window._addFormImgs)window._addFormImgs={};
+  window._addFormImgs[prefix+'-'+cat]=[];
+}
+
+function addItem(prefix,cat){
+  const key=prefix==='ex'?'exercises':'massages';
+  const n=document.getElementById(prefix+'n-'+cat).value.trim();
+  if(!n)return;
+  const imgs=(window._addFormImgs&&window._addFormImgs[prefix+'-'+cat])||[];
+  state[key][cat].push({
+    name:n,
+    desc:document.getElementById(prefix+'d-'+cat).value,
+    yt:document.getElementById(prefix+'y-'+cat).value,
+    images:[...imgs]
+  });
+  [prefix+'n-'+cat,prefix+'d-'+cat,prefix+'y-'+cat].forEach(function(id){
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  if(window._addFormImgs)window._addFormImgs[prefix+'-'+cat]=[];
+  const prevEl=document.getElementById('af-img-prev-'+prefix+'-'+cat);
+  if(prevEl)prevEl.innerHTML='';
+  save();
+  prefix==='ex'?renderEx(cat):renderMas(cat);
+}
+function handleAddFormImg(input,prefix,cat){
+  if(!window._addFormImgs)window._addFormImgs={};
+  const key=prefix+'-'+cat;
+  if(!window._addFormImgs[key])window._addFormImgs[key]=[];
+  Array.from(input.files).forEach(function(f){
+    const r=new FileReader();
+    r.onload=function(e){
+      window._addFormImgs[key].push(e.target.result);
+      const prevEl=document.getElementById('af-img-prev-'+prefix+'-'+cat);
+      if(prevEl){
+        const idx=window._addFormImgs[key].length-1;
+        const div=document.createElement('div');div.className='img-preview-item';
+        div.innerHTML='<img src="'+e.target.result+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._addFormImgs[\''+key+'\'].splice('+idx+',1);this.parentNode.remove()">✕</button>';
+        prevEl.appendChild(div);
+      }
+    };
+    r.readAsDataURL(f);
+  });
+  input.value='';
+}
+
+function renderEx(cat){
+  const el=document.getElementById('el-'+cat);if(!el)return;
+  if(!state.exercises[cat].length){el.innerHTML='';return;}
+  let html='';
+  state.exercises[cat].forEach(function(r,i){
+    html+='<div class="routine-card">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+    html+='<div><div style="font-weight:700;font-size:14px">'+r.name+'</div>';
+    if(r.desc)html+='<div style="font-size:12px;color:var(--text2);margin-top:3px">'+r.desc+'</div>';
+    html+='</div>';
+    html+='<div style="display:flex;gap:5px;flex-shrink:0">';
+    html+='<button class="btn btn-outline btn-sm" onclick="openLifeEditModal(\'ex\',\''+cat+'\','+i+')" style="font-size:11px">✏️ 수정</button>';
+    html+='<button class="del-btn" onclick="if(confirm(\'삭제할까요?\')){state.exercises[\''+cat+'\'].splice('+i+',1);save();renderEx(\''+cat+'\')}">✕</button>';
+    html+='</div></div>';
+    if(r.images&&r.images.length){
+      html+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">';
+      r.images.forEach(function(img){html+='<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="width:80px;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer">';});
+      html+='</div>';
+    }
+    if(r.yt)html+='<iframe class="yt-embed" src="'+r.yt.replace('watch?v=','embed/')+'" allowfullscreen style="margin-top:10px"></iframe>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function renderMas(cat){
+  const el=document.getElementById('ml-'+cat);if(!el)return;
+  if(!state.massages[cat].length){el.innerHTML='';return;}
+  let html='';
+  state.massages[cat].forEach(function(r,i){
+    html+='<div class="routine-card">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+    html+='<div><div style="font-weight:700;font-size:14px">'+r.name+'</div>';
+    if(r.desc)html+='<div style="font-size:12px;color:var(--text2);margin-top:3px">'+r.desc+'</div>';
+    html+='</div>';
+    html+='<div style="display:flex;gap:5px;flex-shrink:0">';
+    html+='<button class="btn btn-outline btn-sm" onclick="openLifeEditModal(\'mas\',\''+cat+'\','+i+')" style="font-size:11px">✏️ 수정</button>';
+    html+='<button class="del-btn" onclick="if(confirm(\'삭제할까요?\')){state.massages[\''+cat+'\'].splice('+i+',1);save();renderMas(\''+cat+'\')}">✕</button>';
+    html+='</div></div>';
+    if(r.images&&r.images.length){
+      html+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">';
+      r.images.forEach(function(img){html+='<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="width:80px;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer">';});
+      html+='</div>';
+    }
+    if(r.yt)html+='<iframe class="yt-embed" src="'+r.yt.replace('watch?v=','embed/')+'" allowfullscreen style="margin-top:10px"></iframe>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
 
 // ===== BUDGET =====
 function renderBudget(){
@@ -3153,6 +3364,46 @@ function hideMobileMenu(){
   document.getElementById('mobile-menu-overlay').style.display='none';
   document.getElementById('mobile-menu').style.display='none';
 }
+// ===== 운동/마사지 수정 모달 =====
+function openLifeEditModal(prefix,cat,idx){
+  lifeEditType=prefix;lifeEditCat=cat;lifeEditIdx=idx;lifeEditImgs=[];
+  const key=prefix==='ex'?'exercises':'massages';
+  const r=state[key][cat][idx];if(!r)return;
+  document.getElementById('life-edit-modal-title').textContent=prefix==='ex'?'💪 루틴 수정':'🤲 루틴 수정';
+  document.getElementById('life-edit-name').value=r.name||'';
+  document.getElementById('life-edit-desc').value=r.desc||'';
+  document.getElementById('life-edit-yt').value=r.yt||'';
+  lifeEditImgs=r.images?[...r.images]:[];
+  renderLifeEditImgPrev();
+  openModal('modal-life-edit');
+}
+function renderLifeEditImgPrev(){
+  const el=document.getElementById('life-edit-img-prev');if(!el)return;
+  el.innerHTML=lifeEditImgs.map(function(src,i){
+    return '<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(\''+src+'\')" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="lifeEditImgs.splice('+i+',1);renderLifeEditImgPrev()">✕</button></div>';
+  }).join('');
+}
+function handleLifeEditImg(input){
+  Array.from(input.files).forEach(function(f){
+    const r=new FileReader();
+    r.onload=function(e){lifeEditImgs.push(e.target.result);renderLifeEditImgPrev();};
+    r.readAsDataURL(f);
+  });
+  input.value='';
+}
+function saveLifeEdit(){
+  const key=lifeEditType==='ex'?'exercises':'massages';
+  const name=document.getElementById('life-edit-name').value.trim();
+  if(!name)return alert('루틴명을 입력해주세요');
+  state[key][lifeEditCat][lifeEditIdx]={
+    name,
+    desc:document.getElementById('life-edit-desc').value,
+    yt:document.getElementById('life-edit-yt').value,
+    images:[...lifeEditImgs]
+  };
+  closeModal('modal-life-edit');save();
+  lifeEditType==='ex'?renderEx(lifeEditCat):renderMas(lifeEditCat);
+}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function switchTab(el,id){const parent=el.closest('.page')||document;parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById(id).classList.add('active');}
@@ -3202,6 +3453,51 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     <button class="mob-menu-item" onclick="mobileNav('budget')">💰<span>가계부</span></button>
     <button class="mob-menu-item" onclick="mobileNav('massage')">🤲<span>마사지</span></button>
     <button class="mob-menu-item" onclick="mobileNav('sd-blog')">📝<span>블로그</span></button>
+  </div>
+</div>
+
+<!-- 운동/마사지 수정 모달 -->
+<div id="modal-life-edit" class="modal-overlay">
+  <div class="modal" style="width:520px">
+    <div class="modal-title" id="life-edit-modal-title">💪 루틴 수정</div>
+    <div class="modal-row"><label>루틴명</label><input id="life-edit-name"></div>
+    <div class="modal-row"><label>설명</label><textarea id="life-edit-desc" style="min-height:80px"></textarea></div>
+    <div class="modal-row"><label>유튜브 링크</label><input id="life-edit-yt" placeholder="https://youtube.com/..."></div>
+    <div class="modal-row">
+      <label>📸 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('life-edit-img-in').click()">
+        <input type="file" id="life-edit-img-in" accept="image/*" multiple style="display:none" onchange="handleLifeEditImg(this)">
+        📁 클릭하여 이미지 첨부
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="life-edit-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-life-edit')">취소</button>
+      <button class="btn btn-primary" onclick="saveLifeEdit()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 요리 수정 모달 -->
+<div id="modal-recipe-edit" class="modal-overlay">
+  <div class="modal" style="width:520px">
+    <div class="modal-title">🍳 레시피 수정</div>
+    <div class="modal-row"><label>레시피명</label><input id="recipe-edit-name"></div>
+    <div class="modal-row"><label>재료</label><input id="recipe-edit-ing"></div>
+    <div class="modal-row"><label>조리법</label><textarea id="recipe-edit-method" style="min-height:80px"></textarea></div>
+    <div class="modal-row"><label>팁</label><input id="recipe-edit-tip"></div>
+    <div class="modal-row">
+      <label>📸 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('recipe-edit-img-in').click()">
+        <input type="file" id="recipe-edit-img-in" accept="image/*" multiple style="display:none" onchange="handleRecipeEditImg(this)">
+        📁 클릭하여 이미지 첨부
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-edit-img-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-recipe-edit')">취소</button>
+      <button class="btn btn-primary" onclick="saveRecipeEdit()">저장</button>
+    </div>
   </div>
 </div>
 </body>
