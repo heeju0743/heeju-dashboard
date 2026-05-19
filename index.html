@@ -1405,47 +1405,26 @@ window.syncSave=async function(){
   try{
     const saveData=JSON.parse(JSON.stringify(window.state));
     delete saveData.tempTradeDiaryImgs;
-    const jsonStr=JSON.stringify(saveData);
-    const byteSize=new Blob([jsonStr]).size;
-    // 1MB 초과 시 이미지 제외하고 저장
-    if(byteSize>900000){
-      bar.textContent='⚠️ 이미지 용량 초과, 이미지 제외 저장 중...';
-      // 각 카테고리에서 이미지만 제거
-      ['exercises','massages'].forEach(function(key){
-        if(saveData[key]){
-          Object.keys(saveData[key]).forEach(function(cat){
-            saveData[key][cat]=saveData[key][cat].map(function(r){return Object.assign({},r,{images:[]});});
-          });
-        }
-      });
-      if(saveData.recipes){
-        Object.keys(saveData.recipes).forEach(function(cat){
-          saveData.recipes[cat]=saveData.recipes[cat].map(function(r){return Object.assign({},r,{images:[]});});
-        });
-      }
-      if(saveData.selfdevNotes){
-        Object.keys(saveData.selfdevNotes).forEach(function(key){
-          saveData.selfdevNotes[key]=(saveData.selfdevNotes[key]||[]).map(function(n){return Object.assign({},n,{images:[]});});
-        });
-      }
-    }
-    // 이미지 base64 → Storage URL 변환
-    saveData=await replaceImgsWithUrls(saveData);
-    // state의 이미지도 URL로 업데이트
-    ['exercises','massages','recipes'].forEach(function(key){
-      if(saveData[key]&&window.state[key]){
+    // 이미지(base64)는 Firestore에 저장하지 않음 - 용량 초과 방지
+    // 이미지 URL(http로 시작)은 유지, base64는 제거
+    ['exercises','massages'].forEach(function(key){
+      if(saveData[key]){
         Object.keys(saveData[key]).forEach(function(cat){
-          if(window.state[key][cat]){
-            window.state[key][cat].forEach(function(r,i){
-              if(saveData[key][cat][i])r.images=saveData[key][cat][i].images;
-            });
-          }
+          saveData[key][cat]=(saveData[key][cat]||[]).map(function(r){
+            return Object.assign({},r,{images:(r.images||[]).filter(function(img){return !img.startsWith('data:');})});
+          });
         });
       }
     });
+    if(saveData.recipes){
+      Object.keys(saveData.recipes).forEach(function(cat){
+        saveData.recipes[cat]=(saveData.recipes[cat]||[]).map(function(r){
+          return Object.assign({},r,{images:(r.images||[]).filter(function(img){return !img.startsWith('data:');})});
+        });
+      });
+    }
     await setDoc(doc(db,"dashboard",DOC),{data:JSON.stringify(saveData),updatedAt:Date.now()});
-    bar.className='sync-bar';
-    bar.textContent=byteSize>900000?'⚠️ 이미지 제외 저장됨 (용량 초과)':'☁️ 모든 기기에 동기화됨';
+    bar.className='sync-bar';bar.textContent='☁️ 모든 기기에 동기화됨';
     setTimeout(()=>bar.style.display='none',3000);
   }catch(e){
     bar.className='sync-bar error';
