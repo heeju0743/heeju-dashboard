@@ -1247,9 +1247,11 @@ textarea{resize:vertical;min-height:80px}
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getFirestore,doc,setDoc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getStorage,ref,uploadString,getDownloadURL}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 const firebaseConfig={apiKey:"AIzaSyBwVf-Hu88_7HD274T-XZ8C6X-8NW4FpZM",authDomain:"heeju-dashboard.firebaseapp.com",projectId:"heeju-dashboard",storageBucket:"heeju-dashboard.firebasestorage.app",messagingSenderId:"664423545779",appId:"1:664423545779:web:0041e4106f188e179ae9c6"};
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
+const storage=getStorage(app);
 const DOC="heeju_data";
 const now=new Date();
 window.state={
@@ -1344,16 +1346,111 @@ window.compressImg=function(base64,maxW,maxH,quality){
     img.src=base64;
   });
 };
+// 이미지를 Firebase Storage에 업로드하고 URL 반환
+window.uploadImg=async function(base64,path){
+  try{
+    const storageRef=ref(storage,'images/'+path);
+    await uploadString(storageRef,base64,'data_url');
+    const url=await getDownloadURL(storageRef);
+    return url;
+  }catch(e){
+    console.error('이미지 업로드 실패:',e);
+    return base64; // 실패시 base64 그대로 반환
+  }
+};
+// 저장 데이터에서 이미지 base64를 Storage URL로 교체
+async function replaceImgsWithUrls(saveData){
+  const now=Date.now();
+  // exercises
+  for(const cat of Object.keys(saveData.exercises||{})){
+    for(let i=0;i<saveData.exercises[cat].length;i++){
+      const r=saveData.exercises[cat][i];
+      if(r.images&&r.images.length){
+        r.images=await Promise.all(r.images.map(async function(img,j){
+          if(img.startsWith('data:'))return await window.uploadImg(img,'ex_'+cat+'_'+i+'_'+j+'_'+now+'.jpg');
+          return img;
+        }));
+      }
+    }
+  }
+  // massages
+  for(const cat of Object.keys(saveData.massages||{})){
+    for(let i=0;i<saveData.massages[cat].length;i++){
+      const r=saveData.massages[cat][i];
+      if(r.images&&r.images.length){
+        r.images=await Promise.all(r.images.map(async function(img,j){
+          if(img.startsWith('data:'))return await window.uploadImg(img,'mas_'+cat+'_'+i+'_'+j+'_'+now+'.jpg');
+          return img;
+        }));
+      }
+    }
+  }
+  // recipes
+  for(const cat of Object.keys(saveData.recipes||{})){
+    for(let i=0;i<saveData.recipes[cat].length;i++){
+      const r=saveData.recipes[cat][i];
+      if(r.images&&r.images.length){
+        r.images=await Promise.all(r.images.map(async function(img,j){
+          if(img.startsWith('data:'))return await window.uploadImg(img,'recipe_'+cat+'_'+i+'_'+j+'_'+now+'.jpg');
+          return img;
+        }));
+      }
+    }
+  }
+  return saveData;
+}
 window.syncSave=async function(){
   const bar=document.getElementById('sync-bar');
   bar.style.display='flex';bar.className='sync-bar saving';bar.textContent='💾 저장 중...';
   try{
     const saveData=JSON.parse(JSON.stringify(window.state));
     delete saveData.tempTradeDiaryImgs;
+    const jsonStr=JSON.stringify(saveData);
+    const byteSize=new Blob([jsonStr]).size;
+    // 1MB 초과 시 이미지 제외하고 저장
+    if(byteSize>900000){
+      bar.textContent='⚠️ 이미지 용량 초과, 이미지 제외 저장 중...';
+      // 각 카테고리에서 이미지만 제거
+      ['exercises','massages'].forEach(function(key){
+        if(saveData[key]){
+          Object.keys(saveData[key]).forEach(function(cat){
+            saveData[key][cat]=saveData[key][cat].map(function(r){return Object.assign({},r,{images:[]});});
+          });
+        }
+      });
+      if(saveData.recipes){
+        Object.keys(saveData.recipes).forEach(function(cat){
+          saveData.recipes[cat]=saveData.recipes[cat].map(function(r){return Object.assign({},r,{images:[]});});
+        });
+      }
+      if(saveData.selfdevNotes){
+        Object.keys(saveData.selfdevNotes).forEach(function(key){
+          saveData.selfdevNotes[key]=(saveData.selfdevNotes[key]||[]).map(function(n){return Object.assign({},n,{images:[]});});
+        });
+      }
+    }
+    // 이미지 base64 → Storage URL 변환
+    saveData=await replaceImgsWithUrls(saveData);
+    // state의 이미지도 URL로 업데이트
+    ['exercises','massages','recipes'].forEach(function(key){
+      if(saveData[key]&&window.state[key]){
+        Object.keys(saveData[key]).forEach(function(cat){
+          if(window.state[key][cat]){
+            window.state[key][cat].forEach(function(r,i){
+              if(saveData[key][cat][i])r.images=saveData[key][cat][i].images;
+            });
+          }
+        });
+      }
+    });
     await setDoc(doc(db,"dashboard",DOC),{data:JSON.stringify(saveData),updatedAt:Date.now()});
-    bar.className='sync-bar';bar.textContent='☁️ 모든 기기에 동기화됨';
+    bar.className='sync-bar';
+    bar.textContent=byteSize>900000?'⚠️ 이미지 제외 저장됨 (용량 초과)':'☁️ 모든 기기에 동기화됨';
     setTimeout(()=>bar.style.display='none',3000);
-  }catch(e){bar.className='sync-bar error';bar.textContent='⚠️ 저장 실패. 인터넷 연결 확인';}
+  }catch(e){
+    bar.className='sync-bar error';
+    bar.textContent='⚠️ 저장 실패: '+e.message;
+  }
 };
 window.save=function(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>window.syncSave(),1500);};
 
@@ -1386,6 +1483,25 @@ initApp();
 </script>
 
 <script>
+// 이미지 압축 함수 (일반 script에서도 사용 가능하도록)
+function compressImg(base64,maxW,maxH,quality){
+  return new Promise(function(resolve){
+    const img=new Image();
+    img.onload=function(){
+      let w=img.width,h=img.height;
+      if(w>maxW||h>maxH){
+        const ratio=Math.min(maxW/w,maxH/h);
+        w=Math.round(w*ratio);h=Math.round(h*ratio);
+      }
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      resolve(canvas.toDataURL('image/jpeg',quality||0.7));
+    };
+    img.onerror=function(){resolve(base64);};
+    img.src=base64;
+  });
+}
 function initApp(){
   const n=new Date();
   document.getElementById('sb-day').textContent=n.getDate();
@@ -2164,7 +2280,7 @@ function handleRecipeImg(input,cat){
   Array.from(input.files).forEach(function(f){
     const reader=new FileReader();
     reader.onload=function(e){
-      window.compressImg(e.target.result,800,800,0.7).then(function(compressed){
+      compressImg(e.target.result,600,600,0.5).then(function(compressed){
         window._recipeImgs[cat].push(compressed);
         const prevEl=document.getElementById('recipe-img-prev-'+cat);
         if(prevEl){
@@ -2183,7 +2299,7 @@ function handleRecipeImg(input,cat){
 function handleRecipeEditImg(input){
   Array.from(input.files).forEach(function(f){
     const r=new FileReader();
-    r.onload=function(e){window.compressImg(e.target.result,800,800,0.7).then(function(c){recipeEditImgs.push(c);renderRecipeEditImgPrev();});};
+    r.onload=function(e){compressImg(e.target.result,600,600,0.5).then(function(c){recipeEditImgs.push(c);renderRecipeEditImgPrev();});};
     r.readAsDataURL(f);
   });
   input.value='';
@@ -2859,7 +2975,7 @@ function handleAddFormImg(input,prefix,cat){
   Array.from(input.files).forEach(function(f){
     const reader=new FileReader();
     reader.onload=function(e){
-      window.compressImg(e.target.result,800,800,0.7).then(function(compressed){
+      compressImg(e.target.result,600,600,0.5).then(function(compressed){
         window._addFormImgs[key].push(compressed);
         const prevEl=document.getElementById('af-img-prev-'+prefix+'-'+cat);
         if(prevEl){
@@ -3429,7 +3545,7 @@ function renderLifeEditImgPrev(){
 function handleLifeEditImg(input){
   Array.from(input.files).forEach(function(f){
     const r=new FileReader();
-    r.onload=function(e){window.compressImg(e.target.result,800,800,0.7).then(function(c){lifeEditImgs.push(c);renderLifeEditImgPrev();});};
+    r.onload=function(e){compressImg(e.target.result,600,600,0.5).then(function(c){lifeEditImgs.push(c);renderLifeEditImgPrev();});};
     r.readAsDataURL(f);
   });
   input.value='';
