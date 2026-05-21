@@ -869,7 +869,7 @@ textarea{resize:vertical;min-height:80px}
             <table class="bal-table" id="balance-table">
               <thead><tr><th>날짜</th><th style="color:#60a5fa">국내장(원)</th><th style="color:#34d399">미국장(원)</th><th style="color:#c084fc">선물(원)</th><th style="color:#fb923c">코인(원)</th><th>합계(원)</th><th>당일손익</th><th>종목별 손익</th></tr></thead>
               <tbody id="balance-tbody"></tbody>
-              <tfoot><tr class="init-row"><td>초기잔고</td><td><input id="init-dom" type="number" value="200000" onchange="renderTBalance()"></td><td><input id="init-us" type="number" value="0" onchange="renderTBalance()"></td><td><input id="init-fut" type="number" value="0" onchange="renderTBalance()"></td><td><input id="init-coin" type="number" value="0" onchange="renderTBalance()"></td><td id="init-total" style="color:#c9a84c;font-weight:700;font-size:13px"></td><td>-</td><td>-</td></tr></tfoot>
+              <tfoot><tr class="init-row"><td>초기잔고</td><td><input id="init-dom" type="number" value="200000"></td><td><input id="init-us" type="number" value="0"></td><td><input id="init-fut" type="number" value="0"></td><td><input id="init-coin" type="number" value="0"></td><td id="init-total" style="color:#c9a84c;font-weight:700;font-size:13px"></td><td><button class="btn btn-primary btn-sm" onclick="saveBalanceInit()" style="white-space:nowrap">💾 저장</button></td><td>-</td><td>-</td></tr></tfoot>
             </table>
           </div>
           <div style="padding:8px 13px;font-size:11px;color:var(--text2);background:var(--bg);border-top:1px solid var(--border)">💡 초기잔고만 입력하면 매매기록 손익이 날짜별로 자동 누적됩니다</div>
@@ -1328,7 +1328,8 @@ window.state={
   selfdevGenCats:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
   selfdevGeneral:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
   meditations:[],medRecords:[],
-  checklistMemos:{},chartReviews:[],stockWatchlist:[]
+  checklistMemos:{},chartReviews:[],stockWatchlist:[],
+  balanceInit:{dom:200000,us:0,fut:0,coin:0}
 };
 
 let saveTimer=null;
@@ -1755,7 +1756,23 @@ function renderTPattern(){
 }
 
 // ===== 잔고추이 - 매도완료 종목만 자동 집계 =====
+function saveBalanceInit(){
+  if(!state.balanceInit)state.balanceInit={};
+  state.balanceInit.dom=parseInt(document.getElementById('init-dom').value)||0;
+  state.balanceInit.us=parseInt(document.getElementById('init-us').value)||0;
+  state.balanceInit.fut=parseInt(document.getElementById('init-fut').value)||0;
+  state.balanceInit.coin=parseInt(document.getElementById('init-coin').value)||0;
+  save();renderTBalance();
+}
 function renderTBalance(){
+  // state에서 초기잔고 로드해서 input에 반영
+  if(state.balanceInit){
+    const bi=state.balanceInit;
+    const dom=document.getElementById('init-dom');if(dom&&bi.dom!==undefined)dom.value=bi.dom;
+    const us=document.getElementById('init-us');if(us&&bi.us!==undefined)us.value=bi.us;
+    const fut=document.getElementById('init-fut');if(fut&&bi.fut!==undefined)fut.value=bi.fut;
+    const coin=document.getElementById('init-coin');if(coin&&bi.coin!==undefined)coin.value=bi.coin;
+  }
   const initDom=parseInt(document.getElementById('init-dom').value)||0;
   const initUs=parseInt(document.getElementById('init-us').value)||0;
   const initFut=parseInt(document.getElementById('init-fut').value)||0;
