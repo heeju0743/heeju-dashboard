@@ -1658,6 +1658,10 @@ function openTradeModal(){
   document.getElementById('t-date').value=new Date().toISOString().split('T')[0];
   ['t-name','t-buy','t-buyTotal','t-sell','t-sellTotal','t-target','t-stop','t-note','t-emotion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('t-rr').value='';
+  // select 필드 기본값 설정
+  const defaults={'t-type':'단타','t-pattern':'눌림','t-vol':'증가','t-result':'승','t-market':'국내장','t-c1':'','t-c3':''};
+  Object.entries(defaults).forEach(function(e){const el=document.getElementById(e[0]);if(el)el.value=e[1];});
+  const psychEl=document.getElementById('t-psych');if(psychEl)psychEl.value='보통';
   document.getElementById('calc-pnl').textContent='-';document.getElementById('calc-pct').textContent='-';document.getElementById('calc-qty').textContent='-';
   document.getElementById('modal-trade').classList.add('open');
 }
