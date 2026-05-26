@@ -1424,7 +1424,44 @@ window.syncSave=async function(){
         });
       });
     }
-    await setDoc(doc(db,"dashboard",DOC),{data:JSON.stringify(saveData),updatedAt:Date.now()});
+    // selfdevNotes 이미지 제거
+    if(saveData.selfdevNotes){
+      Object.keys(saveData.selfdevNotes).forEach(function(key){
+        saveData.selfdevNotes[key]=(saveData.selfdevNotes[key]||[]).map(function(n){
+          return Object.assign({},n,{images:(n.images||[]).filter(function(img){return !img.startsWith('data:');})});
+        });
+      });
+    }
+    // stockConcepts 이미지 제거
+    if(saveData.stockConcepts){
+      saveData.stockConcepts=saveData.stockConcepts.map(function(n){
+        return Object.assign({},n,{images:(n.images||[]).filter(function(img){return !img.startsWith('data:');})});
+      });
+    }
+    // tradeDiaries 이미지 제거
+    if(saveData.tradeDiaries){
+      saveData.tradeDiaries=saveData.tradeDiaries.map(function(n){
+        return Object.assign({},n,{images:(n.images||[]).filter(function(img){return !img.startsWith('data:');})});
+      });
+    }
+    // 크기 체크
+    const jsonStr=JSON.stringify(saveData);
+    const byteSize=new Blob([jsonStr]).size;
+    if(byteSize>1000000){
+      // 그래도 크면 모든 images 필드 제거
+      const removeAllImgs=function(obj){
+        if(!obj||typeof obj!=='object')return obj;
+        if(Array.isArray(obj))return obj.map(removeAllImgs);
+        const result={};
+        Object.keys(obj).forEach(function(k){
+          result[k]=k==='images'?[]:removeAllImgs(obj[k]);
+        });
+        return result;
+      };
+      await setDoc(doc(db,"dashboard",DOC),{data:JSON.stringify(removeAllImgs(saveData)),updatedAt:Date.now()});
+    } else {
+      await setDoc(doc(db,"dashboard",DOC),{data:jsonStr,updatedAt:Date.now()});
+    }
     bar.className='sync-bar';bar.textContent='☁️ 모든 기기에 동기화됨';
     setTimeout(()=>bar.style.display='none',3000);
   }catch(e){
@@ -1464,6 +1501,30 @@ initApp();
 
 <script>
 // 이미지 압축 함수 (일반 script에서도 사용 가능하도록)
+// Cloudinary 이미지 업로드
+async function uploadToCloudinary(base64){
+  try{
+    const formData=new FormData();
+    formData.append('file', base64);
+    formData.append('upload_preset', '희주_업로드');
+    formData.append('cloud_name', 'dwa9inmsj');
+    const res=await fetch('https://api.cloudinary.com/v1_1/dwa9inmsj/image/upload',{
+      method:'POST', body:formData
+    });
+    const data=await res.json();
+    if(data.secure_url)return data.secure_url;
+    console.error('Cloudinary 업로드 실패:', data);
+    return base64; // 실패시 base64 유지
+  }catch(e){
+    console.error('Cloudinary 오류:', e);
+    return base64;
+  }
+}
+// 이미지 압축 + Cloudinary 업로드
+async function processImg(base64){
+  const compressed=await compressImg(base64,1200,1200,0.8);
+  return await uploadToCloudinary(compressed);
+}
 function compressImg(base64,maxW,maxH,quality){
   return new Promise(function(resolve){
     const img=new Image();
@@ -2280,13 +2341,13 @@ function handleRecipeImg(input,cat){
   Array.from(input.files).forEach(function(f){
     const reader=new FileReader();
     reader.onload=function(e){
-      compressImg(e.target.result,600,600,0.5).then(function(compressed){
-        window._recipeImgs[cat].push(compressed);
+      processImg(e.target.result).then(function(url){
+        window._recipeImgs[cat].push(url);
         const prevEl=document.getElementById('recipe-img-prev-'+cat);
         if(prevEl){
           const div=document.createElement('div');div.className='img-preview-item';
           const curIdx=window._recipeImgs[cat].length-1;
-          div.innerHTML='<img src="'+compressed+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._recipeImgs[\''+cat+'\'].splice('+curIdx+',1);this.parentNode.remove()">✕</button>';
+          div.innerHTML='<img src="'+url+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._recipeImgs[\''+cat+'\'].splice('+curIdx+',1);this.parentNode.remove()">✕</button>';
           prevEl.appendChild(div);
         }
       });
@@ -2299,11 +2360,14 @@ function handleRecipeImg(input,cat){
 function handleRecipeEditImg(input){
   Array.from(input.files).forEach(function(f){
     const r=new FileReader();
-    r.onload=function(e){compressImg(e.target.result,600,600,0.5).then(function(c){recipeEditImgs.push(c);renderRecipeEditImgPrev();});};
+    r.onload=function(e){
+      processImg(e.target.result).then(function(url){recipeEditImgs.push(url);renderRecipeEditImgPrev();});
+    };
     r.readAsDataURL(f);
   });
   input.value='';
 }
+
 function saveRecipeEdit(){
   const name=document.getElementById('recipe-edit-name').value.trim();
   if(!name)return alert('레시피명을 입력해주세요');
@@ -2975,13 +3039,13 @@ function handleAddFormImg(input,prefix,cat){
   Array.from(input.files).forEach(function(f){
     const reader=new FileReader();
     reader.onload=function(e){
-      compressImg(e.target.result,600,600,0.5).then(function(compressed){
-        window._addFormImgs[key].push(compressed);
+      processImg(e.target.result).then(function(url){
+        window._addFormImgs[key].push(url);
         const prevEl=document.getElementById('af-img-prev-'+prefix+'-'+cat);
         if(prevEl){
           const div=document.createElement('div');div.className='img-preview-item';
           const curIdx=window._addFormImgs[key].length-1;
-          div.innerHTML='<img src="'+compressed+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._addFormImgs[\''+key+'\'].splice('+curIdx+',1);this.parentNode.remove()">✕</button>';
+          div.innerHTML='<img src="'+url+'" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="window._addFormImgs[\''+key+'\'].splice('+curIdx+',1);this.parentNode.remove()">✕</button>';
           prevEl.appendChild(div);
         }
       });
@@ -3545,11 +3609,14 @@ function renderLifeEditImgPrev(){
 function handleLifeEditImg(input){
   Array.from(input.files).forEach(function(f){
     const r=new FileReader();
-    r.onload=function(e){compressImg(e.target.result,600,600,0.5).then(function(c){lifeEditImgs.push(c);renderLifeEditImgPrev();});};
+    r.onload=function(e){
+      processImg(e.target.result).then(function(url){lifeEditImgs.push(url);renderLifeEditImgPrev();});
+    };
     r.readAsDataURL(f);
   });
   input.value='';
 }
+
 function saveLifeEdit(){
   const key=lifeEditType==='ex'?'exercises':'massages';
   const name=document.getElementById('life-edit-name').value.trim();
