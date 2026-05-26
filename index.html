@@ -3278,36 +3278,26 @@ function renderCurrentYoutuber(){
   if(!state.selfdevNotes)state.selfdevNotes={};
   if(!state.selfdevNotes[key])state.selfdevNotes[key]=[];
   const notes=state.selfdevNotes[key];
-
-  // 분류 목록 (사용자가 추가한 것)
   if(!state.selfdevInvestCats)state.selfdevInvestCats={};
   if(!state.selfdevInvestCats[key])state.selfdevInvestCats[key]=[];
   const cats=state.selfdevInvestCats[key];
+  const filtered=sdCatFilter==='전체'?notes:notes.filter(function(n){return n.cat===sdCatFilter;});
 
-  const filtered=sdCatFilter==='전체'?notes:notes.filter(n=>n.cat===sdCatFilter);
-
-  // 헤더 영역
-  let header='<div style="margin-bottom:14px">';
-
-  // 필터 버튼 (전체 + 사용자 추가 분류)
-  header+='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">';
-  header+='<button class="filter-btn '+(sdCatFilter==='전체'?'on':'')+'" onclick="sdCatFilter=\'전체\';renderCurrentYoutuber()">전체</button>';
+  let filterBtns='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">';
+  filterBtns+='<button class="filter-btn '+(sdCatFilter==='전체'?'on':'')+'" onclick="sdCatFilter=\'전체\';renderCurrentYoutuber()">전체</button>';
   cats.forEach(function(c){
-    header+='<span style="display:inline-flex;align-items:center">';
-    header+='<button class="filter-btn '+(sdCatFilter===c?'on':'')+'" onclick="sdCatFilter=\''+c+'\';renderCurrentYoutuber()" style="border-radius:18px 0 0 18px;border-right:none">'+c+'</button>';
-    header+='<button onclick="delInvestCat(\''+market+'\',\''+youtuber+'\',\''+c+'\')" style="padding:4px 7px;border:1px solid var(--border);border-left:none;border-radius:0 18px 18px 0;background:#fff;cursor:pointer;font-size:10px;color:#aaa" title="분류 삭제">✕</button>';
-    header+='</span>';
+    filterBtns+='<span style="display:inline-flex;align-items:center">';
+    filterBtns+='<button class="filter-btn '+(sdCatFilter===c?'on':'')+'" onclick="sdCatFilter=\''+c+'\';renderCurrentYoutuber()" style="border-radius:18px 0 0 18px;border-right:none">'+c+'</button>';
+    filterBtns+='<button onclick="delInvestCat(\''+market+'\',\''+youtuber+'\',\''+c+'\')" style="padding:4px 7px;border:1px solid var(--border);border-left:none;border-radius:0 18px 18px 0;background:#fff;cursor:pointer;font-size:10px;color:#aaa">✕</button>';
+    filterBtns+='</span>';
   });
-  header+='</div>';
+  filterBtns+='</div>';
 
-  // 버튼 영역
-  header+='<div style="display:flex;gap:6px;align-items:center">';
-  header+='<button class="btn btn-outline btn-sm" style="font-size:11px" onclick="addInvestCat(\''+market+'\',\''+youtuber+'\')">+ 분류 추가</button>';
-  header+='<button class="btn btn-primary btn-sm" onclick="openInvestNoteModal(\''+key+'\',\''+youtuber+'\')">+ 노트 추가</button>';
-  header+='</div>';
-  header+='</div>';
+  const actionBtns='<div style="display:flex;gap:8px;margin-bottom:14px">'+
+    '<button class="btn btn-outline btn-sm" style="font-size:11px" onclick="addInvestCat(\''+market+'\',\''+youtuber+'\')">+ 분류 추가</button>'+
+    '<button class="btn btn-primary btn-sm" onclick="openInvestNoteModal(\''+key+'\',\''+youtuber+'\')">+ 노트 추가</button>'+
+    '</div>';
 
-  // 노트 카드
   let cards='';
   if(filtered.length){
     filtered.forEach(function(n){
@@ -3329,8 +3319,7 @@ function renderCurrentYoutuber(){
   } else {
     cards='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">노트를 추가해보세요 📝</div>';
   }
-
-  el.innerHTML=header+cards;
+  el.innerHTML=filterBtns+actionBtns+cards;
 }
 
 function openInvestNoteModal(key,youtuber,editId){
