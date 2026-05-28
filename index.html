@@ -1164,7 +1164,7 @@ textarea{resize:vertical;min-height:80px}
 <!-- MODALS (원본 그대로) -->
 <div id="modal-todo" class="modal-overlay"><div class="modal"><div class="modal-title">✅ 새 할 일</div><div class="modal-row"><label>할 일</label><input id="todo-text-in"></div><div class="modal-row"><label>카테고리</label><select id="todo-cat"><option>주식</option><option>독서</option><option>생활</option><option>기타</option></select></div><div class="modal-row"><label>우선순위</label><select id="todo-pri"><option>보통</option><option>중요</option><option>낮음</option></select></div><div class="modal-row"><label>마감일</label><input id="todo-due" type="date"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-todo')">취소</button><button class="btn btn-primary" onclick="addTodo()">추가</button></div></div></div>
 <div id="modal-event" class="modal-overlay"><div class="modal"><div class="modal-title">📅 일정 추가</div><div class="modal-row"><label>제목</label><input id="ev-title"></div><div class="modal-row"><label>날짜</label><input id="ev-date" type="date"></div><div class="modal-row"><label>시간</label><input id="ev-time" type="time"></div><div class="modal-row"><label>메모</label><textarea id="ev-memo" style="min-height:55px"></textarea></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-event')">취소</button><button class="btn btn-primary" onclick="addEvent()">추가</button></div></div></div>
-<div id="modal-book" class="modal-overlay"><div class="modal"><div class="modal-title">📚 책 추가</div><div class="modal-row"><label>책 제목</label><input id="bk-title"></div><div class="modal-row"><label>저자</label><input id="bk-author"></div><div class="modal-row"><label>카테고리</label><input id="bk-cat" placeholder="예: 철학, 경제"></div><div class="modal-row"><label>진행률 (%)</label><input id="bk-prog" type="number" value="0" min="0" max="100"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-book')">취소</button><button class="btn btn-primary" onclick="addBook()">추가</button></div></div></div>
+<div id="modal-book" class="modal-overlay"><div class="modal"><div class="modal-title" id="bk-modal-title">📚 책 추가</div><div class="modal-row"><label>책 제목</label><input id="bk-title"></div><div class="modal-row"><label>저자</label><input id="bk-author"></div><div class="modal-row"><label>카테고리</label><input id="bk-cat" placeholder="예: 철학, 경제"></div><div class="modal-row"><label>상태</label><select id="bk-status"><option value="reading">읽는 중</option><option value="done">완독</option><option value="wish">읽고 싶음</option></select></div><div class="modal-row"><label>완독 한 문장 <span style="font-size:10px;color:var(--text2)">(완독 후 기록)</span></label><input id="bk-onesent" placeholder="이 책을 한 문장으로 표현한다면..."></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-book')">취소</button><button class="btn btn-primary" id="bk-save-btn" onclick="addBook()">추가</button></div></div></div>
 <div id="modal-diary" class="modal-overlay"><div class="modal"><div class="modal-title" id="diary-modal-title">📖 일기 쓰기</div><div id="diary-modal-body"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-diary')">취소</button><button class="btn btn-primary" onclick="saveDiaryEntry()">저장</button></div></div></div>
 <div id="modal-food-day" class="modal-overlay"><div class="modal"><div class="modal-title" id="food-modal-title">식단 입력</div><div class="modal-row"><label>아침</label><input id="fd-breakfast"></div><div class="modal-row"><label>점심</label><input id="fd-lunch"></div><div class="modal-row"><label>저녁</label><input id="fd-dinner"></div><div class="modal-row"><label>간식</label><input id="fd-snack"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-food-day')">취소</button><button class="btn btn-primary" onclick="saveFoodDay()">저장</button></div></div></div>
 <div id="modal-habit-stats" class="modal-overlay"><div class="modal"><div class="modal-title">📊 습관 누적 통계</div><div id="habit-stats-body"></div><div class="modal-actions"><button class="btn btn-primary" onclick="closeModal('modal-habit-stats')">닫기</button></div></div></div>
@@ -2410,11 +2410,117 @@ function renderRecipes(cat){
 // ===== BOOKS =====
 function renderBooks(){
   const bl=document.getElementById('book-list');if(!bl)return;
-  bl.innerHTML=state.books.length?state.books.map((b,i)=>`<div class="card"><div style="display:flex;gap:13px;align-items:flex-start"><div class="book-thumb">📚</div><div style="flex:1"><div style="font-weight:700;font-size:15px">${b.title}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">${b.author}</div><div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:11px;color:var(--text2)">${b.prog<100?'진행중':'완독'}</span><span style="font-size:12px;font-weight:700;color:var(--accent)">${b.prog}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${b.prog}%"></div></div><div style="display:flex;gap:6px;margin-top:7px"><input type="number" min="0" max="100" value="${b.prog}" style="width:70px;font-size:12px;padding:4px 8px" onchange="updateBook(${i},this.value)"><button class="btn btn-danger btn-sm" onclick="delBook(${i})">삭제</button></div></div></div></div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);font-size:13px;padding:30px">등록된 책이 없습니다</div>';
+  if(!state.books.length){
+    bl.innerHTML='<div class="card" style="text-align:center;color:var(--text2);font-size:13px;padding:30px">등록된 책이 없습니다</div>';
+    return;
+  }
+  const statusLabel={reading:'📖 읽는 중',done:'✅ 완독',wish:'🔖 읽고 싶음'};
+  const statusColor={reading:'var(--blue)',done:'var(--green)',wish:'var(--text2)'};
+  let html='';
+  state.books.forEach(function(b,i){
+    const status=b.status||'reading';
+    const quotes=(b.quotes||[]);
+    let quotesHtml='';
+    if(quotes.length){
+      quotesHtml='<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">';
+      quotesHtml+='<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px">✨ 감명깊은 문구 ('+quotes.length+')</div>';
+      quotes.forEach(function(q,qi){
+        quotesHtml+=
+          '<div style="background:var(--active);border-radius:8px;padding:8px 10px;margin-bottom:6px;position:relative">'+
+            '<div style="font-size:12px;line-height:1.7;white-space:pre-wrap;color:var(--text)">'+q.text+'</div>'+
+            (q.page?'<div style="font-size:10px;color:var(--text2);margin-top:3px">'+q.page+'</div>':'')+
+            '<button onclick="delBookQuote('+i+','+qi+')" style="position:absolute;top:6px;right:6px;background:none;border:none;cursor:pointer;font-size:10px;color:#ccc">✕</button>'+
+          '</div>';
+      });
+      quotesHtml+='</div>';
+    }
+    html+=
+      '<div class="card" style="margin-bottom:12px">'+
+        '<div style="display:flex;gap:13px;align-items:flex-start">'+
+          '<div class="book-thumb">📚</div>'+
+          '<div style="flex:1">'+
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start">'+
+              '<div>'+
+                '<div style="font-weight:700;font-size:15px">'+b.title+'</div>'+
+                '<div style="font-size:12px;color:var(--text2);margin-top:2px">'+b.author+'</div>'+
+                (b.cat?'<div style="font-size:11px;color:var(--text2);margin-top:1px">📂 '+b.cat+'</div>':'')+
+              '</div>'+
+              '<span style="font-size:11px;font-weight:600;color:'+statusColor[status]+'">'+statusLabel[status]+'</span>'+
+            '</div>'+
+            (b.oneSent?'<div style="margin-top:8px;padding:8px 10px;background:#fffbf0;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;font-size:12px;color:var(--text);line-height:1.6">💬 '+b.oneSent+'</div>':'')+
+            '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'+
+              '<button class="btn btn-outline btn-sm" onclick="openEditBook('+i+')" style="font-size:11px">✏️ 수정</button>'+
+              '<button class="btn btn-outline btn-sm" onclick="openAddQuote('+i+')" style="font-size:11px">✨ 문구 추가</button>'+
+              '<button class="btn btn-danger btn-sm" onclick="delBook('+i+')">삭제</button>'+
+            '</div>'+
+            quotesHtml+
+          '</div>'+
+        '</div>'+
+      '</div>';
+  });
+  bl.innerHTML=html;
 }
-function updateBook(i,v){state.books[i].prog=parseInt(v)||0;save();renderBooks();updateDashStats();}
-function delBook(i){if(confirm('삭제할까요?')){state.books.splice(i,1);save();renderBooks();updateDashStats();}}
-function addBook(){const t=document.getElementById('bk-title').value.trim();if(!t)return;state.books.push({title:t,author:document.getElementById('bk-author').value,cat:document.getElementById('bk-cat').value,prog:parseInt(document.getElementById('bk-prog').value)||0});closeModal('modal-book');['bk-title','bk-author','bk-cat'].forEach(id=>document.getElementById(id).value='');document.getElementById('bk-prog').value='0';save();renderBooks();updateDashStats();}
+
+function addBook(){
+  const t=document.getElementById('bk-title').value.trim();if(!t)return;
+  state.books.push({
+    title:t,
+    author:document.getElementById('bk-author').value,
+    cat:document.getElementById('bk-cat').value,
+    status:document.getElementById('bk-status').value,
+    oneSent:document.getElementById('bk-onesent').value,
+    quotes:[]
+  });
+  closeModal('modal-book');
+  ['bk-title','bk-author','bk-cat','bk-onesent'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('bk-status').value='reading';
+  save();renderBooks();updateDashStats();
+}
+let bookEditIdx=null;
+function openEditBook(i){
+  bookEditIdx=i;
+  const b=state.books[i];
+  document.getElementById('bk-modal-title').textContent='📚 책 수정';
+  document.getElementById('bk-save-btn').textContent='저장';
+  document.getElementById('bk-save-btn').onclick=function(){saveEditBook();};
+  document.getElementById('bk-title').value=b.title||'';
+  document.getElementById('bk-author').value=b.author||'';
+  document.getElementById('bk-cat').value=b.cat||'';
+  document.getElementById('bk-status').value=b.status||'reading';
+  document.getElementById('bk-onesent').value=b.oneSent||'';
+  openModal('modal-book');
+}
+function saveEditBook(){
+  const b=state.books[bookEditIdx];
+  b.title=document.getElementById('bk-title').value.trim();
+  b.author=document.getElementById('bk-author').value;
+  b.cat=document.getElementById('bk-cat').value;
+  b.status=document.getElementById('bk-status').value;
+  b.oneSent=document.getElementById('bk-onesent').value;
+  closeModal('modal-book');
+  document.getElementById('bk-modal-title').textContent='📚 책 추가';
+  document.getElementById('bk-save-btn').textContent='추가';
+  document.getElementById('bk-save-btn').onclick=function(){addBook();};
+  save();renderBooks();
+}
+let quoteBookIdx=null;
+function openAddQuote(i){
+  quoteBookIdx=i;
+  document.getElementById('bq-text').value='';
+  document.getElementById('bq-page').value='';
+  openModal('modal-book-quote');
+}
+function saveBookQuote(){
+  const text=document.getElementById('bq-text').value.trim();if(!text)return;
+  if(!state.books[quoteBookIdx].quotes)state.books[quoteBookIdx].quotes=[];
+  state.books[quoteBookIdx].quotes.push({
+    text:text,
+    page:document.getElementById('bq-page').value
+  });
+  closeModal('modal-book-quote');save();renderBooks();
+}
+function delBook(i){if(!confirm('삭제할까요?'))return;state.books.splice(i,1);save();renderBooks();updateDashStats();}
+function delBookQuote(bi,qi){if(!confirm('문구를 삭제할까요?'))return;state.books[bi].quotes.splice(qi,1);save();renderBooks();}
 
 // ===== 주식 공부노트 =====
 let scFilter='전체', spFilter='전체';
@@ -3712,6 +3818,25 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-recipe-edit')">취소</button>
       <button class="btn btn-primary" onclick="saveRecipeEdit()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 감명깊은 문구 모달 -->
+<div id="modal-book-quote" class="modal-overlay">
+  <div class="modal" style="width:520px">
+    <div class="modal-title">✨ 감명깊은 문구</div>
+    <div class="modal-row">
+      <label>문구</label>
+      <textarea id="bq-text" style="min-height:100px" placeholder="감명깊은 구절을 적어보세요..."></textarea>
+    </div>
+    <div class="modal-row">
+      <label>페이지 <span style="font-size:10px;color:var(--text2)">(선택)</span></label>
+      <input id="bq-page" placeholder="예: p.42" style="width:120px">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-book-quote')">취소</button>
+      <button class="btn btn-primary" onclick="saveBookQuote()">저장</button>
     </div>
   </div>
 </div>
