@@ -104,7 +104,7 @@ textarea{resize:vertical;min-height:80px}
 .q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px;text-align:center}
 .q-score{font-size:28px;font-weight:700;color:var(--accent)}.q-label{font-size:11px;color:var(--text2);margin-top:3px}
 /* FOOD */
-.cal-food-day{min-height:58px;padding:4px;border-radius:7px;border:1px solid #f0e8d8;cursor:pointer;font-size:11px;color:var(--text2);transition:.1s}
+.cal-food-day{min-height:80px;padding:5px;border-radius:7px;border:1px solid #f0e8d8;cursor:pointer;font-size:11px;color:var(--text2);transition:.1s;overflow:hidden}.cal-food-day:hover{background:var(--active)}.cal-food-day.empty{border:none;cursor:default}
 .cal-food-day:hover{border-color:var(--accent);background:#fffdf8}
 .cal-food-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .recipe-item{border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px;background:var(--card)}
@@ -1166,7 +1166,7 @@ textarea{resize:vertical;min-height:80px}
 <div id="modal-event" class="modal-overlay"><div class="modal"><div class="modal-title">📅 일정 추가</div><div class="modal-row"><label>제목</label><input id="ev-title"></div><div class="modal-row"><label>날짜</label><input id="ev-date" type="date"></div><div class="modal-row"><label>시간</label><input id="ev-time" type="time"></div><div class="modal-row"><label>메모</label><textarea id="ev-memo" style="min-height:55px"></textarea></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-event')">취소</button><button class="btn btn-primary" onclick="addEvent()">추가</button></div></div></div>
 <div id="modal-book" class="modal-overlay"><div class="modal"><div class="modal-title" id="bk-modal-title">📚 책 추가</div><div class="modal-row"><label>책 제목</label><input id="bk-title"></div><div class="modal-row"><label>저자</label><input id="bk-author"></div><div class="modal-row"><label>카테고리</label><input id="bk-cat" placeholder="예: 철학, 경제"></div><div class="modal-row"><label>상태</label><select id="bk-status"><option value="reading">읽는 중</option><option value="done">완독</option><option value="wish">읽고 싶음</option></select></div><div class="modal-row"><label>완독 한 문장 <span style="font-size:10px;color:var(--text2)">(완독 후 기록)</span></label><input id="bk-onesent" placeholder="이 책을 한 문장으로 표현한다면..."></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-book')">취소</button><button class="btn btn-primary" id="bk-save-btn" onclick="addBook()">추가</button></div></div></div>
 <div id="modal-diary" class="modal-overlay"><div class="modal"><div class="modal-title" id="diary-modal-title">📖 일기 쓰기</div><div id="diary-modal-body"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-diary')">취소</button><button class="btn btn-primary" onclick="saveDiaryEntry()">저장</button></div></div></div>
-<div id="modal-food-day" class="modal-overlay"><div class="modal"><div class="modal-title" id="food-modal-title">식단 입력</div><div class="modal-row"><label>아침</label><input id="fd-breakfast"></div><div class="modal-row"><label>점심</label><input id="fd-lunch"></div><div class="modal-row"><label>저녁</label><input id="fd-dinner"></div><div class="modal-row"><label>간식</label><input id="fd-snack"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-food-day')">취소</button><button class="btn btn-primary" onclick="saveFoodDay()">저장</button></div></div></div>
+<div id="modal-food-day" class="modal-overlay"><div class="modal"><div class="modal-title" id="food-modal-title">식단 입력</div><div class="modal-row"><label>아침</label><input id="fd-breakfast"></div><div class="modal-row"><label>🌞 점심</label><input id="fd-lunch"></div><div class="modal-row"><label>저녁</label><input id="fd-dinner"></div><div class="modal-row"><label>간식</label><input id="fd-snack"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-food-day')">취소</button><button class="btn btn-primary" onclick="saveFoodDay()">저장</button></div></div></div>
 <div id="modal-habit-stats" class="modal-overlay"><div class="modal"><div class="modal-title">📊 습관 누적 통계</div><div id="habit-stats-body"></div><div class="modal-actions"><button class="btn btn-primary" onclick="closeModal('modal-habit-stats')">닫기</button></div></div></div>
 <div id="modal-full" class="modal-overlay"><div class="modal" style="width:580px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px"><div class="modal-title" style="margin:0" id="full-title"></div><button style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text2)" onclick="closeModal('modal-full')">✕</button></div><div style="font-size:11px;color:var(--text2);margin-bottom:12px" id="full-meta"></div><div style="font-size:14px;line-height:1.9;white-space:pre-wrap;color:var(--text)" id="full-body"></div></div></div>
 <div id="modal-budget-tx" class="modal-overlay"><div class="modal"><div class="modal-title">💰 내역 추가</div><div class="modal-row"><div class="type-btns"><div class="type-btn out on" id="tb-out" onclick="setBTxType('지출')">❤️ 지출</div><div class="type-btn in" id="tb-in" onclick="setBTxType('수입')">💚 수입</div></div></div><div class="modal-row"><label>날짜</label><input id="btx-date" type="date"></div><div class="modal-row"><label>금액</label><input id="btx-amt" type="number" placeholder="0"></div><div class="modal-row"><label>내용</label><input id="btx-title"></div><div class="modal-row"><label>카테고리</label><select id="btx-cat"><optgroup label="💚 수입" id="btx-cat-inc"></optgroup><optgroup label="❤️ 지출" id="btx-cat-exp"></optgroup></select></div><div class="modal-row"><label>메모</label><input id="btx-memo"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeBudgetTxModal()">취소</button><button class="btn btn-primary" onclick="addBTx()">추가</button></div></div></div>
@@ -2315,8 +2315,29 @@ function renderFoodCal(){
   document.getElementById('food-cal-grid').innerHTML=html;
 }
 function changeFoodMonth(d){state.foodCalMonth+=d;if(state.foodCalMonth>11){state.foodCalMonth=0;state.foodCalYear++;}else if(state.foodCalMonth<0){state.foodCalMonth=11;state.foodCalYear--;}renderFoodCal();}
-function openFoodDayModal(key){state.currentFoodDay=key;const fd=state.foodData[key]||{};document.getElementById('food-modal-title').textContent=`${key} 식단`;['breakfast','lunch','dinner','snack'].forEach(k=>document.getElementById('fd-'+k).value=fd[k]||'');openModal('modal-food-day');}
-function saveFoodDay(){state.foodData[state.currentFoodDay]={breakfast:document.getElementById('fd-breakfast').value,lunch:document.getElementById('fd-lunch').value,dinner:document.getElementById('fd-dinner').value,snack:document.getElementById('fd-snack').value};closeModal('modal-food-day');save();renderFoodCal();}
+function openFoodDayModal(key){
+  state.currentFoodDay=key;
+  const fd=state.foodData[key]||{};
+  // 날짜 표시 (예: 5월 30일 금요일)
+  const d=new Date(key);
+  const days=['일','월','화','수','목','금','토'];
+  document.getElementById('food-modal-title').textContent=(d.getMonth()+1)+'월 '+d.getDate()+'일 '+days[d.getDay()]+'요일 식단';
+  ['breakfast','lunch','dinner','snack','memo'].forEach(function(k){
+    const el=document.getElementById('fd-'+k);
+    if(el)el.value=fd[k]||'';
+  });
+  openModal('modal-food-day');
+}
+function saveFoodDay(){
+  state.foodData[state.currentFoodDay]={
+    breakfast:document.getElementById('fd-breakfast').value,
+    lunch:document.getElementById('fd-lunch').value,
+    dinner:document.getElementById('fd-dinner').value,
+    snack:document.getElementById('fd-snack').value,
+    memo:document.getElementById('fd-memo').value
+  };
+  closeModal('modal-food-day');save();renderFoodCal();
+}
 function addRecipe(cat){
   const n=document.getElementById('rn-'+cat).value.trim();if(!n)return;
   const imgs=(window._recipeImgs&&window._recipeImgs[cat])||[];
