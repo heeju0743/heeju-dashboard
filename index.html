@@ -2427,6 +2427,7 @@ function saveRecipeEdit(){
 function delRecipe(cat,i){state.recipes[cat].splice(i,1);save();renderRecipes(cat);}
 function renderRecipes(cat){
   const el=document.getElementById('r-'+cat);if(!el)return;
+  if(!state.recipes[cat])state.recipes[cat]=[];
   el.innerHTML=state.recipes[cat].map(function(r,i){
     const imgs=r.images&&r.images.length?
       '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">'+
@@ -3163,6 +3164,7 @@ function renderAddForm(prefix,cat){
 
 function addItem(prefix,cat){
   const key=prefix==='ex'?'exercises':'massages';
+  if(!state[key][cat])state[key][cat]=[];
   const n=document.getElementById(prefix+'n-'+cat).value.trim();
   if(!n)return;
   const imgs=(window._addFormImgs&&window._addFormImgs[prefix+'-'+cat])||[];
@@ -3206,6 +3208,7 @@ function handleAddFormImg(input,prefix,cat){
 
 function renderEx(cat){
   const el=document.getElementById('el-'+cat);if(!el)return;
+  if(!state.exercises[cat]){state.exercises[cat]=[];el.innerHTML='';return;}
   if(!state.exercises[cat].length){el.innerHTML='';return;}
   let html='';
   state.exercises[cat].forEach(function(r,i){
@@ -3231,6 +3234,7 @@ function renderEx(cat){
 
 function renderMas(cat){
   const el=document.getElementById('ml-'+cat);if(!el)return;
+  if(!state.massages[cat]){state.massages[cat]=[];el.innerHTML='';return;}
   if(!state.massages[cat].length){el.innerHTML='';return;}
   let html='';
   state.massages[cat].forEach(function(r,i){
