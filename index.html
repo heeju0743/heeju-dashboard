@@ -3289,27 +3289,42 @@ function setBTxType(t){state.bTxType=t;document.getElementById('tb-out').classNa
 function openBudgetTxModal(){document.getElementById('btx-date').value=new Date().toISOString().split('T')[0];const incEl=document.getElementById('btx-cat-inc'),expEl=document.getElementById('btx-cat-exp');incEl.innerHTML=state.incCats.map(c=>`<option>${c}</option>`).join('');expEl.innerHTML=state.expCats.map(c=>`<option>${c}</option>`).join('');openModal('modal-budget-tx');}
 function closeBudgetTxModal(){closeModal('modal-budget-tx');}
 function addBTx(){
-  const amt=parseInt(document.getElementById('btx-amt').value)||0;
-  const t=document.getElementById('btx-title').value.trim();
-  if(!t||!amt)return;
-  const cat=document.getElementById('btx-cat').value;
-  state.transactions.push({date:document.getElementById('btx-date').value,amount:amt,title:t,cat:cat,memo:document.getElementById('btx-memo').value,type:state.bTxType});
-  // 대출상환(원금) → 부채 잔여원금 자동 차감
-  if(cat==='대출상환(원금)'&&state.debts.length){
-    if(state.debts.length===1){
-      state.debts[0].remain=Math.max(0,(state.debts[0].remain||0)-amt);
-    } else {
-      const names=state.debts.map(function(d,i){return (i+1)+'. '+d.name+' (잔여: '+((d.remain||0)).toLocaleString()+'원)';}).join('\n');
-      const choice=prompt('어떤 부채에서 차감할까요?\n'+names+'\n\n번호를 입력하세요:');
-      const idx=parseInt(choice)-1;
-      if(idx>=0&&idx<state.debts.length){
-        state.debts[idx].remain=Math.max(0,(state.debts[idx].remain||0)-amt);
+  var amt=parseInt(document.getElementById('btx-amt').value)||0;
+  var t=document.getElementById('btx-title').value.trim();
+  if(!t){alert('내용을 입력해주세요');return;}
+  if(!amt){alert('금액을 입력해주세요');return;}
+  var cat=document.getElementById('btx-cat').value;
+  if(!cat)cat='기타';
+  state.transactions.push({
+    date:document.getElementById('btx-date').value||new Date().toISOString().split('T')[0],
+    amount:amt,
+    title:t,
+    cat:cat,
+    memo:document.getElementById('btx-memo').value||'',
+    type:state.bTxType||'지출'
+  });
+  if(cat==='대출상환(원금)'&&state.debts&&state.debts.length){
+    var debtIdx=0;
+    if(state.debts.length>1){
+      var msg='어떤 부채에서 차감할까요?';
+      for(var di=0;di<state.debts.length;di++){
+        msg+='\n'+(di+1)+'. '+state.debts[di].name+' (잔여: '+(state.debts[di].remain||0).toLocaleString()+'원)';
       }
+      var choice=prompt(msg+'\n\n번호를 입력하세요:');
+      debtIdx=parseInt(choice)-1;
+      if(isNaN(debtIdx)||debtIdx<0||debtIdx>=state.debts.length)debtIdx=-1;
+    }
+    if(debtIdx>=0){
+      state.debts[debtIdx].remain=Math.max(0,(state.debts[debtIdx].remain||0)-amt);
     }
   }
-  closeModal('modal-budget-tx');['btx-amt','btx-title','btx-memo'].forEach(function(id){document.getElementById(id).value='';});
+  closeModal('modal-budget-tx');
+  document.getElementById('btx-amt').value='';
+  document.getElementById('btx-title').value='';
+  document.getElementById('btx-memo').value='';
   save();renderBudget();updateDashStats();
 }
+
 function delBTx(i){state.transactions.splice(i,1);save();renderBudget();}
 function openCatModal(){const il=document.getElementById('cat-inc-list'),el=document.getElementById('cat-exp-list');il.innerHTML=state.incCats.map((c,i)=>`<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px">${c}<button class="del-btn" onclick="state.incCats.splice(${i},1);save();openCatModal()">✕</button></div>`).join('');el.innerHTML=state.expCats.map((c,i)=>`<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px">${c}<button class="del-btn" onclick="state.expCats.splice(${i},1);save();openCatModal()">✕</button></div>`).join('');openModal('modal-cat');}
 function addCat(type){const id=type==='inc'?'new-inc-cat':'new-exp-cat';const v=document.getElementById(id).value.trim();if(!v)return;if(type==='inc')state.incCats.push(v);else state.expCats.push(v);document.getElementById(id).value='';save();openCatModal();}
