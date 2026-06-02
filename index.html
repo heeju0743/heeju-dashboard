@@ -1016,7 +1016,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="bsum-card"><div class="bsum-label">💚 수입</div><div class="bsum-val" style="color:var(--green)" id="b-inc">0원</div></div>
     <div class="bsum-card"><div class="bsum-label">❤️ 지출</div><div class="bsum-val" style="color:var(--red)" id="b-exp">0원</div></div>
     <div class="bsum-card"><div class="bsum-label">💛 잔액</div><div class="bsum-val" id="b-bal">0원</div></div>
-    <div class="bsum-card"><div class="bsum-label">🏦 총 부채</div><div class="bsum-val" style="color:var(--red)" id="b-debt">0원</div></div>
+    <div class="bsum-card"><div class="bsum-label">🏦 총 부채</div><div class="bsum-val" style="color:var(--red)" id="b-debt-val">0원</div></div>
   </div>
   <div class="tabs">
     <div class="tab active" onclick="switchTab(this,'b-list')">📋 내역</div>
@@ -3272,7 +3272,7 @@ function renderBudget(){
   document.getElementById('b-exp').textContent=exp.toLocaleString()+'원';
   document.getElementById('b-bal').textContent=(inc-exp).toLocaleString()+'원';
   document.getElementById('b-bal').style.color=(inc-exp)>=0?'var(--green)':'var(--red)';
-  document.getElementById('b-debt').textContent=totalDebt.toLocaleString()+'원';
+  document.getElementById('b-debt-val').textContent=totalDebt.toLocaleString()+'원';
   let fTx=mTx;
   if(state.bTxFilter==='수입')fTx=mTx.filter(t=>t.type==='수입');
   else if(state.bTxFilter==='지출')fTx=mTx.filter(t=>t.type==='지출');
