@@ -1169,7 +1169,7 @@ textarea{resize:vertical;min-height:80px}
 <div id="modal-food-day" class="modal-overlay"><div class="modal" style="width:560px"><div class="modal-title" id="food-modal-title">🍽️ 식단 입력</div><div class="modal-row"><label>🌅 아침</label><textarea id="fd-breakfast" placeholder="메뉴, 장보기, 레시피 등..." style="min-height:70px"></textarea></div><div class="modal-row"><label>🌞 점심</label><textarea id="fd-lunch" placeholder="메뉴, 장보기, 레시피 등..." style="min-height:70px"></textarea></div><div class="modal-row"><label>🌙 저녁</label><textarea id="fd-dinner" placeholder="메뉴, 장보기, 레시피 등..." style="min-height:70px"></textarea></div><div class="modal-row"><label>🍪 간식</label><textarea id="fd-snack" placeholder="간식, 디저트 등..." style="min-height:50px"></textarea></div><div class="modal-row"><label>📝 메모</label><textarea id="fd-memo" placeholder="칼로리, 장보기 목록, 특이사항 등..." style="min-height:50px"></textarea></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-food-day')">취소</button><button class="btn btn-primary" onclick="saveFoodDay()">저장</button></div></div></div>
 <div id="modal-habit-stats" class="modal-overlay"><div class="modal"><div class="modal-title">📊 습관 누적 통계</div><div id="habit-stats-body"></div><div class="modal-actions"><button class="btn btn-primary" onclick="closeModal('modal-habit-stats')">닫기</button></div></div></div>
 <div id="modal-full" class="modal-overlay"><div class="modal" style="width:580px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px"><div class="modal-title" style="margin:0" id="full-title"></div><button style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text2)" onclick="closeModal('modal-full')">✕</button></div><div style="font-size:11px;color:var(--text2);margin-bottom:12px" id="full-meta"></div><div style="font-size:14px;line-height:1.9;white-space:pre-wrap;color:var(--text)" id="full-body"></div></div></div>
-<div id="modal-budget-tx" class="modal-overlay"><div class="modal"><div class="modal-title">💰 내역 추가</div><div class="modal-row"><div class="type-btns"><div class="type-btn out on" id="tb-out" onclick="setBTxType('지출')">❤️ 지출</div><div class="type-btn in" id="tb-in" onclick="setBTxType('수입')">💚 수입</div></div></div><div class="modal-row"><label>날짜</label><input id="btx-date" type="date"></div><div class="modal-row"><label>금액</label><input id="btx-amt" type="number" placeholder="0"></div><div class="modal-row"><label>내용</label><input id="btx-title"></div><div class="modal-row"><label>카테고리</label><select id="btx-cat"><optgroup label="💚 수입" id="btx-cat-inc"></optgroup><optgroup label="❤️ 지출" id="btx-cat-exp"></optgroup></select></div><div class="modal-row"><label>메모</label><input id="btx-memo"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeBudgetTxModal()">취소</button><button class="btn btn-primary" onclick="addBTx()">추가</button></div></div></div>
+<div id="modal-budget-tx" class="modal-overlay"><div class="modal"><div class="modal-title">💰 내역 추가</div><div class="modal-row"><div class="type-btns"><div class="type-btn out on" id="tb-out" onclick="setBTxType('지출')">❤️ 지출</div><div class="type-btn in" id="tb-in" onclick="setBTxType('수입')">💚 수입</div></div></div><div class="modal-row"><label>날짜</label><input id="btx-date" type="date"></div><div class="modal-row"><label>금액</label><input id="btx-amt" type="number" placeholder="0"></div><div class="modal-row"><label>내용</label><input id="btx-title"></div><div class="modal-row"><label>카테고리</label><select id="btx-cat"><optgroup label="💚 수입" id="btx-cat-inc"></optgroup><optgroup label="❤️ 지출" id="btx-cat-exp"></optgroup></select></div><div class="modal-row" id="btx-payment-row"><label>결제수단</label><div style="display:flex;gap:7px;margin-bottom:8px"><button type="button" id="pay-cash" onclick="setPayMethod('현금')" style="flex:1;padding:8px;border-radius:9px;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:.15s">💵 현금</button><button type="button" id="pay-card" onclick="setPayMethod('카드')" style="flex:1;padding:8px;border-radius:9px;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:.15s">💳 카드</button></div><div id="btx-card-options" style="display:none;margin-top:4px"><div style="display:flex;gap:7px"><button type="button" id="pay-lump" onclick="setCardType('일시불')" style="flex:1;padding:7px;border-radius:9px;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:.15s">일시불</button><button type="button" id="pay-install" onclick="setCardType('할부')" style="flex:1;padding:7px;border-radius:9px;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:.15s">할부</button></div><div id="btx-install-row" style="display:none;margin-top:7px"><select id="btx-install-months"><option value="2">2개월</option><option value="3">3개월</option><option value="4">4개월</option><option value="5">5개월</option><option value="6">6개월</option><option value="9">9개월</option><option value="10">10개월</option><option value="12">12개월</option><option value="18">18개월</option><option value="24">24개월</option><option value="36">36개월</option></select></div></div></div><div class="modal-row"><label>메모</label><input id="btx-memo"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeBudgetTxModal()">취소</button><button class="btn btn-primary" onclick="addBTx()">추가</button></div></div></div>
 <div id="modal-budget-set" class="modal-overlay"><div class="modal"><div class="modal-title">🎯 예산 설정</div><div id="budget-set-inputs"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-budget-set')">취소</button><button class="btn btn-primary" onclick="saveBudgetSet()">저장</button></div></div></div>
 <div id="modal-debt" class="modal-overlay"><div class="modal"><div class="modal-title" id="debt-modal-title">🏦 부채 추가</div><div class="modal-row"><label>부채명</label><input id="d-name" placeholder="예: 신용대출"></div><div class="modal-row"><label>총 원금</label><input id="d-origin" type="number" placeholder="0"></div><div class="modal-row"><label>현재 남은 원금</label><input id="d-remain" type="number" placeholder="0"></div><div class="modal-row"><label>연 이자율 (%)</label><input id="d-rate" type="number" step="0.1" placeholder="예: 4.5"></div><div class="modal-row"><label>월 납입일</label><input id="d-day" type="number" min="1" max="31"></div><div class="modal-row"><label>메모</label><input id="d-memo"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-debt')">취소</button><button class="btn btn-primary" onclick="saveDebt()">저장</button></div></div></div>
 <div id="modal-cat" class="modal-overlay"><div class="modal" style="width:520px"><div class="modal-title">🏷️ 카테고리 관리</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div><div style="font-weight:700;font-size:13px;margin-bottom:9px">💚 수입</div><div id="cat-inc-list"></div><div style="display:flex;gap:6px;margin-top:8px"><input id="new-inc-cat" placeholder="새 카테고리..."><button class="btn btn-primary btn-sm" onclick="addCat('inc')">+</button></div></div><div><div style="font-weight:700;font-size:13px;margin-bottom:9px">❤️ 지출</div><div id="cat-exp-list"></div><div style="display:flex;gap:6px;margin-top:8px"><input id="new-exp-cat" placeholder="새 카테고리..."><button class="btn btn-primary btn-sm" onclick="addCat('exp')">+</button></div></div></div><div class="modal-actions"><button class="btn btn-primary" onclick="closeModal('modal-cat');renderBudget()">완료</button></div></div></div>
@@ -3277,7 +3277,7 @@ function renderBudget(){
   if(state.bTxFilter==='수입')fTx=mTx.filter(t=>t.type==='수입');
   else if(state.bTxFilter==='지출')fTx=mTx.filter(t=>t.type==='지출');
   else if(state.bTxFilter==='대출')fTx=mTx.filter(t=>t.cat&&t.cat.includes('대출'));
-  document.getElementById('b-tx-list').innerHTML=fTx.sort((a,b)=>b.date>a.date?1:-1).map((t,i)=>`<div class="tx-item"><div class="tx-icon ${t.type==='수입'?'in':'out'}">${state.catEmoji[t.cat]||'📌'}</div><div class="tx-info"><div class="tx-title">${t.title}</div><div class="tx-meta">${t.date} · ${t.cat}${t.memo?' · '+t.memo:''}</div></div><div class="tx-amount" style="color:${t.type==='수입'?'var(--green)':'var(--red)'}">${t.type==='수입'?'+':'-'}${t.amount.toLocaleString()}원</div><button class="del-btn" onclick="delBTx(${state.transactions.indexOf(t)})">✕</button></div>`).join('');
+  document.getElementById('b-tx-list').innerHTML=fTx.sort((a,b)=>b.date>a.date?1:-1).map((t,i)=>`<div class="tx-item"><div class="tx-icon ${t.type==='수입'?'in':'out'}">${state.catEmoji[t.cat]||'📌'}</div><div class="tx-info"><div class="tx-title">${t.title}</div><div class="tx-meta">${t.date} · ${t.cat}${t.payLabel?' · <span style="padding:1px 7px;border-radius:6px;font-size:10px;font-weight:600;background:'+(t.payMethod==='현금'?'#e8f5ee':'#e8ecfd')+';color:'+(t.payMethod==='현금'?'var(--green)':'var(--blue)')+'">'+(t.payLabel)+'</span>':''}${t.memo?' · '+t.memo:''}</div></div><div class="tx-amount" style="color:${t.type==='수입'?'var(--green)':'var(--red)'}">${t.type==='수입'?'+':'-'}${t.amount.toLocaleString()}원</div><button class="del-btn" onclick="delBTx(${state.transactions.indexOf(t)})">✕</button></div>`).join('');
   renderBudgetCal(yr,mo);renderBudgetChart(mTx);renderBudgetList();renderDebt();
 }
 function renderBudgetCal(yr,mo){const el=document.getElementById('b-cal-grid');if(!el)return;const first=new Date(yr,mo,1).getDay(),last=new Date(yr,mo+1,0).getDate(),ym=`${yr}-${String(mo+1).padStart(2,'0')}`;let html='';for(let i=0;i<first;i++)html+=`<div></div>`;for(let d=1;d<=last;d++){const key=`${ym}-${String(d).padStart(2,'0')}`;const dayTx=state.transactions.filter(t=>t.date===key);const exp=dayTx.filter(t=>t.type==='지출').reduce((s,t)=>s+t.amount,0);html+=`<div class="cal-food-day"><div style="font-size:10px;font-weight:600;color:var(--text2)">${d}</div>${exp?`<div style="font-size:9px;color:var(--red)">-${(exp/1000).toFixed(0)}K</div>`:''}</div>`;}el.innerHTML=html;}
@@ -3285,8 +3285,65 @@ function renderBudgetChart(mTx){const expEl=document.getElementById('b-chart-exp
 function renderBudgetList(){const el=document.getElementById('b-budget-list');if(!el)return;const ym=`${state.budgetYear}-${String(state.budgetMonth+1).padStart(2,'0')}`;const mTx=state.transactions.filter(t=>t.date.startsWith(ym)&&t.type==='지출');el.innerHTML=Object.entries(state.budgets).map(([cat,budget])=>{const spent=mTx.filter(t=>t.cat===cat).reduce((s,t)=>s+t.amount,0);const pct=Math.min(Math.round(spent/budget*100),100);return`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${cat}</span><span style="color:${pct>=100?'var(--red)':pct>=80?'var(--accent)':'var(--green)'}">${spent.toLocaleString()} / ${budget.toLocaleString()}원</span></div><div class="b-bar"><div class="b-fill ${pct>=100?'over':pct>=80?'warn':'ok'}" style="width:${pct}%"></div></div></div>`;}).join('');}
 function changeBudgetMonth(d){state.budgetMonth+=d;if(state.budgetMonth>11){state.budgetMonth=0;state.budgetYear++;}else if(state.budgetMonth<0){state.budgetMonth=11;state.budgetYear--;}renderBudget();}
 function setBFilter(f,el){state.bTxFilter=f;document.querySelectorAll('#b-filters .filter-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderBudget();}
-function setBTxType(t){state.bTxType=t;document.getElementById('tb-out').className='type-btn out'+(t==='지출'?' on':'');document.getElementById('tb-in').className='type-btn in'+(t==='수입'?' on':'');}
-function openBudgetTxModal(){document.getElementById('btx-date').value=new Date().toISOString().split('T')[0];const incEl=document.getElementById('btx-cat-inc'),expEl=document.getElementById('btx-cat-exp');incEl.innerHTML=state.incCats.map(c=>`<option>${c}</option>`).join('');expEl.innerHTML=state.expCats.map(c=>`<option>${c}</option>`).join('');openModal('modal-budget-tx');}
+function setBTxType(t){
+  state.bTxType=t;
+  document.getElementById('tb-out').className='type-btn out'+(t==='지출'?' on':'');
+  document.getElementById('tb-in').className='type-btn in'+(t==='수입'?' on':'');
+  var payRow=document.getElementById('btx-payment-row');
+  if(payRow)payRow.style.display=(t==='지출')?'block':'none';
+  if(t!=='지출'){window._btxPayMethod='';window._btxCardType='';resetPayBtns();}
+}
+function setPayMethod(method){
+  window._btxPayMethod=method;
+  var cashBtn=document.getElementById('pay-cash');
+  var cardBtn=document.getElementById('pay-card');
+  var cardOpts=document.getElementById('btx-card-options');
+  var base='flex:1;padding:8px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:.15s;';
+  if(method==='현금'){
+    if(cashBtn)cashBtn.style.cssText=base+'border:2px solid var(--accent);background:var(--active)';
+    if(cardBtn)cardBtn.style.cssText=base+'border:2px solid var(--border);background:#fff';
+    if(cardOpts)cardOpts.style.display='none';
+    window._btxCardType='';
+  } else {
+    if(cardBtn)cardBtn.style.cssText=base+'border:2px solid var(--blue);background:#e8ecfd';
+    if(cashBtn)cashBtn.style.cssText=base+'border:2px solid var(--border);background:#fff';
+    if(cardOpts)cardOpts.style.display='block';
+  }
+}
+function setCardType(type){
+  window._btxCardType=type;
+  var lumpBtn=document.getElementById('pay-lump');
+  var instBtn=document.getElementById('pay-install');
+  var instRow=document.getElementById('btx-install-row');
+  var base='flex:1;padding:7px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:.15s;';
+  if(type==='일시불'){
+    if(lumpBtn)lumpBtn.style.cssText=base+'border:2px solid var(--blue);background:#e8ecfd';
+    if(instBtn)instBtn.style.cssText=base+'border:2px solid var(--border);background:#fff';
+    if(instRow)instRow.style.display='none';
+  } else {
+    if(instBtn)instBtn.style.cssText=base+'border:2px solid var(--blue);background:#e8ecfd';
+    if(lumpBtn)lumpBtn.style.cssText=base+'border:2px solid var(--border);background:#fff';
+    if(instRow)instRow.style.display='block';
+  }
+}
+function resetPayBtns(){
+  var b8='flex:1;padding:8px;border-radius:9px;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:.15s';
+  var b7='flex:1;padding:7px;border-radius:9px;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:.15s';
+  ['pay-cash','pay-card'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.cssText=b8;});
+  ['pay-lump','pay-install'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.cssText=b7;});
+  var co=document.getElementById('btx-card-options');if(co)co.style.display='none';
+  var ir=document.getElementById('btx-install-row');if(ir)ir.style.display='none';
+}
+function openBudgetTxModal(){
+  document.getElementById('btx-date').value=new Date().toISOString().split('T')[0];
+  const incEl=document.getElementById('btx-cat-inc'),expEl=document.getElementById('btx-cat-exp');
+  incEl.innerHTML=state.incCats.map(c=>`<option>${c}</option>`).join('');
+  expEl.innerHTML=state.expCats.map(c=>`<option>${c}</option>`).join('');
+  window._btxPayMethod='';window._btxCardType='';
+  resetPayBtns();
+  setBTxType('지출');
+  openModal('modal-budget-tx');
+}
 function closeBudgetTxModal(){closeModal('modal-budget-tx');}
 function addBTx(){
   var amt=parseInt(document.getElementById('btx-amt').value)||0;
@@ -3295,13 +3352,25 @@ function addBTx(){
   if(!amt){alert('금액을 입력해주세요');return;}
   var cat=document.getElementById('btx-cat').value;
   if(!cat)cat='기타';
+    var _pm=window._btxPayMethod||'';
+  var _ct=window._btxCardType||'';
+  var _im=0;
+  if(_ct==='할부'){var _ie=document.getElementById('btx-install-months');if(_ie)_im=parseInt(_ie.value)||0;}
+  var _pl='';
+  if(state.bTxType==='지출'&&_pm){
+    _pl=_pm==='카드'?(_ct==='할부'?(_im+'개월 할부'):'카드 일시불'):'현금';
+  }
   state.transactions.push({
     date:document.getElementById('btx-date').value||new Date().toISOString().split('T')[0],
     amount:amt,
     title:t,
     cat:cat,
     memo:document.getElementById('btx-memo').value||'',
-    type:state.bTxType||'지출'
+    type:state.bTxType||'지출',
+    payMethod:_pm,
+    cardType:_ct,
+    installMonths:_im,
+    payLabel:_pl
   });
   if(cat==='대출상환(원금)'&&state.debts&&state.debts.length){
     var debtIdx=0;
