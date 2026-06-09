@@ -1588,7 +1588,15 @@ function initApp(){
     if(e.target.id&&e.target.id.startsWith('t')&&!isNaN(e.target.id.slice(1))){if(!state.plannerTimes)state.plannerTimes={};state.plannerTimes[e.target.id]=e.target.value;save();}
     if(e.target.id==='stock-rules-text'){state['stock-rules-text']=e.target.value;save();}
   });
-  document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+  document.querySelectorAll('.modal-overlay').forEach(o=>{
+  let mdX=0,mdY=0;
+  o.addEventListener('mousedown',function(e){mdX=e.clientX;mdY=e.clientY;});
+  o.addEventListener('click',function(e){
+    if(e.target!==this)return;
+    if(Math.abs(e.clientX-mdX)>5||Math.abs(e.clientY-mdY)>5)return;
+    this.classList.remove('open');
+  });
+});
 }
 
 // ===== NAV =====
