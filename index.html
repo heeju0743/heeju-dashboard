@@ -753,7 +753,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="trade-nav-tab" onclick="tradeNav('t-checklist')">✅ 체크리스트</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-pattern')">📈 패턴분석</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-balance')">📉 잔고추이</div>
-    <div class="trade-nav-tab" onclick="tradeNav('t-diary')">📔 매매일기</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-diary')">🔄 매매 복기</div>
   </div>
 
   <!-- 대시보드 -->
@@ -895,8 +895,8 @@ textarea{resize:vertical;min-height:80px}
   <!-- 매매일기 -->
   <div id="t-diary" class="trade-page">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div style="font-size:15px;font-weight:700">📔 매매일기</div>
-      <button class="btn btn-primary btn-sm" onclick="openTradeDiaryModal()">+ 일기 작성</button>
+      <div style="font-size:15px;font-weight:700">🔄 매매 복기</div>
+      <button class="btn btn-primary btn-sm" onclick="openTradeDiaryModal()">+ 복기 작성</button>
     </div>
     <div id="t-diary-list"></div>
   </div>
@@ -1220,13 +1220,30 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
-<!-- 매매일기 모달 -->
+<!-- 매매 복기 모달 -->
 <div id="modal-trade-diary" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">📔 매매일기 작성</div>
-    <div class="modal-row"><label>날짜</label><input id="td-date" type="date"></div>
-    <div class="modal-row"><label>제목</label><input id="td-title" placeholder="오늘의 매매 제목..."></div>
-    <div class="modal-row"><label>내용</label><textarea id="td-content" placeholder="오늘의 매매 일기를 작성하세요..." style="min-height:140px"></textarea></div>
+  <div class="modal" style="width:600px">
+    <div class="modal-title" id="td-modal-title">🔄 매매 복기 작성</div>
+    <div class="mg2">
+      <div class="modal-row"><label>📅 날짜</label><input id="td-date" type="date"></div>
+      <div class="modal-row"><label>📌 종목명</label><input id="td-title" placeholder="종목명 입력..."></div>
+    </div>
+    <div class="modal-row">
+      <label>✅ 잘한 점</label>
+      <textarea id="td-good" placeholder="이번 매매에서 잘한 점은?..." style="min-height:70px;border-color:#b8dfc8"></textarea>
+    </div>
+    <div class="modal-row">
+      <label>❌ 잘못한 점</label>
+      <textarea id="td-bad" placeholder="반성할 점, 실수한 것은?..." style="min-height:70px;border-color:#fbc8c8"></textarea>
+    </div>
+    <div class="modal-row">
+      <label>💡 개선해야 할 점</label>
+      <textarea id="td-improve" placeholder="다음엔 어떻게 할 것인가?..." style="min-height:70px;border-color:#e8d5a3"></textarea>
+    </div>
+    <div class="modal-row">
+      <label>📝 전체 내용</label>
+      <textarea id="td-content" placeholder="매매 전반에 대한 기록..." style="min-height:90px"></textarea>
+    </div>
     <div class="modal-row">
       <label>📸 차트 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('td-img-in').click()">
@@ -1237,7 +1254,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-trade-diary')">취소</button>
-      <button class="btn btn-primary" onclick="saveTradeDiary()">저장</button>
+      <button class="btn btn-primary" id="td-save-btn" onclick="saveTradeDiary()">저장</button>
     </div>
   </div>
 </div>
@@ -1967,13 +1984,36 @@ function drawLineChart(canvasId,labels,datasets){
   activeDS.forEach(ds=>{ctx.fillStyle=ds.color;ctx.fillRect(lx,8,10,7);ctx.fillStyle='#3a3020';ctx.font='9px sans-serif';ctx.textAlign='left';ctx.fillText(ds.label,lx+12,14);lx+=ds.label.length*6+24;});
 }
 
-// ===== 매매일기 =====
-function openTradeDiaryModal(){
+// ===== 매매 복기 =====
+function openTradeDiaryModal(editId){
   state.tempTradeDiaryImgs=[];
-  document.getElementById('td-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('td-title').value='';
-  document.getElementById('td-content').value='';
-  document.getElementById('td-img-preview').innerHTML='';
+  window._tdEditId=editId||null;
+  var titleEl=document.getElementById('td-modal-title');
+  var btnEl=document.getElementById('td-save-btn');
+  if(editId){
+    var d=(state.tradeDiaries||[]).find(function(x){return x.id===editId;});
+    if(!d)return;
+    if(titleEl)titleEl.textContent='✏️ 매매 복기 수정';
+    if(btnEl)btnEl.textContent='저장';
+    document.getElementById('td-date').value=d.date||'';
+    document.getElementById('td-title').value=d.title||'';
+    document.getElementById('td-good').value=d.good||'';
+    document.getElementById('td-bad').value=d.bad||'';
+    document.getElementById('td-improve').value=d.improve||'';
+    document.getElementById('td-content').value=d.content||'';
+    state.tempTradeDiaryImgs=d.images?[...d.images]:[];
+    renderTDiaryPrev();
+  } else {
+    if(titleEl)titleEl.textContent='🔄 매매 복기 작성';
+    if(btnEl)btnEl.textContent='저장';
+    document.getElementById('td-date').value=new Date().toISOString().split('T')[0];
+    document.getElementById('td-title').value='';
+    document.getElementById('td-good').value='';
+    document.getElementById('td-bad').value='';
+    document.getElementById('td-improve').value='';
+    document.getElementById('td-content').value='';
+    document.getElementById('td-img-preview').innerHTML='';
+  }
   document.getElementById('modal-trade-diary').classList.add('open');
 }
 function handleTradeDiaryImg(input){
@@ -1989,10 +2029,27 @@ function renderTDiaryPrev(){
   ).join('');
 }
 function saveTradeDiary(){
-  const c=document.getElementById('td-content').value.trim();
-  if(!c)return;
+  var title=document.getElementById('td-title').value.trim();
+  var good=document.getElementById('td-good').value.trim();
+  var bad=document.getElementById('td-bad').value.trim();
+  var improve=document.getElementById('td-improve').value.trim();
+  var content=document.getElementById('td-content').value.trim();
+  if(!title&&!good&&!bad&&!content){alert('종목명 또는 내용을 입력해주세요');return;}
   if(!state.tradeDiaries)state.tradeDiaries=[];
-  state.tradeDiaries.unshift({id:Date.now(),date:document.getElementById('td-date').value,title:document.getElementById('td-title').value||'매매일기',content:c,images:[...state.tempTradeDiaryImgs]});
+  var obj={
+    id:window._tdEditId||Date.now(),
+    date:document.getElementById('td-date').value,
+    title:title||'매매 복기',
+    good:good,bad:bad,improve:improve,content:content,
+    images:[...state.tempTradeDiaryImgs]
+  };
+  if(window._tdEditId){
+    var idx=state.tradeDiaries.findIndex(function(x){return x.id===window._tdEditId;});
+    if(idx>=0)state.tradeDiaries[idx]=obj;
+    window._tdEditId=null;
+  } else {
+    state.tradeDiaries.unshift(obj);
+  }
   closeModal('modal-trade-diary');save();renderTDiaries();
 }
 function delTradeDiary(id){
@@ -2004,15 +2061,30 @@ function delTradeDiary(id){
 function renderTDiaries(){
   if(!state.tradeDiaries)state.tradeDiaries=[];
   const el=document.getElementById('t-diary-list');
-  el.innerHTML=state.tradeDiaries.length?state.tradeDiaries.map(d=>`
-    <div class="j-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
-        <div><span class="j-date">${d.date}</span> <strong style="margin-left:8px">${d.title}</strong></div>
-        <button class="btn btn-danger btn-sm" onclick="delTradeDiary(${d.id})">삭제</button>
+  if(!state.tradeDiaries.length){
+    el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">매매 복기를 작성해보세요 🔄</div>';
+    return;
+  }
+  el.innerHTML=state.tradeDiaries.map(d=>{
+    var goodHtml=d.good?`<div style="margin-bottom:8px;padding:9px 12px;background:#f0fdf4;border-radius:9px;border-left:3px solid var(--green)"><div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:3px">✅ 잘한 점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${d.good}</div></div>`:'';
+    var badHtml=d.bad?`<div style="margin-bottom:8px;padding:9px 12px;background:#fff1f2;border-radius:9px;border-left:3px solid var(--red)"><div style="font-size:10px;font-weight:700;color:var(--red);margin-bottom:3px">❌ 잘못한 점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${d.bad}</div></div>`:'';
+    var improveHtml=d.improve?`<div style="margin-bottom:8px;padding:9px 12px;background:#fffbeb;border-radius:9px;border-left:3px solid var(--accent)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:3px">💡 개선해야 할 점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${d.improve}</div></div>`:'';
+    var contentHtml=d.content?`<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg);border-radius:9px"><div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:3px">📝 전체 내용</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${d.content}</div></div>`:'';
+    var imgHtml=d.images&&d.images.length?`<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:9px">${d.images.map(img=>`<img class="diary-img-thumb" src="${img}" onclick="document.getElementById('img-fullview-src').src='${img}';document.getElementById('img-fullview').classList.add('open')" alt="차트">`).join('')}</div>`:'';
+    return `<div class="j-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span class="j-date">${d.date}</span>
+          <strong style="font-size:14px">${d.title}</strong>
+        </div>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-outline btn-sm" onclick="openTradeDiaryModal(${d.id})" style="font-size:11px">✏️ 수정</button>
+          <button class="btn btn-danger btn-sm" onclick="delTradeDiary(${d.id})">삭제</button>
+        </div>
       </div>
-      <div style="font-size:13px;line-height:1.7">${d.content}</div>
-      ${d.images&&d.images.length?`<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:9px">${d.images.map(img=>`<img class="diary-img-thumb" src="${img}" onclick="document.getElementById('img-fullview-src').src='${img}';document.getElementById('img-fullview').classList.add('open')" alt="차트">`).join('')}</div>`:''}
-    </div>`).join(''):'<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">매매일기를 작성해보세요 📔</div>';
+      ${goodHtml}${badHtml}${improveHtml}${contentHtml}${imgHtml}
+    </div>`;
+  }).join('');
 }
 
 // ===== DASH =====
