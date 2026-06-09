@@ -223,6 +223,18 @@ textarea{resize:vertical;min-height:80px}
 .mob-menu-item{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;background:var(--bg);border:1px solid var(--border);border-radius:12px;cursor:pointer;font-size:22px;font-family:inherit;transition:.15s}
 .mob-menu-item span{font-size:11px;color:var(--text2);font-weight:600}
 .mob-menu-item:active{background:var(--active)}
+/* ===== 리치 텍스트 에디터 ===== */
+.rich-editor-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fafaf7}
+.rich-toolbar{display:flex;flex-wrap:wrap;gap:2px;padding:6px 8px;background:#f5f0e8;border-bottom:1px solid var(--border)}
+.rich-btn{background:none;border:1px solid transparent;cursor:pointer;padding:3px 7px;border-radius:5px;font-size:12px;color:var(--text);font-family:inherit;transition:.1s;line-height:1.4}
+.rich-btn:hover{background:var(--active);border-color:var(--accent2)}
+.rich-btn.active{background:var(--active);border-color:var(--accent);color:var(--accent)}
+.rich-btn.color-btn{width:22px;height:22px;padding:0;border-radius:50%;border:2px solid #ddd;cursor:pointer}
+.rich-btn.color-btn:hover,.rich-btn.color-btn.active{border-color:var(--accent)}
+.rich-toolbar-sep{width:1px;background:var(--border);margin:2px 3px;align-self:stretch}
+.rich-content{min-height:100px;padding:10px 13px;outline:none;font-size:13px;color:var(--text);line-height:1.8;font-family:inherit;background:#fafaf7}
+.rich-content:focus{background:#fff}
+.rich-content[placeholder]:empty:before{content:attr(placeholder);color:#aaa;pointer-events:none}
 /* LOADING */
 #loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
 #loading-screen .logo{font-size:32px;font-weight:700;color:var(--accent);margin-bottom:12px}
@@ -1564,6 +1576,171 @@ function compressImg(base64,maxW,maxH,quality){
     img.src=base64;
   });
 }
+// ===== 리치 텍스트 에디터 =====
+function createRichEditor(targetId, placeholder, minHeight){
+  minHeight = minHeight || 100;
+  const wrap = document.createElement('div');
+  wrap.className = 'rich-editor-wrap';
+  wrap.dataset.target = targetId;
+
+  // 툴바
+  const toolbar = document.createElement('div');
+  toolbar.className = 'rich-toolbar';
+
+  const btns = [
+    {cmd:'bold', label:'<b>B</b>', title:'굵게'},
+    {cmd:'italic', label:'<i>I</i>', title:'기울임'},
+    {cmd:'underline', label:'<u>U</u>', title:'밑줄'},
+    {type:'sep'},
+    {cmd:'foreColor', label:'🔴', title:'빨강', value:'#e05c5c'},
+    {cmd:'foreColor', label:'🟠', title:'주황', value:'#f97316'},
+    {cmd:'foreColor', label:'🟡', title:'노랑', value:'#eab308'},
+    {cmd:'foreColor', label:'🟢', title:'초록', value:'#5c9e6e'},
+    {cmd:'foreColor', label:'🔵', title:'파랑', value:'#5c7ae0'},
+    {cmd:'foreColor', label:'🟣', title:'보라', value:'#8c5ce0'},
+    {cmd:'foreColor', label:'⚫', title:'검정', value:'#3a3020'},
+    {type:'sep'},
+    {cmd:'hiliteColor', label:'💛', title:'노란 형광펜', value:'#fff176'},
+    {cmd:'hiliteColor', label:'🩷', title:'분홍 형광펜', value:'#f9a8d4'},
+    {cmd:'hiliteColor', label:'🩵', title:'하늘 형광펜', value:'#bae6fd'},
+    {cmd:'hiliteColor', label:'🟩', title:'연두 형광펜', value:'#bbf7d0'},
+    {type:'sep'},
+    {cmd:'removeFormat', label:'✕', title:'서식 제거'},
+  ];
+
+  btns.forEach(function(b){
+    if(b.type==='sep'){
+      const sep=document.createElement('div');sep.className='rich-toolbar-sep';toolbar.appendChild(sep);return;
+    }
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='rich-btn';
+    btn.innerHTML=b.label;
+    btn.title=b.title;
+    btn.addEventListener('mousedown',function(e){
+      e.preventDefault();
+      if(b.value){
+        document.execCommand(b.cmd,false,b.value);
+      } else {
+        document.execCommand(b.cmd,false,null);
+      }
+      editor.focus();
+    });
+    toolbar.appendChild(btn);
+  });
+
+  // 에디터 영역
+  const editor=document.createElement('div');
+  editor.className='rich-content';
+  editor.contentEditable='true';
+  editor.style.minHeight=minHeight+'px';
+  editor.setAttribute('placeholder',placeholder||'내용을 입력하세요...');
+
+  // 원본 textarea 연동
+  const origTA=document.getElementById(targetId);
+  if(origTA){
+    // 기존 값 로드
+    const existing=origTA.value||'';
+    if(existing){
+      // HTML인지 텍스트인지 판별
+      if(existing.includes('<') && existing.includes('>') && (existing.includes('<b>') || existing.includes('<span') || existing.includes('<br'))){
+        editor.innerHTML=existing;
+      } else {
+        editor.innerHTML=existing.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      }
+    }
+    origTA.style.display='none';
+    editor.addEventListener('input',function(){
+      origTA.value=editor.innerHTML;
+    });
+    // MutationObserver로 변경 감지
+    const obs=new MutationObserver(function(){origTA.value=editor.innerHTML;});
+    obs.observe(editor,{childList:true,subtree:true,characterData:true});
+  }
+
+  editor.addEventListener('keydown',function(e){
+    if(e.key==='Tab'){e.preventDefault();document.execCommand('insertText',false,'    ');}
+  });
+
+  wrap.appendChild(toolbar);
+  wrap.appendChild(editor);
+
+  // 삽입
+  if(origTA){
+    origTA.parentNode.insertBefore(wrap,origTA);
+  }
+
+  return {wrap,editor,getHTML:function(){return editor.innerHTML;},setHTML:function(html){editor.innerHTML=html;if(origTA)origTA.value=html;}};
+}
+
+// 리치 에디터 인스턴스 저장
+window._richEditors = {};
+
+function initRichEditors(){
+  // 각 모달/페이지의 textarea를 리치 에디터로 교체
+  const targets = [
+    {id:'p-review', ph:'잘한 점, 개선할 점, 감사한 것...', h:80},
+    {id:'pil-input', ph:'필사 내용을 입력하세요...', h:170},
+    {id:'hw-content', ph:'오늘 공부할 것, 확인할 것...', h:120},
+    {id:'sc-desc', ph:'개념 설명...', h:100},
+    {id:'sp-entry', ph:'어떤 조건일 때 진입하는가...', h:70},
+    {id:'sp-exit', ph:'손절/익절 기준...', h:60},
+    {id:'sp-caution', ph:'이럴 때 주의해야 한다...', h:60},
+    {id:'sdn-desc', ph:'상세 내용...', h:130},
+    {id:'bq-text', ph:'감명깊은 구절을 적어보세요...', h:100},
+    {id:'t-note', ph:'기타 메모...', h:55},
+    {id:'td-good', ph:'이번 매매에서 잘한 점은?...', h:70},
+    {id:'td-bad', ph:'반성할 점, 실수한 것은?...', h:70},
+    {id:'td-improve', ph:'다음엔 어떻게 할 것인가?...', h:70},
+    {id:'td-content', ph:'매매 전반에 대한 기록...', h:90},
+    {id:'profile-strength', ph:'잘하는 것, 강점...', h:120},
+    {id:'profile-weakness', ph:'약점, 반복되는 실수...', h:120},
+    {id:'profile-style', ph:'선호하는 매매 유형, 시간대, 종목군...', h:120},
+    {id:'profile-improve', ph:'이번 달 집중적으로 개선할 것...', h:120},
+    {id:'word-text', ph:'매매/공부하면서 깨달은 것...', h:100},
+    {id:'rule-reason', ph:'왜 이 원칙이 중요한가...', h:80},
+    {id:'med-content', ph:'명상 방법, 효과...', h:120},
+    {id:'medr-memo', ph:'명상 소감...', h:70},
+    {id:'td-content', ph:'오늘의 매매 일기를 작성하세요...', h:140},
+  ];
+  targets.forEach(function(t){
+    if(document.getElementById(t.id) && !window._richEditors[t.id]){
+      window._richEditors[t.id] = createRichEditor(t.id, t.ph, t.h);
+    }
+  });
+}
+
+// 모달 열릴 때마다 리치 에디터 초기화 (동적 생성 모달 대응)
+function initRichForModal(modalId){
+  const modal = document.getElementById(modalId);
+  if(!modal) return;
+  // 잠시 후 초기화 (DOM 생성 완료 후)
+  setTimeout(function(){
+    modal.querySelectorAll('textarea').forEach(function(ta){
+      if(!ta.id || ta.style.display==='none') return;
+      if(!window._richEditors[ta.id]){
+        window._richEditors[ta.id] = createRichEditor(ta.id, ta.placeholder, parseInt(ta.style.minHeight)||80);
+      }
+    });
+  }, 50);
+}
+
+// 리치에디터 값 가져오기 (html → 저장시 사용)
+function getRichValue(id){
+  const editor = window._richEditors[id];
+  if(editor) return editor.getHTML();
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
+
+// 리치에디터 값 세팅 (수정모드 열 때 사용)
+function setRichValue(id, html){
+  const editor = window._richEditors[id];
+  if(editor){ editor.setHTML(html); return; }
+  const el = document.getElementById(id);
+  if(el) el.value = html;
+}
+
 function initApp(){
   const n=new Date();
   document.getElementById('sb-day').textContent=n.getDate();
@@ -1580,6 +1757,8 @@ function initApp(){
   ['domestic','us','coin','futures'].forEach(function(m){renderYoutuberTabs(m);});
   renderCurrentYoutuber();
   renderMeditations();renderMedRecords();renderTDiaries();
+  // 리치 텍스트 에디터 초기화
+  setTimeout(initRichEditors, 100);
   if(state['stock-rules-text']){const el=document.getElementById('stock-rules-text');if(el)el.value=state['stock-rules-text'];}
   document.addEventListener('input',e=>{
     if(['p-goal','p-mood'].includes(e.target.id)){state[e.target.id]=e.target.value;save();}
@@ -2544,19 +2723,19 @@ function renderBooks(){
     const quotes=(b.quotes||[]);
     let quotesHtml='';
     if(quotes.length){
+      // 첫 번째 문구만 미리보기로 보여주고 나머지는 접힘
+      const previewQ=quotes[0];
+      const previewText=(previewQ.text||'').slice(0,60)+((previewQ.text||'').length>60?'...':'');
       quotesHtml='<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">';
-      quotesHtml+='<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px">✨ 감명깊은 문구 ('+quotes.length+')</div>';
-      quotes.forEach(function(q,qi){
-        quotesHtml+=
-          '<div style="background:var(--active);border-radius:8px;padding:8px 10px;margin-bottom:6px;position:relative">'+
-            '<div style="font-size:12px;line-height:1.7;white-space:pre-wrap;color:var(--text)">'+q.text+'</div>'+
-            (q.page?'<div style="font-size:10px;color:var(--text2);margin-top:3px">'+q.page+'</div>':'')+
-            '<div style="position:absolute;top:6px;right:6px;display:flex;gap:4px">'+
-            '<button onclick="openEditQuote('+i+','+qi+')" style="background:none;border:1px solid var(--border);cursor:pointer;font-size:10px;color:var(--text2);padding:1px 6px;border-radius:4px">✏️</button>'+
-            '<button onclick="delBookQuote('+i+','+qi+')" style="background:none;border:none;cursor:pointer;font-size:10px;color:#ccc">✕</button>'+
-            '</div>'+
-          '</div>';
-      });
+      quotesHtml+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+      quotesHtml+='<div style="font-size:11px;font-weight:700;color:var(--text2)">✨ 감명깊은 문구 ('+quotes.length+'개)</div>';
+      quotesHtml+='<button onclick="openBookQuoteModal('+i+')" class="btn btn-outline btn-sm" style="font-size:10px;padding:2px 8px">📖 전체보기</button>';
+      quotesHtml+='</div>';
+      // 미리보기 1개
+      quotesHtml+='<div style="background:var(--active);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text2);line-height:1.6">'+previewText+'</div>';
+      if(quotes.length>1){
+        quotesHtml+='<div style="font-size:11px;color:var(--text2);margin-top:4px;text-align:right">외 '+(quotes.length-1)+'개 더...</div>';
+      }
       quotesHtml+='</div>';
     }
     html+=
@@ -2630,6 +2809,56 @@ function saveEditBook(){
 }
 let quoteBookIdx=null;
 let quoteEditIdx=null;
+function openBookQuoteModal(bi){
+  // 전체 문구 보기 모달
+  window._bqViewBi=bi;
+  const book=state.books[bi];if(!book)return;
+  const quotes=book.quotes||[];
+  let html='<div style="margin-bottom:12px;font-size:13px;color:var(--text2)">'+book.title+' — 문구 '+quotes.length+'개</div>';
+  if(!quotes.length){
+    html+='<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">등록된 문구가 없습니다</div>';
+  } else {
+    quotes.forEach(function(q,qi){
+      const textHtml=q.text?q.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):'';
+      html+=
+        '<div style="background:var(--active);border-radius:9px;padding:11px 13px;margin-bottom:8px;position:relative">'+
+          '<div style="font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--text);padding-right:60px">'+textHtml+'</div>'+
+          (q.page?'<div style="font-size:10px;color:var(--text2);margin-top:4px">'+q.page+'</div>':'')+
+          '<div style="position:absolute;top:8px;right:8px;display:flex;gap:4px">'+
+            '<button data-bi="'+bi+'" data-qi="'+qi+'" class="bq-edit-btn" style="background:none;border:1px solid var(--border);cursor:pointer;font-size:10px;color:var(--text2);padding:2px 6px;border-radius:4px">✏️</button>'+
+            '<button data-bi="'+bi+'" data-qi="'+qi+'" class="bq-del-btn" style="background:none;border:none;cursor:pointer;font-size:11px;color:#ccc">✕</button>'+
+          '</div>'+
+        '</div>';
+    });
+  }
+  html+='<div style="margin-top:12px"><button class="bq-add-btn" data-bi="'+bi+'" style="background:var(--accent);color:#fff;border:none;border-radius:9px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">+ 문구 추가</button></div>';
+  document.getElementById('book-quote-view-title').textContent='✨ '+book.title;
+  const body=document.getElementById('book-quote-view-body');
+  body.innerHTML=html;
+  // 이벤트 위임으로 버튼 처리
+  body.querySelectorAll('.bq-edit-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      const b=parseInt(this.dataset.bi),q=parseInt(this.dataset.qi);
+      closeModal('modal-book-quote-view');
+      openEditQuote(b,q);
+    });
+  });
+  body.querySelectorAll('.bq-del-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      const b=parseInt(this.dataset.bi),q=parseInt(this.dataset.qi);
+      delBookQuote(b,q);
+      openBookQuoteModal(b);
+    });
+  });
+  body.querySelectorAll('.bq-add-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      const b=parseInt(this.dataset.bi);
+      closeModal('modal-book-quote-view');
+      openAddQuote(b);
+    });
+  });
+  openModal('modal-book-quote-view');
+}
 function openAddQuote(i){
   quoteBookIdx=i;quoteEditIdx=null;
   document.getElementById('bq-text').value='';
@@ -3145,6 +3374,15 @@ function openDiaryModal(type){
       '<div class="modal-row"><label>내용</label><textarea id="dm-content" style="min-height:130px" placeholder="'+(type==='doodle'?'자유롭게 끄적여보세요...':'오늘 하루를 기록해보세요...')+'"></textarea></div>';
   }
   openModal('modal-diary');
+  // 일기 모달은 동적으로 생성되므로 별도 초기화
+  setTimeout(function(){
+    ['dm-content','dm-grat-1','dm-grat-2','dm-grat-3'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el&&el.tagName==='TEXTAREA'&&!window._richEditors[id]){
+        window._richEditors[id]=createRichEditor(id,el.placeholder,parseInt(el.style.minHeight)||80);
+      }
+    });
+  },80);
 }
 
 function saveDiaryEntry(){
@@ -4119,7 +4357,11 @@ function saveLifeEdit(){
   closeModal('modal-life-edit');save();
   lifeEditType==='ex'?renderEx(lifeEditCat):renderMas(lifeEditCat);
 }
-function openModal(id){document.getElementById(id).classList.add('open');}
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  // 모달 열릴 때 리치 에디터 초기화
+  setTimeout(function(){initRichForModal(id);},60);
+}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function switchTab(el,id){const parent=el.closest('.page')||document;parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById(id).classList.add('active');}
 function openFullModal(title,meta,body){document.getElementById('full-title').textContent=title;document.getElementById('full-meta').textContent=meta;document.getElementById('full-body').textContent=body.replace(/\\n/g,'\n');openModal('modal-full');}
@@ -4212,6 +4454,17 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
       <button class="btn btn-outline" onclick="closeModal('modal-recipe-edit')">취소</button>
       <button class="btn btn-primary" onclick="saveRecipeEdit()">저장</button>
     </div>
+  </div>
+</div>
+
+<!-- 문구 전체보기 모달 -->
+<div id="modal-book-quote-view" class="modal-overlay">
+  <div class="modal" style="width:620px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="modal-title" style="margin:0" id="book-quote-view-title">✨ 감명깊은 문구</div>
+      <button style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2)" onclick="closeModal('modal-book-quote-view')">✕</button>
+    </div>
+    <div id="book-quote-view-body" style="max-height:65vh;overflow-y:auto"></div>
   </div>
 </div>
 
