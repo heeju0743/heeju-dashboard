@@ -1608,10 +1608,10 @@ function createRichEditor(targetId, placeholder, minHeight){
     {cmd:'foreColor', label:'🟣', title:'보라', value:'#8c5ce0'},
     {cmd:'foreColor', label:'⚫', title:'검정', value:'#3a3020'},
     {type:'sep'},
-    {cmd:'hiliteColor', label:'💛', title:'노란 형광펜', value:'#fff176'},
-    {cmd:'hiliteColor', label:'🩷', title:'분홍 형광펜', value:'#f9a8d4'},
-    {cmd:'hiliteColor', label:'🩵', title:'하늘 형광펜', value:'#bae6fd'},
-    {cmd:'hiliteColor', label:'🟩', title:'연두 형광펜', value:'#bbf7d0'},
+    {cmd:'hiliteColor', label:'<span style="background:#fff176;padding:1px 5px;border-radius:3px;font-size:11px;font-weight:700">노</span>', title:'노란 형광펜', value:'#fff176'},
+    {cmd:'hiliteColor', label:'<span style="background:#f9a8d4;padding:1px 5px;border-radius:3px;font-size:11px;font-weight:700">분</span>', title:'분홍 형광펜', value:'#f9a8d4'},
+    {cmd:'hiliteColor', label:'<span style="background:#bae6fd;padding:1px 5px;border-radius:3px;font-size:11px;font-weight:700">하</span>', title:'하늘 형광펜', value:'#bae6fd'},
+    {cmd:'hiliteColor', label:'<span style="background:#bbf7d0;padding:1px 5px;border-radius:3px;font-size:11px;font-weight:700">연</span>', title:'연두 형광펜', value:'#bbf7d0'},
     {type:'sep'},
     {cmd:'removeFormat', label:'✕', title:'서식 제거'},
   ];
@@ -2259,10 +2259,10 @@ function renderTDiaries(){
     return;
   }
   el.innerHTML=state.tradeDiaries.map(d=>{
-    var goodHtml=d.good?`<div style="margin-bottom:8px;padding:9px 12px;background:#f0fdf4;border-radius:9px;border-left:3px solid var(--green)"><div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:3px">✅ 잘한 점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${d.good}</div></div>`:'';
-    var badHtml=d.bad?`<div style="margin-bottom:8px;padding:9px 12px;background:#fff1f2;border-radius:9px;border-left:3px solid var(--red)"><div style="font-size:10px;font-weight:700;color:var(--red);margin-bottom:3px">❌ 잘못한 점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${d.bad}</div></div>`:'';
-    var improveHtml=d.improve?`<div style="margin-bottom:8px;padding:9px 12px;background:#fffbeb;border-radius:9px;border-left:3px solid var(--accent)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:3px">💡 개선해야 할 점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${d.improve}</div></div>`:'';
-    var contentHtml=d.content?`<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg);border-radius:9px"><div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:3px">📝 전체 내용</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${d.content}</div></div>`:'';
+    var goodHtml=d.good?`<div style="margin-bottom:8px;padding:9px 12px;background:#f0fdf4;border-radius:9px;border-left:3px solid var(--green)"><div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:3px">✅ 잘한 점</div><div style="font-size:12px;line-height:1.7">${d.good}</div></div>`:'';
+    var badHtml=d.bad?`<div style="margin-bottom:8px;padding:9px 12px;background:#fff1f2;border-radius:9px;border-left:3px solid var(--red)"><div style="font-size:10px;font-weight:700;color:var(--red);margin-bottom:3px">❌ 잘못한 점</div><div style="font-size:12px;line-height:1.7">${d.bad}</div></div>`:'';
+    var improveHtml=d.improve?`<div style="margin-bottom:8px;padding:9px 12px;background:#fffbeb;border-radius:9px;border-left:3px solid var(--accent)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:3px">💡 개선해야 할 점</div><div style="font-size:12px;line-height:1.7">${d.improve}</div></div>`:'';
+    var contentHtml=d.content?`<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg);border-radius:9px"><div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:3px">📝 전체 내용</div><div style="font-size:12px;line-height:1.7">${d.content}</div></div>`:'';
     var imgHtml=d.images&&d.images.length?`<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:9px">${d.images.map(img=>`<img class="diary-img-thumb" src="${img}" onclick="document.getElementById('img-fullview-src').src='${img}';document.getElementById('img-fullview').classList.add('open')" alt="차트">`).join('')}</div>`:'';
     return `<div class="j-card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -2733,7 +2733,7 @@ function renderBooks(){
     if(quotes.length){
       // 첫 번째 문구만 미리보기로 보여주고 나머지는 접힘
       const previewQ=quotes[0];
-      const previewText=(previewQ.text||'').slice(0,60)+((previewQ.text||'').length>60?'...':'');
+      const rawText=(previewQ.text||'').replace(/<[^>]*>/g,'');const previewText=rawText.slice(0,60)+(rawText.length>60?'...':'');
       quotesHtml='<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">';
       quotesHtml+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
       quotesHtml+='<div style="font-size:11px;font-weight:700;color:var(--text2)">✨ 감명깊은 문구 ('+quotes.length+'개)</div>';
@@ -3058,7 +3058,7 @@ function openNoteView(type,id){
   document.getElementById('note-view-title').textContent=item.name;
   let html=`<div style="margin-bottom:10px"><span style="padding:2px 8px;border-radius:9px;font-size:11px;font-weight:600;background:${catColors[item.cat]||'#f3f4f6'};color:${catTxtColors[item.cat]||'#374151'}">${item.cat}</span></div>`;
   if(type==='sc'){
-    if(item.desc)html+=`<div style="white-space:pre-wrap;line-height:1.9;margin-bottom:14px">${item.desc}</div>`;
+    if(item.desc)html+=`<div style="line-height:1.9;margin-bottom:14px">${item.desc}</div>`;
   } else {
     if(item.entry)html+=`<div style="margin-bottom:10px"><div style="font-weight:700;margin-bottom:4px">📍 진입 조건</div><div style="white-space:pre-wrap;color:var(--text2);line-height:1.7">${item.entry}</div></div>`;
     if(item.exit)html+=`<div style="margin-bottom:10px"><div style="font-weight:700;margin-bottom:4px">✂️ 손절 / 익절 기준</div><div style="white-space:pre-wrap;color:var(--text2);line-height:1.7">${item.exit}</div></div>`;
@@ -3133,7 +3133,7 @@ function renderWords(){
     <div style="display:flex;gap:12px;padding:13px;background:var(--bg);border-radius:11px;margin-bottom:9px;border-left:4px solid var(--accent)">
       <div style="font-size:22px;flex-shrink:0">💬</div>
       <div style="flex:1">
-        <div style="font-size:14px;line-height:1.8;font-weight:500;white-space:pre-wrap">${w.text}</div>
+        <div style="font-size:14px;line-height:1.8;font-weight:500;">${w.text}</div>
         <div style="font-size:11px;color:var(--text2);margin-top:5px">${w.date||''}</div>
       </div>
       <button class="del-btn" onclick="state.stockWords.splice(${i},1);save();renderWords()">✕</button>
@@ -3192,10 +3192,10 @@ function renderProfileHistory(){
           <button class="del-btn" onclick="delProfileHistory(${h.id})" style="font-size:13px">✕</button>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          ${h.strength?`<div style="background:#f0fdf4;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:5px">💪 강점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${h.strength}</div></div>`:''}
-          ${h.weakness?`<div style="background:#fff1f2;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--red);margin-bottom:5px">⚠️ 개선할 점</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${h.weakness}</div></div>`:''}
-          ${h.style?`<div style="background:#eff6ff;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--blue);margin-bottom:5px">🎯 매매 스타일</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${h.style}</div></div>`:''}
-          ${h.improve?`<div style="background:#fffbeb;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:5px">📈 이번 달 목표</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${h.improve}</div></div>`:''}
+          ${h.strength?`<div style="background:#f0fdf4;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:5px">💪 강점</div><div style="font-size:12px;line-height:1.7;">${h.strength}</div></div>`:''}
+          ${h.weakness?`<div style="background:#fff1f2;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--red);margin-bottom:5px">⚠️ 개선할 점</div><div style="font-size:12px;line-height:1.7;">${h.weakness}</div></div>`:''}
+          ${h.style?`<div style="background:#eff6ff;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--blue);margin-bottom:5px">🎯 매매 스타일</div><div style="font-size:12px;line-height:1.7;">${h.style}</div></div>`:''}
+          ${h.improve?`<div style="background:#fffbeb;border-radius:9px;padding:11px"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:5px">📈 이번 달 목표</div><div style="font-size:12px;line-height:1.7;">${h.improve}</div></div>`:''}
         </div>
       </div>`).join('')}`;
 }
@@ -3341,7 +3341,7 @@ function openEditPil(i){
   // 필사 페이지로 이동
   nav('pil');
 }
-function renderPilList(){const el=document.getElementById('pil-list');if(!el)return;if(!state.pilHistory)state.pilHistory=[];document.getElementById('pil-count').textContent=`총 ${state.pilHistory.length}개`;el.innerHTML=state.pilHistory.map((p,i)=>`<div class="j-card"><div style="display:flex;justify-content:space-between"><div><span class="j-date">${p.date}</span><span class="badge badge-gray" style="margin-left:7px">${p.theme}</span></div><div style="display:flex;gap:5px"><button class="btn btn-outline btn-sm" onclick="openEditPil(${i})" style="font-size:10px;padding:2px 7px">✏️</button><button class="del-btn" onclick="state.pilHistory.splice(${i},1);save();renderPilList()">✕</button></div></div>${p.intent?`<div style="font-size:11px;color:var(--accent);margin:4px 0">의도: ${p.intent}</div>`:''}<div style="font-size:13px;line-height:1.7;margin-top:5px">${p.text.slice(0,100)}${p.text.length>100?'...':''}</div>${p.text.length>100?`<button class="expand-btn" onclick="openFullModal('필사','${p.date} · ${p.theme}',this.closest('.j-card').dataset.full||'')">🔍 전체보기</button>`:''}</div>`).join('');}
+function renderPilList(){const el=document.getElementById('pil-list');if(!el)return;if(!state.pilHistory)state.pilHistory=[];document.getElementById('pil-count').textContent=`총 ${state.pilHistory.length}개`;el.innerHTML=state.pilHistory.map((p,i)=>`<div class="j-card"><div style="display:flex;justify-content:space-between"><div><span class="j-date">${p.date}</span><span class="badge badge-gray" style="margin-left:7px">${p.theme}</span></div><div style="display:flex;gap:5px"><button class="btn btn-outline btn-sm" onclick="openEditPil(${i})" style="font-size:10px;padding:2px 7px">✏️</button><button class="del-btn" onclick="state.pilHistory.splice(${i},1);save();renderPilList()">✕</button></div></div>${p.intent?`<div style="font-size:11px;color:var(--accent);margin:4px 0">의도: ${p.intent}</div>`:''}<div style="font-size:13px;line-height:1.7;margin-top:5px">${(p.text||"").replace(/<[^>]*>/g,"").slice(0,100)}${(p.text||"").replace(/<[^>]*>/g,"").length>100?'...':''}</div>${p.text.length>100?`<button class="expand-btn" onclick="openFullModal('필사','${p.date} · ${p.theme}',this.closest('.j-card').dataset.full||'')">🔍 전체보기</button>`:''}</div>`).join('');}
 
 // ===== COND =====
 function saveCond(){const n=document.getElementById('cond-name').value.trim();if(!n)return;if(!state.condSaved)state.condSaved=[];state.condSaved.unshift({name:n,code:document.getElementById('cond-code').value,memo:document.getElementById('cond-memo').value,date:new Date().toLocaleDateString('ko-KR')});['cond-name','cond-code','cond-memo'].forEach(id=>document.getElementById(id).value='');save();}
@@ -3445,8 +3445,8 @@ function renderDiaries(){
           '<button class="del-btn" onclick="state.diaries.splice('+i+',1);save();renderDiaries()">✕</button>'+
         '</div>'+
       '</div>'+
-      '<div style="font-size:13px;margin-top:7px;line-height:1.8;white-space:pre-wrap">'+
-        (d.content||'').slice(0,120)+((d.content||'').length>120?'\n<span style="color:var(--text2);font-size:11px">...</span>':'')+
+      '<div style="font-size:13px;margin-top:7px;line-height:1.8">'+
+        (d.content||'').replace(/<[^>]*>/g,'').slice(0,120)+((d.content||'').replace(/<[^>]*>/g,'').length>120?'...<span style="color:var(--text2);font-size:11px"></span>':'')+
       '</div>'+
     '</div>';
   }).join('');
