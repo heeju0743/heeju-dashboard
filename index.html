@@ -2286,7 +2286,7 @@ function updateDashStats(){
   document.getElementById('d-todo').textContent=`${done}/${state.todos.length}`;
   const n=new Date(),yr=n.getFullYear(),mo=n.getMonth();
   document.getElementById('d-sched').textContent=state.events.filter(e=>{const d=new Date(e.date);return d.getFullYear()===yr&&d.getMonth()===mo;}).length;
-  document.getElementById('d-book').textContent=state.books.filter(b=>b.prog<100).length;
+  document.getElementById('d-book').textContent=state.books.filter(b=>b.status==='reading'||(b.status===undefined&&b.prog<100)).length;
   const ym=`${yr}-${String(mo+1).padStart(2,'0')}`;
   const exp=state.transactions.filter(t=>t.date.startsWith(ym)&&t.type==='지출').reduce((s,t)=>s+t.amount,0);
   document.getElementById('d-budget').textContent=exp.toLocaleString()+'원';
