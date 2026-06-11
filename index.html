@@ -1175,6 +1175,17 @@ textarea{resize:vertical;min-height:80px}
 <div id="modal-todo" class="modal-overlay"><div class="modal"><div class="modal-title">✅ 새 할 일</div><div class="modal-row"><label>할 일</label><input id="todo-text-in"></div><div class="modal-row"><label>카테고리</label><select id="todo-cat"><option>주식</option><option>독서</option><option>생활</option><option>기타</option></select></div><div class="modal-row"><label>우선순위</label><select id="todo-pri"><option>보통</option><option>중요</option><option>낮음</option></select></div><div class="modal-row"><label>마감일</label><input id="todo-due" type="date"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-todo')">취소</button><button class="btn btn-primary" onclick="addTodo()">추가</button></div></div></div>
 <div id="modal-event" class="modal-overlay"><div class="modal"><div class="modal-title">📅 일정 추가</div><div class="modal-row"><label>제목</label><input id="ev-title"></div><div class="modal-row"><label>날짜</label><input id="ev-date" type="date"></div><div class="modal-row"><label>시간</label><input id="ev-time" type="time"></div><div class="modal-row"><label>메모</label><textarea id="ev-memo" style="min-height:55px"></textarea></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-event')">취소</button><button class="btn btn-primary" onclick="addEvent()">추가</button></div></div></div>
 <div id="modal-book" class="modal-overlay"><div class="modal"><div class="modal-title" id="bk-modal-title">📚 책 추가</div><div class="modal-row"><label>책 제목</label><input id="bk-title"></div><div class="modal-row"><label>저자</label><input id="bk-author"></div><div class="modal-row"><label>카테고리</label><input id="bk-cat" placeholder="예: 철학, 경제"></div><div class="modal-row"><label>상태</label><select id="bk-status"><option value="reading">읽는 중</option><option value="done">완독</option><option value="wish">읽고 싶음</option></select></div><div class="modal-row"><label>완독 한 문장 <span style="font-size:10px;color:var(--text2)">(완독 후 기록)</span></label><input id="bk-onesent" placeholder="이 책을 한 문장으로 표현한다면..."></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-book')">취소</button><button class="btn btn-primary" id="bk-save-btn" onclick="addBook()">추가</button></div></div></div>
+<!-- 일기 전체보기 모달 -->
+<div id="modal-diary-full" class="modal-overlay">
+  <div class="modal" style="width:640px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span class="j-date" id="diary-full-date" style="font-size:13px;font-weight:600;color:var(--text2)"></span>
+      <button style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2)" onclick="this.closest('.modal-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div id="diary-full-body" style="font-size:14px;line-height:1.9;max-height:70vh;overflow-y:auto;padding-right:4px"></div>
+  </div>
+</div>
+
 <div id="modal-diary" class="modal-overlay"><div class="modal"><div class="modal-title" id="diary-modal-title">📖 일기 쓰기</div><div id="diary-modal-body"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-diary')">취소</button><button class="btn btn-primary" onclick="saveDiaryEntry()">저장</button></div></div></div>
 <div id="modal-food-day" class="modal-overlay"><div class="modal" style="width:560px"><div class="modal-title" id="food-modal-title">🍽️ 식단 입력</div><div class="modal-row"><label>🌅 아침</label><textarea id="fd-breakfast" placeholder="메뉴, 장보기, 레시피 등..." style="min-height:70px"></textarea></div><div class="modal-row"><label>🌞 점심</label><textarea id="fd-lunch" placeholder="메뉴, 장보기, 레시피 등..." style="min-height:70px"></textarea></div><div class="modal-row"><label>🌙 저녁</label><textarea id="fd-dinner" placeholder="메뉴, 장보기, 레시피 등..." style="min-height:70px"></textarea></div><div class="modal-row"><label>🍪 간식</label><textarea id="fd-snack" placeholder="간식, 디저트 등..." style="min-height:50px"></textarea></div><div class="modal-row"><label>📝 메모</label><textarea id="fd-memo" placeholder="칼로리, 장보기 목록, 특이사항 등..." style="min-height:50px"></textarea></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('modal-food-day')">취소</button><button class="btn btn-primary" onclick="saveFoodDay()">저장</button></div></div></div>
 <div id="modal-habit-stats" class="modal-overlay"><div class="modal"><div class="modal-title">📊 습관 누적 통계</div><div id="habit-stats-body"></div><div class="modal-actions"><button class="btn btn-primary" onclick="closeModal('modal-habit-stats')">닫기</button></div></div></div>
@@ -2318,9 +2329,12 @@ function renderDashHabits(){
   let html='';
   state.habits.forEach(function(h,i){
     const done2=isHabitDoneToday(h);
-    html+='<div class="habit-chip '+(done2?'done':'')+'" onclick="toggleHabitDash('+i+')">';
+    html+='<div class="habit-chip '+(done2?'done':'')+'" style="position:relative">';
+    html+='<div style="display:flex;align-items:center;gap:7px;flex:1;cursor:pointer" onclick="toggleHabitDash('+i+')">';
     html+='<div class="hc-circle">'+(done2?'<span style="color:#fff;font-size:10px;font-weight:700">✓</span>':'')+'</div>';
     html+='<span style="font-size:12px;'+(done2?'color:var(--accent);font-weight:600':'color:var(--text)')+'">'+h.name+'</span>';
+    html+='</div>';
+    html+='<button onclick="event.stopPropagation();openEditHabit('+i+')" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:10px;padding:2px 3px;flex-shrink:0" title="수정">✏️</button>';
     html+='</div>';
   });
   el.innerHTML=html;
@@ -2406,7 +2420,13 @@ function renderPlannerHabits(){
     }
     const pct=showDays?Math.round(doneCount/showDays*100):0;
     rows+='<tr>';
-    rows+='<td title="'+h.name+'" style="font-size:11px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+h.name+'<br><span style="font-size:9px;color:var(--text2)">'+doneCount+'/'+showDays+'('+pct+'%)</span></td>';
+    rows+='<td style="font-size:11px;max-width:100px">'+
+      '<div style="display:flex;align-items:center;gap:3px">'+
+        '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:68px" title="'+h.name+'">'+h.name+'</span>'+
+        '<button onclick="openEditHabit('+i+')" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:10px;flex-shrink:0;padding:0 1px" title="습관명 수정">✏️</button>'+
+      '</div>'+
+      '<span style="font-size:9px;color:var(--text2)">'+doneCount+'/'+showDays+'('+pct+'%)</span>'+
+    '</td>';
     rows+=cells;
     rows+='<td><button style="background:none;border:none;cursor:pointer;color:#ddd;font-size:11px" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'#ddd\'" onclick="delHabit('+i+')">✕</button></td>';
     rows+='</tr>';
@@ -2433,6 +2453,16 @@ function delHabit(i){
     state.habits.splice(i,1);
     renderPlannerHabits();renderDashHabits();save();
   }
+}
+
+function openEditHabit(i){
+  const h=state.habits[i];if(!h)return;
+  const newName=prompt('습관 이름을 수정해주세요:',h.name);
+  if(newName===null)return; // 취소
+  const trimmed=newName.trim();
+  if(!trimmed){alert('이름을 입력해주세요');return;}
+  state.habits[i].name=trimmed;
+  renderPlannerHabits();renderDashHabits();save();
 }
 
 function openHabitStats(){
@@ -3473,20 +3503,29 @@ function renderDiaries(){
     return;
   }
   el.innerHTML=state.diaries.map(function(d,i){
+    const plainText=(d.content||'').replace(/<[^>]*>/g,'');
+    const isLong=plainText.length>80;
     return '<div class="j-card">'+
       '<div style="display:flex;justify-content:space-between;align-items:center">'+
         '<span class="j-date">'+d.date+'</span>'+
         '<div style="display:flex;gap:6px;align-items:center">'+
-          (d.content&&d.content.length>80?'<button class="expand-btn" onclick="openDiaryFull('+i+')">🔍 전체보기</button>':'')+
+          '<button class="expand-btn" onclick="openDiaryFull('+i+')">🔍 전체보기</button>'+
           '<button class="btn btn-outline btn-sm" onclick="openEditDiary('+i+')" style="font-size:10px;padding:2px 7px">✏️</button>'+
           '<button class="del-btn" onclick="state.diaries.splice('+i+',1);save();renderDiaries()">✕</button>'+
         '</div>'+
       '</div>'+
       '<div style="font-size:13px;margin-top:7px;line-height:1.8">'+
-        (d.content||'').replace(/<[^>]*>/g,'').slice(0,120)+((d.content||'').replace(/<[^>]*>/g,'').length>120?'...<span style="color:var(--text2);font-size:11px"></span>':'')+
+        plainText.slice(0,120)+(isLong?'...':'')+
       '</div>'+
     '</div>';
   }).join('');
+}
+
+function openDiaryFull(i){
+  const d=state.diaries[i];if(!d)return;
+  document.getElementById('diary-full-date').textContent=d.date;
+  document.getElementById('diary-full-body').innerHTML=d.content||'';
+  document.getElementById('modal-diary-full').classList.add('open');
 }
 
 function openEditDiary(i){
