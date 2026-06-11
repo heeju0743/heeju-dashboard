@@ -1723,16 +1723,15 @@ function initRichForModal(modalId){
   const modal = document.getElementById(modalId);
   if(!modal) return;
   setTimeout(function(){
+    // 모달 안에 이미 생성된 wrap 개수 확인 → 중복 방지
+    const existingWraps=modal.querySelectorAll('.rich-editor-wrap');
+    const existingIds=new Set();
+    existingWraps.forEach(function(w){if(w.dataset.target)existingIds.add(w.dataset.target);});
     modal.querySelectorAll('textarea').forEach(function(ta){
-      if(!ta.id || ta.style.display==='none') return;
-      // 이미 인스턴스가 있고 wrap도 DOM에 있으면 skip
-      if(window._richEditors&&window._richEditors[ta.id]){
-        const existWrap=modal.querySelector('.rich-editor-wrap[data-target="'+ta.id+'"]');
-        if(existWrap) return; // 이미 렌더링됨
-        // wrap은 없는데 인스턴스는 있으면 → 삭제하고 재생성
-        delete window._richEditors[ta.id];
-      }
-      window._richEditors[ta.id] = createRichEditor(ta.id, ta.placeholder, parseInt(ta.style.minHeight)||80);
+      if(!ta.id||ta.style.display==='none') return;
+      if(existingIds.has(ta.id)) return; // wrap 이미 있음 → skip
+      if(window._richEditors&&window._richEditors[ta.id]) delete window._richEditors[ta.id];
+      window._richEditors[ta.id]=createRichEditor(ta.id,ta.placeholder,parseInt(ta.style.minHeight)||80);
     });
   }, 50);
 }
@@ -2871,20 +2870,34 @@ function openBookQuoteModal(bi){
   });
   openModal('modal-book-quote-view');
 }
+function resetModalRichEditor(modalId, taId){
+  // 모달 안의 리치에디터 wrap을 완전히 정리하고 textarea 원상복원
+  if(window._richEditors&&window._richEditors[taId]){
+    delete window._richEditors[taId];
+  }
+  // 모달 안에 남아있는 wrap 모두 제거
+  const modal=document.getElementById(modalId);
+  if(modal){
+    modal.querySelectorAll('.rich-editor-wrap').forEach(function(wrap){
+      const ta=wrap.querySelector('textarea');
+      if(ta&&ta.id===taId){
+        ta.value='';
+        ta.style.display='';
+        wrap.parentNode.insertBefore(ta,wrap);
+        wrap.remove();
+      } else {
+        wrap.remove();
+      }
+    });
+  }
+  // textarea가 여전히 숨겨져 있으면 복원
+  const ta=document.getElementById(taId);
+  if(ta){ta.value='';ta.style.display='';}
+}
+
 function openAddQuote(i){
   quoteBookIdx=i;quoteEditIdx=null;
-  // 기존 리치에디터 인스턴스 삭제 → 새로 생성해서 빈 상태로 시작
-  if(window._richEditors&&window._richEditors['bq-text']){
-    delete window._richEditors['bq-text'];
-  }
-  const ta=document.getElementById('bq-text');
-  if(ta){
-    // 리치에디터 wrap 제거 (있으면)
-    const wrap=ta.closest('.rich-editor-wrap');
-    if(wrap){wrap.replaceWith(ta);}
-    ta.value='';
-    ta.style.display='';
-  }
+  resetModalRichEditor('modal-book-quote','bq-text');
   document.getElementById('bq-page').value='';
   const titleEl=document.querySelector('#modal-book-quote .modal-title');
   const btnEl=document.querySelector('#modal-book-quote .btn-primary');
@@ -2895,24 +2908,14 @@ function openAddQuote(i){
 function openEditQuote(bi,qi){
   quoteBookIdx=bi;quoteEditIdx=qi;
   const q=state.books[bi].quotes[qi];if(!q)return;
-  // 기존 리치에디터 인스턴스 삭제
-  if(window._richEditors&&window._richEditors['bq-text']){
-    delete window._richEditors['bq-text'];
-  }
-  const ta=document.getElementById('bq-text');
-  if(ta){
-    const wrap=ta.closest('.rich-editor-wrap');
-    if(wrap){wrap.replaceWith(ta);}
-    ta.value='';
-    ta.style.display='';
-  }
+  resetModalRichEditor('modal-book-quote','bq-text');
   document.getElementById('bq-page').value=q.page||'';
   const titleEl=document.querySelector('#modal-book-quote .modal-title');
   const btnEl=document.querySelector('#modal-book-quote .btn-primary');
   if(titleEl)titleEl.textContent='✏️ 문구 수정';
   if(btnEl)btnEl.textContent='저장';
   openModal('modal-book-quote');
-  // 수정 내용 주입
+  // 에디터 생성 후 내용 주입
   setTimeout(function(){
     if(window._richEditors&&window._richEditors['bq-text']){
       window._richEditors['bq-text'].setHTML(q.text||'');
@@ -2920,7 +2923,7 @@ function openEditQuote(bi,qi){
       const ta2=document.getElementById('bq-text');
       if(ta2)ta2.value=q.text||'';
     }
-  },100);
+  },120);
 }
 function saveBookQuote(){
   const text=document.getElementById('bq-text').value.trim();if(!text)return;
