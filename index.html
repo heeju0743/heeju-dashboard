@@ -760,10 +760,12 @@ textarea{resize:vertical;min-height:80px}
   <div class="trade-nav">
     <div class="trade-nav-tab active" onclick="tradeNav('t-dash')">📊 대시보드</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-trades')">📝 매매기록</div>
-    <div class="trade-nav-tab" onclick="tradeNav('t-checklist')">✅ 체크리스트</div>
+    
     <div class="trade-nav-tab" onclick="tradeNav('t-pattern')">📈 패턴분석</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-balance')">📉 잔고추이</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-diary')">🔄 매매 복기</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-scenario')">🎯 시나리오</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-trade-diary')">📔 매매일기</div>
   </div>
 
   <!-- 대시보드 -->
@@ -796,7 +798,7 @@ textarea{resize:vertical;min-height:80px}
               <th>거래량</th><th>목표익절가</th><th>손절가</th><th>RR</th>
               <th>매수가(1주)</th><th>총매수금</th><th>매도가(1주)</th><th>총매도금</th>
               <th>수익률(%)</th><th>손익(원)</th><th>승패</th>
-              <th>①종목선정</th><th>③손절설정</th>
+              <th>①종목선정</th><th>손절(O/X)</th>
               <th>심리상태</th><th>감정메모</th><th>비고</th><th>삭제</th>
             </tr>
           </thead>
@@ -807,54 +809,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
   </div>
 
-  <!-- 체크리스트 -->
-  <div id="t-checklist" class="trade-page">
-    <div style="font-size:15px;font-weight:700;margin-bottom:14px">✅ 매매 전 체크리스트 — 모든 항목 OK일 때만 진입</div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 시장 환경</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">1</div><div class="t-ci-name">코스피/코스닥 지수 방향 확인</div><div class="t-ci-std">상승상 or 횡보상에서만 매매</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">2</div><div class="t-ci-name">장 초반 분위기 확인 (9:00~9:30)</div><div class="t-ci-std">급락/패닉 분위기면 관망</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
-    </div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 종목 선정</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">3</div><div class="t-ci-name">당일 거래량 상위 + 등락률 상위 교차</div><div class="t-ci-std">거래량 터지면서 오르는 종목</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">4</div><div class="t-ci-name">5분봉 연속 양봉 2개 이상</div><div class="t-ci-std">모멘텀 있는 종목</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">5</div><div class="t-ci-name">일봉 추세 (5일선/20일선 방향)</div><div class="t-ci-std">우상향 or 횡보 돌파 중</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
-    </div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 타점 확인</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">6</div><div class="t-ci-name">눌림목: 첫 음봉 후 반등 캔들 확인</div><div class="t-ci-std">반등 양봉 나올 때 진입</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">7</div><div class="t-ci-name">돌파: 전고점 + 거래량 동반 확인</div><div class="t-ci-std">거래량 없는 돌파는 가짜</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">8</div><div class="t-ci-name">이평선(5일/20일) 지지 확인</div><div class="t-ci-std">이평선 위에서 진입</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
-    </div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 리스크 관리</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">9</div><div class="t-ci-name">손절가 미리 설정 후 즉시 주문 등록</div><div class="t-ci-std">매수 직후 손절 주문 체결</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">10</div><div class="t-ci-name">목표 익절가 설정 (R:R 1.5x 이상)</div><div class="t-ci-std">R:R 1.5 미만이면 진입 재고</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">11</div><div class="t-ci-name">투자금액 자본의 50% 이하</div><div class="t-ci-std">한 종목 몰빵 금지</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
-    </div>
-    <div class="t-checklist-section">
-      <div class="t-checklist-header">▶ 심리 체크</div>
-      <div class="t-ci-wrap">
-        <div class="t-ci-col-header"><div>#</div><div>체크 항목</div><div>기준</div><div>메모/근거</div></div>
-        <div class="t-ci-row"><div class="t-ci-num">12</div><div class="t-ci-name">지금 조급한 마음인가?</div><div class="t-ci-std">조급하면 매매 안 함</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">13</div><div class="t-ci-name">전날 손실 만회 심리인가?</div><div class="t-ci-std">복수매매 절대 금지</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-        <div class="t-ci-row"><div class="t-ci-num">14</div><div class="t-ci-name">손절 대응 가능한 상태인가?</div><div class="t-ci-std">대응 못하면 진입 금지</div><div class="t-ci-memo"><input placeholder="메모..."></div></div>
-      </div>
-    </div>
-  </div>
+
 
   <!-- 패턴분석 -->
   <div id="t-pattern" class="trade-page">
@@ -902,13 +857,31 @@ textarea{resize:vertical;min-height:80px}
     </div>
   </div>
 
-  <!-- 매매일기 -->
+  <!-- 매매일기(복기) -->
   <div id="t-diary" class="trade-page">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div style="font-size:15px;font-weight:700">🔄 매매 복기</div>
       <button class="btn btn-primary btn-sm" onclick="openTradeDiaryModal()">+ 복기 작성</button>
     </div>
     <div id="t-diary-list"></div>
+  </div>
+
+  <!-- 시나리오 -->
+  <div id="t-scenario" class="trade-page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:700">🎯 매매 시나리오</div>
+      <button class="btn btn-primary btn-sm" onclick="openScenarioModal()">+ 시나리오 추가</button>
+    </div>
+    <div id="t-scenario-list"></div>
+  </div>
+
+  <!-- 매매일기(하루마무리) -->
+  <div id="t-trade-diary" class="trade-page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:700">📔 매매일기</div>
+      <button class="btn btn-primary btn-sm" onclick="openTradeDailyDiaryModal()">+ 일기 쓰기</button>
+    </div>
+    <div id="t-trade-diary-list"></div>
   </div>
 </div>
 
@@ -1213,7 +1186,7 @@ textarea{resize:vertical;min-height:80px}
       <div class="modal-row"><label>수량(자동)</label><input id="t-qty" type="number" readonly style="background:#f5f0e8"></div>
       <div class="modal-row"><label>매도가(1주)</label><input id="t-sell" type="number" placeholder="0" oninput="calcPnl()"></div>
       <div class="modal-row"><label>매도 총액</label><input id="t-sellTotal" type="number" placeholder="0" oninput="calcPnl()"></div>
-      <div class="modal-row"><label>승패</label><select id="t-result"><option>승</option><option>패</option><option>본전</option></select></div>
+      <div class="modal-row"><label>승패</label><select id="t-result"><option value="">-- 선택 --</option><option>승</option><option>패</option><option>본전</option></select></div>
     </div>
     <div class="mg3">
       <div class="modal-row"><label>목표 익절가</label><input id="t-target" type="number" placeholder="0" oninput="calcPnl()"></div>
@@ -1227,7 +1200,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="mg2">
       <div class="modal-row"><label>①종목선정</label><select id="t-c1"><option>O</option><option>X</option><option>△</option></select></div>
-      <div class="modal-row"><label>③손절설정</label><select id="t-c3"><option>O</option><option>X</option><option>△</option></select></div>
+      <div class="modal-row"><label>손절(O/X)</label><select id="t-c3"><option value="">-- 선택 --</option><option>O</option><option>X</option></select></div>
     </div>
     <div class="mg2">
       <div class="modal-row"><label>😌 심리상태</label><select id="t-psych"><option>안정</option><option>보통</option><option>조급</option><option>흥분</option><option>공포</option><option>탐욕</option></select></div>
@@ -1276,6 +1249,57 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-trade-diary')">취소</button>
       <button class="btn btn-primary" id="td-save-btn" onclick="saveTradeDiary()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 시나리오 모달 -->
+<div id="modal-scenario" class="modal-overlay">
+  <div class="modal" style="width:600px">
+    <div class="modal-title" id="scenario-modal-title">🎯 시나리오 추가</div>
+    <div class="mg2">
+      <div class="modal-row"><label>📅 날짜</label><input id="sn-date" type="date"></div>
+      <div class="modal-row"><label>📌 종목명</label><input id="sn-name" placeholder="종목명 입력..."></div>
+    </div>
+    <div class="modal-row">
+      <label>💡 진입 이유</label>
+      <textarea id="sn-reason" placeholder="이 종목에 진입하려는 이유, 근거..." style="min-height:80px"></textarea>
+    </div>
+    <div class="mg2">
+      <div class="modal-row"><label>✂️ 손절가</label><input id="sn-stop" type="number" placeholder="0"></div>
+      <div class="modal-row"><label>💰 매도가(목표가)</label><input id="sn-sell" type="number" placeholder="0"></div>
+    </div>
+    <div class="modal-row">
+      <label>📝 메모</label>
+      <textarea id="sn-memo" placeholder="추가 메모..." style="min-height:60px"></textarea>
+    </div>
+    <div class="modal-row">
+      <label>📸 차트 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('sn-img-in').click()">
+        <input type="file" id="sn-img-in" accept="image/*" multiple style="display:none" onchange="handleScenarioImg(this)">
+        📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px" id="sn-img-preview"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-scenario')">취소</button>
+      <button class="btn btn-primary" id="sn-save-btn" onclick="saveScenario()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 매매일기(하루마무리) 모달 -->
+<div id="modal-trade-daily-diary" class="modal-overlay">
+  <div class="modal" style="width:600px">
+    <div class="modal-title" id="tdd-modal-title">📔 매매일기 작성</div>
+    <div class="modal-row"><label>📅 날짜</label><input id="tdd-date" type="date"></div>
+    <div class="modal-row">
+      <label>오늘의 매매를 돌아보며</label>
+      <textarea id="tdd-content" placeholder="오늘 하루 매매 방식, 느낀 점, 다짐 등을 자유롭게 적어보세요..." style="min-height:180px"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-trade-daily-diary')">취소</button>
+      <button class="btn btn-primary" id="tdd-save-btn" onclick="saveTradeDailyDiary()">저장</button>
     </div>
   </div>
 </div>
@@ -1360,7 +1384,7 @@ window.state={
 
     {id:24,date:'2026-04-23',name:'SK아이테크',type:'스윙',pattern:'눌림',entry:'5224',vol:'감소',target:30000,stop:26800,rr:'5.4x',buy:27300,buyTotal:27300,sell:27450,sellTotal:27396,pct:0.55,pnl:96,result:'승',market:'국내장',c1:'O',c3t:'O',c3:'O',c3v:'O',psych:'안정',emotion:'',handTrade:'',stopKeep:'',grade:'C',note:'5224 테스트 주식으로 1주만 구매'},
   ],
-  balanceRows:[],tradeDiaries:[],
+  balanceRows:[],tradeDiaries:[],scenarios:[],tradeDailyDiaries:[],
   selfdevNotes:{},selfdevInvestCats:{},
   selfdevInvestYoutubers:{},
   selfdevGenCats:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
@@ -1712,6 +1736,9 @@ function initRichEditors(){
     {id:'td-bad', ph:'반성할 점, 실수한 것은?...', h:70},
     {id:'td-improve', ph:'다음엔 어떻게 할 것인가?...', h:70},
     {id:'td-content', ph:'매매 전반에 대한 기록...', h:90},
+    {id:'tdd-content', ph:'오늘 하루 매매 방식, 느낀 점, 다짐 등을 자유롭게 적어보세요...', h:180},
+    {id:'sn-reason', ph:'이 종목에 진입하려는 이유, 근거...', h:80},
+    {id:'sn-memo', ph:'추가 메모...', h:60},
     {id:'profile-strength', ph:'잘하는 것, 강점...', h:120},
     {id:'profile-weakness', ph:'약점, 반복되는 실수...', h:120},
     {id:'profile-style', ph:'선호하는 매매 유형, 시간대, 종목군...', h:120},
@@ -1778,7 +1805,7 @@ function initApp(){
   // 유튜버 탭 초기 렌더
   ['domestic','us','coin','futures'].forEach(function(m){renderYoutuberTabs(m);});
   renderCurrentYoutuber();
-  renderMeditations();renderMedRecords();renderTDiaries();
+  renderMeditations();renderMedRecords();renderTDiaries();renderScenarios();renderTradeDailyDiaries();
   // 리치 텍스트 에디터 초기화
   setTimeout(initRichEditors, 100);
   if(state['stock-rules-text']){const el=document.getElementById('stock-rules-text');if(el)el.value=state['stock-rules-text'];}
@@ -1828,11 +1855,13 @@ function tradeNav(id){
   document.querySelectorAll('.trade-page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs=document.querySelectorAll('.trade-nav-tab');
-  const map={'t-dash':0,'t-trades':1,'t-checklist':2,'t-pattern':3,'t-balance':4,'t-diary':5};
+  const map={'t-dash':0,'t-trades':1,'t-pattern':2,'t-balance':3,'t-diary':4,'t-scenario':5,'t-trade-diary':6};
   tabs[map[id]]?.classList.add('active');
   if(id==='t-dash')renderTDash();
   if(id==='t-trades')renderTrades();
   if(id==='t-pattern')renderTPattern();
+  if(id==='t-scenario')renderScenarios();
+  if(id==='t-trade-diary')renderTradeDailyDiaries();
   if(id==='t-balance')renderTBalance();
   if(id==='t-diary')renderTDiaries();
 }
@@ -1905,7 +1934,7 @@ function renderTrades(){
       <td>${t.sellTotal?t.sellTotal.toLocaleString():'<span style="color:#ccc">-</span>'}</td>
       <td>${pctStr}</td><td>${pnlStr}</td><td>${resultStr}</td>
       <td class="${t.c1==='O'?'check-o':t.c1==='△'?'check-tri':t.c1==='X'?'check-x':''}">${t.c1||'-'}</td>
-      <td class="${t.c3==='O'?'check-o':t.c3==='△'?'check-tri':t.c3==='X'||t.c3==='x'?'check-x':''}">${t.c3||'-'}</td>
+      <td class="${t.c3==='O'?'check-o':t.c3==='X'||t.c3==='x'?'check-x':''}">${t.c3||'-'}</td>
       <td style="font-size:11px;font-weight:600;color:${psychColor[t.psych]||'var(--text2)'}">${t.psych||'-'}</td>
       <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:var(--text2)">${t.emotion||'-'}</td>
       <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;font-size:10px;text-align:left">${t.note||'-'}</td>
@@ -1951,7 +1980,7 @@ function openTradeModal(){
   ['t-name','t-buy','t-buyTotal','t-sell','t-sellTotal','t-target','t-stop','t-note','t-emotion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('t-rr').value='';
   // select 필드 기본값 설정
-  const defaults={'t-type':'단타','t-pattern':'눌림','t-vol':'증가','t-result':'승','t-market':'국내장','t-c1':'','t-c3':''};
+  const defaults={'t-type':'단타','t-pattern':'눌림','t-vol':'증가','t-result':'','t-market':'국내장','t-c1':'','t-c3':''};
   Object.entries(defaults).forEach(function(e){const el=document.getElementById(e[0]);if(el)el.value=e[1];});
   const psychEl=document.getElementById('t-psych');if(psychEl)psychEl.value='보통';
   document.getElementById('calc-pnl').textContent='-';document.getElementById('calc-pct').textContent='-';document.getElementById('calc-qty').textContent='-';
@@ -1975,9 +2004,9 @@ function openEditTrade(id){
   document.getElementById('t-target').value=t.target||'';
   document.getElementById('t-stop').value=t.stop||'';
   document.getElementById('t-rr').value=t.rr||'';
-  document.getElementById('t-result').value=t.result||'승';
-  document.getElementById('t-c1').value=t.c1||'O';
-  document.getElementById('t-c3').value=t.c3||'O';
+  document.getElementById('t-result').value=t.result||'';
+  document.getElementById('t-c1').value=t.c1||'';
+  document.getElementById('t-c3').value=t.c3||'';
   const psychEl=document.getElementById('t-psych');if(psychEl)psychEl.value=t.psych||'안정';
   const emotionEl=document.getElementById('t-emotion');if(emotionEl)emotionEl.value=t.emotion||'';
   document.getElementById('t-note').value=t.note||'';
@@ -2224,11 +2253,17 @@ function openTradeDiaryModal(editId){
   document.getElementById('modal-trade-diary').classList.add('open');
 }
 function handleTradeDiaryImg(input){
-  Array.from(input.files).forEach(f=>{
+  Array.from(input.files).forEach(function(f){
     const r=new FileReader();
-    r.onload=e=>{state.tempTradeDiaryImgs.push(e.target.result);renderTDiaryPrev();};
+    r.onload=function(e){
+      processImg(e.target.result).then(function(url){
+        state.tempTradeDiaryImgs.push(url);
+        renderTDiaryPrev();
+      });
+    };
     r.readAsDataURL(f);
   });
+  input.value='';
 }
 function renderTDiaryPrev(){
   document.getElementById('td-img-preview').innerHTML=state.tempTradeDiaryImgs.map((img,i)=>
@@ -2291,6 +2326,196 @@ function renderTDiaries(){
       </div>
       ${goodHtml}${badHtml}${improveHtml}${contentHtml}${imgHtml}
     </div>`;
+  }).join('');
+}
+
+// ===== 시나리오 =====
+function openScenarioModal(editId){
+  state.tempScenarioImgs=[];
+  window._snEditId=editId||null;
+  var titleEl=document.getElementById('scenario-modal-title');
+  var btnEl=document.getElementById('sn-save-btn');
+  if(editId){
+    var s=(state.scenarios||[]).find(function(x){return x.id===editId;});
+    if(!s)return;
+    if(titleEl)titleEl.textContent='✏️ 시나리오 수정';
+    if(btnEl)btnEl.textContent='저장';
+    document.getElementById('sn-date').value=s.date||'';
+    document.getElementById('sn-name').value=s.name||'';
+    document.getElementById('sn-reason').value=s.reason||'';
+    document.getElementById('sn-stop').value=s.stop||'';
+    document.getElementById('sn-sell').value=s.sell||'';
+    document.getElementById('sn-memo').value=s.memo||'';
+    state.tempScenarioImgs=s.images?[...s.images]:[];
+    renderScenarioImgPrev();
+  } else {
+    if(titleEl)titleEl.textContent='🎯 시나리오 추가';
+    if(btnEl)btnEl.textContent='저장';
+    document.getElementById('sn-date').value=new Date().toISOString().split('T')[0];
+    ['sn-name','sn-reason','sn-stop','sn-sell','sn-memo'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('sn-img-preview').innerHTML='';
+  }
+  openModal('modal-scenario');
+}
+function handleScenarioImg(input){
+  Array.from(input.files).forEach(function(f){
+    const r=new FileReader();
+    r.onload=function(e){
+      processImg(e.target.result).then(function(url){
+        state.tempScenarioImgs.push(url);renderScenarioImgPrev();
+      });
+    };
+    r.readAsDataURL(f);
+  });
+  input.value='';
+}
+function renderScenarioImgPrev(){
+  document.getElementById('sn-img-preview').innerHTML=(state.tempScenarioImgs||[]).map(function(img,i){
+    return '<div class="img-preview-item"><img src="'+img+'" alt=""><button class="rm" onclick="state.tempScenarioImgs.splice('+i+',1);renderScenarioImgPrev()">✕</button></div>';
+  }).join('');
+}
+function saveScenario(){
+  var name=document.getElementById('sn-name').value.trim();
+  var reason=document.getElementById('sn-reason').value.trim();
+  if(!name){alert('종목명을 입력해주세요');return;}
+  if(!state.scenarios)state.scenarios=[];
+  var obj={
+    id:window._snEditId||Date.now(),
+    date:document.getElementById('sn-date').value,
+    name:name,
+    reason:reason,
+    stop:document.getElementById('sn-stop').value,
+    sell:document.getElementById('sn-sell').value,
+    memo:document.getElementById('sn-memo').value,
+    images:[...(state.tempScenarioImgs||[])]
+  };
+  if(window._snEditId){
+    var idx=state.scenarios.findIndex(function(x){return x.id===window._snEditId;});
+    if(idx>=0)state.scenarios[idx]=obj;
+    window._snEditId=null;
+  } else {
+    state.scenarios.unshift(obj);
+  }
+  closeModal('modal-scenario');save();renderScenarios();
+}
+function delScenario(id){
+  if(confirm('삭제할까요?')){
+    state.scenarios=state.scenarios.filter(function(s){return s.id!==id;});
+    save();renderScenarios();
+  }
+}
+function renderScenarios(){
+  if(!state.scenarios)state.scenarios=[];
+  const el=document.getElementById('t-scenario-list');if(!el)return;
+  if(!state.scenarios.length){
+    el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">매매 시나리오를 작성해보세요 🎯</div>';
+    return;
+  }
+  el.innerHTML=state.scenarios.map(function(s){
+    var reasonHtml=s.reason?'<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg);border-radius:9px;border-left:3px solid var(--blue)"><div style="font-size:10px;font-weight:700;color:var(--blue);margin-bottom:3px">💡 진입 이유</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">'+s.reason+'</div></div>':'';
+    var memoHtml=s.memo?'<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg);border-radius:9px"><div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:3px">📝 메모</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">'+s.memo+'</div></div>':'';
+    var priceHtml='<div style="display:flex;gap:10px;margin-bottom:8px">'+
+      (s.stop?'<div style="flex:1;background:#fff1f2;border-radius:9px;padding:8px 12px"><div style="font-size:10px;font-weight:700;color:var(--red)">✂️ 손절가</div><div style="font-size:14px;font-weight:700;color:var(--red)">'+Number(s.stop).toLocaleString()+'</div></div>':'')+
+      (s.sell?'<div style="flex:1;background:#f0fdf4;border-radius:9px;padding:8px 12px"><div style="font-size:10px;font-weight:700;color:var(--green)">💰 매도가(목표)</div><div style="font-size:14px;font-weight:700;color:var(--green)">'+Number(s.sell).toLocaleString()+'</div></div>':'')+
+      '</div>';
+    var imgHtml=s.images&&s.images.length?'<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:9px">'+s.images.map(function(img){return '<img class="diary-img-thumb" src="'+img+'" onclick="document.getElementById(\'img-fullview-src\').src=\''+img+'\';document.getElementById(\'img-fullview\').classList.add(\'open\')" alt="차트">';}).join('')+'</div>':'';
+    return '<div class="j-card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
+        '<div style="display:flex;align-items:center;gap:9px">'+
+          '<span class="j-date">'+s.date+'</span>'+
+          '<strong style="font-size:14px">'+s.name+'</strong>'+
+        '</div>'+
+        '<div style="display:flex;gap:5px">'+
+          '<button class="btn btn-outline btn-sm" onclick="openScenarioModal('+s.id+')" style="font-size:11px">✏️ 수정</button>'+
+          '<button class="btn btn-danger btn-sm" onclick="delScenario('+s.id+')">삭제</button>'+
+        '</div>'+
+      '</div>'+
+      priceHtml+reasonHtml+memoHtml+imgHtml+
+    '</div>';
+  }).join('');
+}
+
+// ===== 매매일기(하루 마무리) =====
+function openTradeDailyDiaryModal(editId){
+  window._tddEditId=editId||null;
+  var titleEl=document.getElementById('tdd-modal-title');
+  var btnEl=document.getElementById('tdd-save-btn');
+  if(editId){
+    var d=(state.tradeDailyDiaries||[]).find(function(x){return x.id===editId;});
+    if(!d)return;
+    if(titleEl)titleEl.textContent='✏️ 매매일기 수정';
+    if(btnEl)btnEl.textContent='저장';
+    document.getElementById('tdd-date').value=d.date||'';
+    resetModalRichEditor('modal-trade-daily-diary','tdd-content');
+    openModal('modal-trade-daily-diary');
+    setTimeout(function(){
+      if(window._richEditors&&window._richEditors['tdd-content']){
+        window._richEditors['tdd-content'].setHTML(d.content||'');
+      } else {
+        var ta=document.getElementById('tdd-content');if(ta)ta.value=d.content||'';
+      }
+    },120);
+    return;
+  }
+  if(titleEl)titleEl.textContent='📔 매매일기 작성';
+  if(btnEl)btnEl.textContent='저장';
+  document.getElementById('tdd-date').value=new Date().toISOString().split('T')[0];
+  resetModalRichEditor('modal-trade-daily-diary','tdd-content');
+  openModal('modal-trade-daily-diary');
+}
+function saveTradeDailyDiary(){
+  var content=getRichValue('tdd-content').trim?getRichValue('tdd-content'):document.getElementById('tdd-content').value;
+  var plain=(content||'').replace(/<[^>]*>/g,'').trim();
+  if(!plain){alert('내용을 입력해주세요');return;}
+  if(!state.tradeDailyDiaries)state.tradeDailyDiaries=[];
+  var obj={
+    id:window._tddEditId||Date.now(),
+    date:document.getElementById('tdd-date').value,
+    content:content
+  };
+  if(window._tddEditId){
+    var idx=state.tradeDailyDiaries.findIndex(function(x){return x.id===window._tddEditId;});
+    if(idx>=0)state.tradeDailyDiaries[idx]=obj;
+    window._tddEditId=null;
+  } else {
+    state.tradeDailyDiaries.unshift(obj);
+  }
+  resetModalRichEditor('modal-trade-daily-diary','tdd-content');
+  closeModal('modal-trade-daily-diary');save();renderTradeDailyDiaries();
+}
+function delTradeDailyDiary(id){
+  if(confirm('삭제할까요?')){
+    state.tradeDailyDiaries=(state.tradeDailyDiaries||[]).filter(function(d){return d.id!==id;});
+    save();renderTradeDailyDiaries();
+  }
+}
+function openTradeDailyDiaryFull(id){
+  var d=(state.tradeDailyDiaries||[]).find(function(x){return x.id===id;});if(!d)return;
+  document.getElementById('diary-full-date').textContent=d.date;
+  document.getElementById('diary-full-body').innerHTML=d.content||'';
+  document.getElementById('modal-diary-full').classList.add('open');
+}
+function renderTradeDailyDiaries(){
+  if(!state.tradeDailyDiaries)state.tradeDailyDiaries=[];
+  const el=document.getElementById('t-trade-diary-list');if(!el)return;
+  if(!state.tradeDailyDiaries.length){
+    el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">오늘 하루 매매를 돌아보며 일기를 써보세요 📔</div>';
+    return;
+  }
+  el.innerHTML=state.tradeDailyDiaries.map(function(d){
+    var plain=(d.content||'').replace(/<[^>]*>/g,'');
+    var isLong=plain.length>120;
+    return '<div class="j-card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">'+
+        '<span class="j-date">'+d.date+'</span>'+
+        '<div style="display:flex;gap:5px">'+
+          '<button class="expand-btn" onclick="openTradeDailyDiaryFull('+d.id+')">🔍 전체보기</button>'+
+          '<button class="btn btn-outline btn-sm" onclick="openTradeDailyDiaryModal('+d.id+')" style="font-size:10px;padding:2px 7px">✏️</button>'+
+          '<button class="del-btn" onclick="delTradeDailyDiary('+d.id+')">✕</button>'+
+        '</div>'+
+      '</div>'+
+      '<div style="font-size:13px;line-height:1.8">'+plain.slice(0,120)+(isLong?'...':'')+'</div>'+
+    '</div>';
   }).join('');
 }
 
