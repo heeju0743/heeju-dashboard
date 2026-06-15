@@ -2501,21 +2501,29 @@ function openTradeDiaryModal(editId){
     if(btnEl)btnEl.textContent='저장';
     document.getElementById('td-date').value=d.date||'';
     document.getElementById('td-title').value=d.title||'';
-    document.getElementById('td-good').value=d.good||'';
-    document.getElementById('td-bad').value=d.bad||'';
-    document.getElementById('td-improve').value=d.improve||'';
-    document.getElementById('td-content').value=d.content||'';
+    ['td-good','td-bad','td-improve','td-content'].forEach(function(id){
+      resetModalRichEditor('modal-trade-diary',id);
+    });
     state.tempTradeDiaryImgs=d.images?[...d.images]:[];
     renderTDiaryPrev();
+    document.getElementById('modal-trade-diary').classList.add('open');
+    setTimeout(function(){
+      var fields={good:d.good,bad:d.bad,improve:d.improve,content:d.content};
+      Object.entries(fields).forEach(function(e){
+        var rid='td-'+e[0];
+        if(window._richEditors&&window._richEditors[rid])window._richEditors[rid].setHTML(e[1]||'');
+        else{var ta=document.getElementById(rid);if(ta)ta.value=e[1]||'';}
+      });
+    },120);
+    return;
   } else {
     if(titleEl)titleEl.textContent='🔄 매매 복기 작성';
     if(btnEl)btnEl.textContent='저장';
     document.getElementById('td-date').value=new Date().toISOString().split('T')[0];
     document.getElementById('td-title').value='';
-    document.getElementById('td-good').value='';
-    document.getElementById('td-bad').value='';
-    document.getElementById('td-improve').value='';
-    document.getElementById('td-content').value='';
+    ['td-good','td-bad','td-improve','td-content'].forEach(function(id){
+      resetModalRichEditor('modal-trade-diary',id);
+    });
     document.getElementById('td-img-preview').innerHTML='';
   }
   document.getElementById('modal-trade-diary').classList.add('open');
@@ -2610,17 +2618,27 @@ function openScenarioModal(editId){
     if(btnEl)btnEl.textContent='저장';
     document.getElementById('sn-date').value=s.date||'';
     document.getElementById('sn-name').value=s.name||'';
-    document.getElementById('sn-reason').value=s.reason||'';
     document.getElementById('sn-stop').value=s.stop||'';
     document.getElementById('sn-sell').value=s.sell||'';
-    document.getElementById('sn-memo').value=s.memo||'';
+    resetModalRichEditor('modal-scenario','sn-reason');
+    resetModalRichEditor('modal-scenario','sn-memo');
     state.tempScenarioImgs=s.images?[...s.images]:[];
     renderScenarioImgPrev();
+    openModal('modal-scenario');
+    setTimeout(function(){
+      if(window._richEditors&&window._richEditors['sn-reason'])window._richEditors['sn-reason'].setHTML(s.reason||'');
+      else{var ta=document.getElementById('sn-reason');if(ta)ta.value=s.reason||'';}
+      if(window._richEditors&&window._richEditors['sn-memo'])window._richEditors['sn-memo'].setHTML(s.memo||'');
+      else{var ta2=document.getElementById('sn-memo');if(ta2)ta2.value=s.memo||'';}
+    },120);
+    return;
   } else {
     if(titleEl)titleEl.textContent='🎯 시나리오 추가';
     if(btnEl)btnEl.textContent='저장';
     document.getElementById('sn-date').value=new Date().toISOString().split('T')[0];
-    ['sn-name','sn-reason','sn-stop','sn-sell','sn-memo'].forEach(function(id){document.getElementById(id).value='';});
+    ['sn-name','sn-stop','sn-sell'].forEach(function(id){document.getElementById(id).value='';});
+    resetModalRichEditor('modal-scenario','sn-reason');
+    resetModalRichEditor('modal-scenario','sn-memo');
     document.getElementById('sn-img-preview').innerHTML='';
   }
   openModal('modal-scenario');
@@ -4170,16 +4188,25 @@ function openSPModal(editId){
     document.getElementById('sp-modal-title').textContent='📈 패턴 수정';
     document.getElementById('sp-name').value=item.name||'';
     document.getElementById('sp-cat').value=item.cat||'눌림목';
-    document.getElementById('sp-entry').value=item.entry||'';
-    document.getElementById('sp-exit').value=item.exit||'';
-    document.getElementById('sp-caution').value=item.caution||'';
     document.getElementById('sp-url').value=item.url||'';
+    ['sp-entry','sp-exit','sp-caution'].forEach(function(id){resetModalRichEditor('modal-sp',id);});
     state.tempNoteImgs.sp=item.images?[...item.images]:[];
     renderNoteImgPrev('sp');
     document.getElementById('modal-sp').dataset.editId=editId;
+    openModal('modal-sp');
+    setTimeout(function(){
+      var spFields={entry:item.entry,exit:item.exit,caution:item.caution};
+      Object.entries(spFields).forEach(function(e){
+        var rid='sp-'+e[0];
+        if(window._richEditors&&window._richEditors[rid])window._richEditors[rid].setHTML(e[1]||'');
+        else{const ta=document.getElementById(rid);if(ta)ta.value=e[1]||'';}
+      });
+    },120);
+    return;
   } else {
     document.getElementById('sp-modal-title').textContent='📈 패턴 추가';
-    ['sp-name','sp-entry','sp-exit','sp-caution','sp-url'].forEach(id=>document.getElementById(id).value='');
+    ['sp-name','sp-url'].forEach(id=>document.getElementById(id).value='');
+    ['sp-entry','sp-exit','sp-caution'].forEach(function(id){resetModalRichEditor('modal-sp',id);});
     document.getElementById('sp-cat').value='눌림목';
     delete document.getElementById('modal-sp').dataset.editId;
   }
@@ -5258,16 +5285,23 @@ function openInvestNoteModal(key,youtuber,editId){
   const sel=document.getElementById('sdn-cat-sel');
   sel.innerHTML='<option value="">-- 선택 --</option>'+cats.map(function(c){return '<option>'+c+'</option>';}).join('');
   document.getElementById('sdn-img-prev').innerHTML='';
-  ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(function(id){document.getElementById(id).value='';});
+  ['sdn-name','sdn-cat-input','sdn-url'].forEach(function(id){document.getElementById(id).value='';});
+  resetModalRichEditor('modal-sdnote','sdn-desc');
   sel.value='';
   if(editId){
     const n=(state.selfdevNotes[key]||[]).find(function(x){return x.id===editId;});if(!n)return;
     document.getElementById('sdn-name').value=n.name||'';
     if(cats.includes(n.cat||''))sel.value=n.cat;
     else document.getElementById('sdn-cat-input').value=n.cat||'';
-    document.getElementById('sdn-desc').value=n.desc||'';
     document.getElementById('sdn-url').value=n.url||'';
     sdnImgs=n.images?[...n.images]:[];renderSdnImgPrev();
+    document.getElementById('modal-sdnote').dataset.mode='invest';
+    openModal('modal-sdnote');
+    setTimeout(function(){
+      if(window._richEditors&&window._richEditors['sdn-desc'])window._richEditors['sdn-desc'].setHTML(n.desc||'');
+      else{const ta=document.getElementById('sdn-desc');if(ta)ta.value=n.desc||'';}
+    },120);
+    return;
   }
   document.getElementById('modal-sdnote').dataset.mode='invest';
   openModal('modal-sdnote');
@@ -5393,12 +5427,26 @@ function openSdGenModal(section,editId){
   sdGenCtx=section;sdnEditId=editId||null;sdnImgs=[];
   document.getElementById('sdnote-modal-title').textContent=editId?'📝 노트 수정':'📝 노트 추가';
   document.getElementById('sdn-img-prev').innerHTML='';
-  ['sdn-name','sdn-cat-input','sdn-desc','sdn-url'].forEach(id=>document.getElementById(id).value='');
+  ['sdn-name','sdn-cat-input','sdn-url'].forEach(id=>document.getElementById(id).value='');
+  resetModalRichEditor('modal-sdnote','sdn-desc');
   const cats=(state.selfdevGenCats&&state.selfdevGenCats[section])||[];
   const sel=document.getElementById('sdn-cat-sel');
   sel.innerHTML='<option value="">-- 선택 --</option>'+cats.map(c=>`<option>${c}</option>`).join('');
   sel.value='';
-  if(editId){const n=(state.selfdevGeneral[section]||[]).find(x=>x.id===editId);if(!n)return;document.getElementById('sdn-name').value=n.name||'';if(cats.includes(n.cat||''))sel.value=n.cat;else document.getElementById('sdn-cat-input').value=n.cat||'';document.getElementById('sdn-desc').value=n.desc||'';document.getElementById('sdn-url').value=n.url||'';}
+  if(editId){
+    const n=(state.selfdevGeneral[section]||[]).find(x=>x.id===editId);if(!n)return;
+    document.getElementById('sdn-name').value=n.name||'';
+    if(cats.includes(n.cat||''))sel.value=n.cat;
+    else document.getElementById('sdn-cat-input').value=n.cat||'';
+    document.getElementById('sdn-url').value=n.url||'';
+    document.getElementById('modal-sdnote').dataset.mode='general';
+    openModal('modal-sdnote');
+    setTimeout(function(){
+      if(window._richEditors&&window._richEditors['sdn-desc'])window._richEditors['sdn-desc'].setHTML(n.desc||'');
+      else{const ta=document.getElementById('sdn-desc');if(ta)ta.value=n.desc||'';}
+    },120);
+    return;
+  }
   document.getElementById('modal-sdnote').dataset.mode='general';
   openModal('modal-sdnote');
 }
