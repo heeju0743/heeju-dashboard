@@ -766,6 +766,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="trade-nav-tab" onclick="tradeNav('t-diary')">🔄 매매 복기</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-scenario')">🎯 시나리오</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-trade-diary')">📔 매매일기</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-goal')">🎯 목표/계획</div>
   </div>
 
   <!-- 대시보드 -->
@@ -873,6 +874,39 @@ textarea{resize:vertical;min-height:80px}
       <button class="btn btn-primary btn-sm" onclick="openScenarioModal()">+ 시나리오 추가</button>
     </div>
     <div id="t-scenario-list"></div>
+  </div>
+
+  <!-- 목표/계획 -->
+  <div id="t-goal" class="trade-page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:15px;font-weight:700">🎯 투자 목표 / 계획</div>
+      <button class="btn btn-primary btn-sm" onclick="openTradeGoalModal()">+ 목표 추가</button>
+    </div>
+
+    <!-- 월천 프로젝트 고정 표 -->
+    <div id="wolcheon-section" class="card" style="margin-bottom:16px;padding:0;overflow:hidden">
+      <div style="background:#1a2744;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:15px;font-weight:700">⭐ 월천 프로젝트 5개년 계획</span>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button onclick="toggleWolcheon()" id="wolcheon-toggle-btn" class="btn btn-outline btn-sm" style="font-size:11px;color:#fff;border-color:rgba(255,255,255,.4);background:transparent">🔼 접기</button>
+          <button onclick="openWolcheonModal()" class="btn btn-primary btn-sm" style="font-size:11px">✏️ 수정</button>
+        </div>
+      </div>
+      <div id="wolcheon-body" style="overflow-x:auto">
+        <div id="wolcheon-table-wrap" style="min-width:600px"></div>
+      </div>
+    </div>
+
+    <!-- 기간별 탭 -->
+    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap" id="goal-period-tabs">
+      <button class="filter-btn on" onclick="setGoalPeriodFilter('전체',this)">전체</button>
+      <button class="filter-btn" onclick="setGoalPeriodFilter('단기',this)">📅 단기 (1개월)</button>
+      <button class="filter-btn" onclick="setGoalPeriodFilter('중기',this)">📆 중기 (3~6개월)</button>
+      <button class="filter-btn" onclick="setGoalPeriodFilter('장기',this)">🗓️ 장기 (1년+)</button>
+    </div>
+    <div id="t-goal-list"></div>
   </div>
 
   <!-- 매매일기(하루마무리) -->
@@ -1214,6 +1248,78 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
+<!-- 월천 프로젝트 수정 모달 -->
+<div id="modal-wolcheon" class="modal-overlay">
+  <div class="modal" style="width:860px;max-width:97vw">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="modal-title" style="margin:0">✏️ 월천 프로젝트 수정</div>
+      <button style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2)" onclick="closeModal('modal-wolcheon')">✕</button>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:12px">행 추가/삭제 및 내용을 자유롭게 수정하세요</div>
+    <div id="wolcheon-edit-wrap" style="overflow-x:auto"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="addWolcheonRow()">+ 행 추가</button>
+      <button class="btn btn-outline btn-sm" style="margin-left:auto" onclick="closeModal('modal-wolcheon')">취소</button>
+      <button class="btn btn-primary" onclick="saveWolcheon()">💾 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 목표/계획 모달 -->
+<div id="modal-trade-goal" class="modal-overlay">
+  <div class="modal" style="width:580px">
+    <div class="modal-title" id="tg-modal-title">🎯 목표 추가</div>
+    <div class="mg2">
+      <div class="modal-row">
+        <label>기간</label>
+        <select id="tg-period">
+          <option value="단기">📅 단기 (1개월)</option>
+          <option value="중기">📆 중기 (3~6개월)</option>
+          <option value="장기">🗓️ 장기 (1년+)</option>
+        </select>
+      </div>
+      <div class="modal-row">
+        <label>목표 제목</label>
+        <input id="tg-title" placeholder="예: 승률 60% 달성, 월 수익 100만원">
+      </div>
+    </div>
+    <div class="mg2">
+      <div class="modal-row">
+        <label>📅 시작일</label>
+        <input id="tg-start" type="date">
+      </div>
+      <div class="modal-row">
+        <label>🏁 목표일</label>
+        <input id="tg-end" type="date">
+      </div>
+    </div>
+    <div class="modal-row">
+      <label>📝 상세 계획</label>
+      <textarea id="tg-plan" placeholder="구체적인 실행 계획을 적어보세요..." style="min-height:120px"></textarea>
+    </div>
+    <div class="modal-row">
+      <label>📊 수치 목표 <span style="font-size:10px;color:var(--text2)">(선택)</span></label>
+      <div class="mg3" style="margin-bottom:0">
+        <div><label style="font-size:10px;color:var(--text2)">목표 승률(%)</label><input id="tg-winrate" type="number" placeholder="예: 60"></div>
+        <div><label style="font-size:10px;color:var(--text2)">목표 수익(원)</label><input id="tg-profit" type="number" placeholder="예: 1000000"></div>
+        <div><label style="font-size:10px;color:var(--text2)">목표 매매횟수</label><input id="tg-count" type="number" placeholder="예: 20"></div>
+      </div>
+    </div>
+    <div class="modal-row">
+      <label>✅ 현재 달성률 <span style="font-size:10px;color:var(--text2)">(0~100%)</span></label>
+      <input id="tg-progress" type="number" min="0" max="100" placeholder="0" value="0">
+    </div>
+    <div class="modal-row">
+      <label>📝 메모 / 중간 점검</label>
+      <textarea id="tg-memo" placeholder="진행 상황, 중간 점검 메모..." style="min-height:70px"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-trade-goal')">취소</button>
+      <button class="btn btn-primary" id="tg-save-btn" onclick="saveTradeGoal()">저장</button>
+    </div>
+  </div>
+</div>
+
 <!-- 매매 복기 모달 -->
 <div id="modal-trade-diary" class="modal-overlay">
   <div class="modal" style="width:600px">
@@ -1384,7 +1490,14 @@ window.state={
 
     {id:24,date:'2026-04-23',name:'SK아이테크',type:'스윙',pattern:'눌림',entry:'5224',vol:'감소',target:30000,stop:26800,rr:'5.4x',buy:27300,buyTotal:27300,sell:27450,sellTotal:27396,pct:0.55,pnl:96,result:'승',market:'국내장',c1:'O',c3t:'O',c3:'O',c3v:'O',psych:'안정',emotion:'',handTrade:'',stopKeep:'',grade:'C',note:'5224 테스트 주식으로 1주만 구매'},
   ],
-  balanceRows:[],tradeDiaries:[],scenarios:[],tradeDailyDiaries:[],
+  balanceRows:[],tradeDiaries:[],scenarios:[],tradeDailyDiaries:[],tradeGoals:[],
+  wolcheonRows:[
+    {stage:'1단계', year:'1년차', actions:['주식 용어, 기본적인 차트, 어렵지 않은 보조 지표 익히기','테마주 이해, 대장주 찾기','많은 매매 하기, 10만 원으로 대장주 매매하기\n- 이때 손익에 연연하지 말자','장 마감 후 복기 및 관심 종목 정리하기'], target:'10만 원으로 10번 이상 깡통 차라'},
+    {stage:'2단계', year:'2년차', actions:['테마주 이해, 대장주 찾기','개별 이슈 종목 매매하기','예수금 100만 원으로 매매하기'], target:'1단계를 거쳤다면 웬만해선 깡통 차지 않을 시기\n많이 매매하고 비중 베팅 연습'},
+    {stage:'2단계', year:'3년차', actions:['장 마감 후 관심 종목 정리 및 매매 시나리오 완성'], target:''},
+    {stage:'3단계', year:'4년차', actions:['테마주 이해, 대장주 찾기, 개별 이슈 종목 매매하기','예수금이 쌓이는 경험하기','잦은 매매 피하고 대장주만 매매하기'], target:'하루 평균 100~300만 원의 수익과 손실이 일어나는 시기'},
+    {stage:'3단계', year:'5년차', actions:['테마주 이해, 대장주 찾기, 개별 이슈 종목 매매하기','잦은 매매 피하고 오전장 집중하기','베팅 전 최악에 대비하기 -\n5년차는 이미 예수금도 많이 불어났을 것이고, 이에 따라 순간의 판단 미스로 큰 손실을 입을 수 있다. 따라서 감당할 수 있을 만큼의 손실을 예상하고 종목에 베팅해야 한다.'], target:'리스크 관리'},
+  ],
   selfdevNotes:{},selfdevInvestCats:{},
   selfdevInvestYoutubers:{},
   selfdevGenCats:{blog:[],youtube:[],sidejob:[],language:[],computer:[]},
@@ -1739,6 +1852,8 @@ function initRichEditors(){
     {id:'tdd-content', ph:'오늘 하루 매매 방식, 느낀 점, 다짐 등을 자유롭게 적어보세요...', h:180},
     {id:'sn-reason', ph:'이 종목에 진입하려는 이유, 근거...', h:80},
     {id:'sn-memo', ph:'추가 메모...', h:60},
+    {id:'tg-plan', ph:'구체적인 실행 계획을 적어보세요...', h:120},
+    {id:'tg-memo', ph:'진행 상황, 중간 점검 메모...', h:70},
     {id:'profile-strength', ph:'잘하는 것, 강점...', h:120},
     {id:'profile-weakness', ph:'약점, 반복되는 실수...', h:120},
     {id:'profile-style', ph:'선호하는 매매 유형, 시간대, 종목군...', h:120},
@@ -1805,7 +1920,7 @@ function initApp(){
   // 유튜버 탭 초기 렌더
   ['domestic','us','coin','futures'].forEach(function(m){renderYoutuberTabs(m);});
   renderCurrentYoutuber();
-  renderMeditations();renderMedRecords();renderTDiaries();renderScenarios();renderTradeDailyDiaries();
+  renderMeditations();renderMedRecords();renderTDiaries();renderScenarios();renderTradeDailyDiaries();renderTradeGoals();renderWolcheonTable();
   // 리치 텍스트 에디터 초기화
   setTimeout(initRichEditors, 100);
   if(state['stock-rules-text']){const el=document.getElementById('stock-rules-text');if(el)el.value=state['stock-rules-text'];}
@@ -1855,13 +1970,14 @@ function tradeNav(id){
   document.querySelectorAll('.trade-page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs=document.querySelectorAll('.trade-nav-tab');
-  const map={'t-dash':0,'t-trades':1,'t-pattern':2,'t-balance':3,'t-diary':4,'t-scenario':5,'t-trade-diary':6};
+  const map={'t-dash':0,'t-trades':1,'t-pattern':2,'t-balance':3,'t-diary':4,'t-scenario':5,'t-trade-diary':6,'t-goal':7};
   tabs[map[id]]?.classList.add('active');
   if(id==='t-dash')renderTDash();
   if(id==='t-trades')renderTrades();
   if(id==='t-pattern')renderTPattern();
   if(id==='t-scenario')renderScenarios();
   if(id==='t-trade-diary')renderTradeDailyDiaries();
+  if(id==='t-goal'){renderTradeGoals();renderWolcheonTable();}
   if(id==='t-balance')renderTBalance();
   if(id==='t-diary')renderTDiaries();
 }
@@ -2515,6 +2631,332 @@ function renderTradeDailyDiaries(){
         '</div>'+
       '</div>'+
       '<div style="font-size:13px;line-height:1.8">'+plain.slice(0,120)+(isLong?'...':'')+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+// ===== 월천 프로젝트 =====
+let wolcheonOpen = true;
+
+function toggleWolcheon(){
+  wolcheonOpen = !wolcheonOpen;
+  const body = document.getElementById('wolcheon-body');
+  const btn = document.getElementById('wolcheon-toggle-btn');
+  if(body) body.style.display = wolcheonOpen ? 'block' : 'none';
+  if(btn) btn.textContent = wolcheonOpen ? '🔼 접기' : '🔽 펼치기';
+}
+
+function renderWolcheonTable(){
+  if(!state.wolcheonRows || !state.wolcheonRows.length) return;
+  const wrap = document.getElementById('wolcheon-table-wrap');
+  if(!wrap) return;
+
+  // 단계별 rowspan 계산
+  const stageRows = {};
+  const yearRows = {};
+  state.wolcheonRows.forEach(function(r, i){
+    if(!stageRows[r.stage]) stageRows[r.stage] = {start:i, count:0};
+    stageRows[r.stage].count++;
+    yearRows[i] = (r.actions||[]).length || 1;
+  });
+
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+  html += '<thead><tr style="background:#1a2744;color:#fff">';
+  html += '<th style="padding:9px 12px;text-align:center;border:1px solid rgba(255,255,255,.15);white-space:nowrap;width:60px">구분</th>';
+  html += '<th style="padding:9px 12px;text-align:center;border:1px solid rgba(255,255,255,.15);white-space:nowrap;width:60px">연차</th>';
+  html += '<th style="padding:9px 12px;text-align:center;border:1px solid rgba(255,255,255,.15)">실천 내용</th>';
+  html += '<th style="padding:9px 12px;text-align:center;border:1px solid rgba(255,255,255,.15);width:180px">목표 수준</th>';
+  html += '</tr></thead><tbody>';
+
+  const stageSeen = {};
+  state.wolcheonRows.forEach(function(r, ri){
+    const actions = r.actions || [''];
+    const stageColor = r.stage==='1단계'?'#e8ecfd':r.stage==='2단계'?'#e8f5ee':'#fff3dc';
+    const stageText = r.stage==='1단계'?'#5c7ae0':r.stage==='2단계'?'#5c9e6e':'#c9a84c';
+
+    // 단계 rowspan 계산 (같은 단계의 총 action 수)
+    let stageActionTotal = 0;
+    state.wolcheonRows.forEach(function(rr){ if(rr.stage===r.stage) stageActionTotal += (rr.actions||['']).length; });
+    // 연차 rowspan = 해당 행의 action 수
+    const yearSpan = actions.length;
+
+    actions.forEach(function(action, ai){
+      html += '<tr style="border-bottom:1px solid var(--border)">';
+
+      // 단계 셀 (첫 행에서만)
+      if(!stageSeen[r.stage] && ai === 0){
+        stageSeen[r.stage] = true;
+        html += '<td rowspan="'+stageActionTotal+'" style="text-align:center;font-weight:700;border:1px solid var(--border);background:'+stageColor+';color:'+stageText+';padding:8px 6px;vertical-align:middle;white-space:nowrap;font-size:13px">'+r.stage+'</td>';
+      }
+
+      // 연차 셀 (첫 action에서만)
+      if(ai === 0){
+        html += '<td rowspan="'+yearSpan+'" style="text-align:center;font-weight:600;border:1px solid var(--border);padding:8px 6px;vertical-align:middle;white-space:nowrap;background:#fafaf7;color:var(--text2)">'+r.year+'</td>';
+      }
+
+      // 실천 내용
+      html += '<td style="padding:8px 13px;border:1px solid var(--border);line-height:1.7;vertical-align:top">';
+      if(actions.length > 1) html += '<span style="color:var(--text2);font-size:10px;margin-right:5px">'+(ai+1)+'.</span>';
+      html += action.split('\n').join('<br>') + '</td>';
+
+      // 목표 수준 (첫 action에서만 rowspan)
+      if(ai === 0){
+        html += '<td rowspan="'+yearSpan+'" style="padding:8px 13px;border:1px solid var(--border);vertical-align:top;font-size:11px;color:var(--text2);line-height:1.7;background:#fafaf7">';
+        html += (r.target||'').split('\n').join('<br>');
+        html += '</td>';
+      }
+      html += '</tr>';
+    });
+  });
+
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+function openWolcheonModal(){
+  renderWolcheonEditTable();
+  openModal('modal-wolcheon');
+}
+
+function renderWolcheonEditTable(){
+  const wrap = document.getElementById('wolcheon-edit-wrap');
+  if(!wrap) return;
+  if(!state.wolcheonRows) state.wolcheonRows = [];
+
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:700px">';
+  html += '<thead><tr style="background:#f5f0e8">';
+  html += '<th style="padding:7px 10px;border:1px solid var(--border);width:80px">구분(단계)</th>';
+  html += '<th style="padding:7px 10px;border:1px solid var(--border);width:70px">연차</th>';
+  html += '<th style="padding:7px 10px;border:1px solid var(--border)">실천 내용 (줄바꿈으로 항목 구분)</th>';
+  html += '<th style="padding:7px 10px;border:1px solid var(--border);width:180px">목표 수준</th>';
+  html += '<th style="padding:7px 10px;border:1px solid var(--border);width:40px"></th>';
+  html += '</tr></thead><tbody id="wolcheon-edit-tbody">';
+
+  state.wolcheonRows.forEach(function(r, i){
+    html += '<tr data-idx="'+i+'">';
+    html += '<td style="padding:5px;border:1px solid var(--border)"><input value="'+escHtml(r.stage||'')+'" data-field="stage" class="wc-field" style="width:100%;font-size:11px;padding:4px 6px"></td>';
+    html += '<td style="padding:5px;border:1px solid var(--border)"><input value="'+escHtml(r.year||'')+'" data-field="year" class="wc-field" style="width:100%;font-size:11px;padding:4px 6px"></td>';
+    html += '<td style="padding:5px;border:1px solid var(--border)"><textarea data-actions="1" class="wc-actions" style="width:100%;font-size:11px;padding:4px 6px;min-height:70px;resize:vertical">'+escHtml((r.actions||[]).join('\n'))+'</textarea></td>';
+    html += '<td style="padding:5px;border:1px solid var(--border)"><textarea data-field="target" class="wc-field" style="width:100%;font-size:11px;padding:4px 6px;min-height:70px;resize:vertical">'+escHtml(r.target||'')+'</textarea></td>';
+    html += '<td style="padding:5px;border:1px solid var(--border);text-align:center"><button data-idx="'+i+'" class="wc-del" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px">✕</button></td>';
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+  // 이벤트 위임으로 삭제 버튼 처리
+  const tbody2 = document.getElementById('wolcheon-edit-tbody');
+  if(tbody2){
+    tbody2.addEventListener('click', function(e){
+      const btn = e.target.closest('.wc-del');
+      if(btn) delWolcheonRow(parseInt(btn.dataset.idx));
+    });
+  }
+}
+
+function escHtml(str){
+  return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function updateWolcheonField(idx, field, val){
+  if(!state.wolcheonRows[idx]) return;
+  state.wolcheonRows[idx][field] = val;
+}
+
+function updateWolcheonActions(idx, val){
+  if(!state.wolcheonRows[idx]) return;
+  state.wolcheonRows[idx].actions = val.split('\n').filter(function(s){return s.trim();});
+  if(!state.wolcheonRows[idx].actions.length) state.wolcheonRows[idx].actions = [val];
+}
+
+function addWolcheonRow(){
+  if(!state.wolcheonRows) state.wolcheonRows = [];
+  const last = state.wolcheonRows[state.wolcheonRows.length-1] || {};
+  state.wolcheonRows.push({stage:last.stage||'', year:'', actions:[''], target:''});
+  renderWolcheonEditTable();
+}
+
+function delWolcheonRow(idx){
+  if(!confirm('이 행을 삭제할까요?')) return;
+  state.wolcheonRows.splice(idx, 1);
+  renderWolcheonEditTable();
+}
+
+function saveWolcheon(){
+  const tbody = document.getElementById('wolcheon-edit-tbody');
+  if(tbody){
+    const rows = tbody.querySelectorAll('tr[data-idx]');
+    rows.forEach(function(tr){
+      const idx = parseInt(tr.dataset.idx);
+      if(!state.wolcheonRows[idx]) return;
+      // .wc-field 클래스로 읽기 (data-field 속성 기반)
+      tr.querySelectorAll('.wc-field').forEach(function(el){
+        if(el.dataset.field) state.wolcheonRows[idx][el.dataset.field] = el.value;
+      });
+      // actions textarea
+      const actTA = tr.querySelector('.wc-actions');
+      if(actTA){
+        const lines = actTA.value.split('\n').filter(function(s){return s.trim();});
+        state.wolcheonRows[idx].actions = lines.length ? lines : [actTA.value];
+      }
+    });
+  }
+  save();
+  renderWolcheonTable();
+  closeModal('modal-wolcheon');
+}
+
+// ===== 투자 목표/계획 =====
+let goalPeriodFilter='전체';
+
+function setGoalPeriodFilter(period,el){
+  goalPeriodFilter=period;
+  document.querySelectorAll('#goal-period-tabs .filter-btn').forEach(b=>b.classList.remove('on'));
+  if(el)el.classList.add('on');
+  renderTradeGoals();
+}
+
+function openTradeGoalModal(editId){
+  window._tgEditId=editId||null;
+  const titleEl=document.getElementById('tg-modal-title');
+  const btnEl=document.getElementById('tg-save-btn');
+  if(editId){
+    const g=(state.tradeGoals||[]).find(x=>x.id===editId);if(!g)return;
+    if(titleEl)titleEl.textContent='✏️ 목표 수정';
+    if(btnEl)btnEl.textContent='저장';
+    document.getElementById('tg-period').value=g.period||'단기';
+    document.getElementById('tg-title').value=g.title||'';
+    document.getElementById('tg-start').value=g.start||'';
+    document.getElementById('tg-end').value=g.end||'';
+    document.getElementById('tg-winrate').value=g.winrate||'';
+    document.getElementById('tg-profit').value=g.profit||'';
+    document.getElementById('tg-count').value=g.count||'';
+    document.getElementById('tg-progress').value=g.progress||0;
+    resetModalRichEditor('modal-trade-goal','tg-plan');
+    resetModalRichEditor('modal-trade-goal','tg-memo');
+    openModal('modal-trade-goal');
+    setTimeout(function(){
+      if(window._richEditors&&window._richEditors['tg-plan'])window._richEditors['tg-plan'].setHTML(g.plan||'');
+      else{const ta=document.getElementById('tg-plan');if(ta)ta.value=g.plan||'';}
+      if(window._richEditors&&window._richEditors['tg-memo'])window._richEditors['tg-memo'].setHTML(g.memo||'');
+      else{const ta=document.getElementById('tg-memo');if(ta)ta.value=g.memo||'';}
+    },120);
+    return;
+  }
+  if(titleEl)titleEl.textContent='🎯 목표 추가';
+  if(btnEl)btnEl.textContent='저장';
+  document.getElementById('tg-period').value='단기';
+  document.getElementById('tg-title').value='';
+  document.getElementById('tg-start').value=new Date().toISOString().split('T')[0];
+  document.getElementById('tg-end').value='';
+  document.getElementById('tg-winrate').value='';
+  document.getElementById('tg-profit').value='';
+  document.getElementById('tg-count').value='';
+  document.getElementById('tg-progress').value=0;
+  resetModalRichEditor('modal-trade-goal','tg-plan');
+  resetModalRichEditor('modal-trade-goal','tg-memo');
+  openModal('modal-trade-goal');
+}
+
+function saveTradeGoal(){
+  const title=document.getElementById('tg-title').value.trim();
+  if(!title){alert('목표 제목을 입력해주세요');return;}
+  if(!state.tradeGoals)state.tradeGoals=[];
+  const obj={
+    id:window._tgEditId||Date.now(),
+    period:document.getElementById('tg-period').value,
+    title:title,
+    start:document.getElementById('tg-start').value,
+    end:document.getElementById('tg-end').value,
+    plan:getRichValue('tg-plan'),
+    winrate:document.getElementById('tg-winrate').value,
+    profit:document.getElementById('tg-profit').value,
+    count:document.getElementById('tg-count').value,
+    progress:parseInt(document.getElementById('tg-progress').value)||0,
+    memo:getRichValue('tg-memo'),
+    createdAt:window._tgEditId?(state.tradeGoals.find(x=>x.id===window._tgEditId)?.createdAt||new Date().toLocaleDateString('ko-KR')):new Date().toLocaleDateString('ko-KR')
+  };
+  if(window._tgEditId){
+    const idx=state.tradeGoals.findIndex(x=>x.id===window._tgEditId);
+    if(idx>=0)state.tradeGoals[idx]=obj;
+    window._tgEditId=null;
+  } else {
+    state.tradeGoals.unshift(obj);
+  }
+  closeModal('modal-trade-goal');save();renderTradeGoals();
+}
+
+function delTradeGoal(id){
+  if(!confirm('삭제할까요?'))return;
+  state.tradeGoals=(state.tradeGoals||[]).filter(x=>x.id!==id);
+  save();renderTradeGoals();
+}
+
+function updateGoalProgress(id,val){
+  const g=(state.tradeGoals||[]).find(x=>x.id===id);
+  if(!g)return;
+  g.progress=Math.max(0,Math.min(100,parseInt(val)||0));
+  save();renderTradeGoals();
+}
+
+function renderTradeGoals(){
+  if(!state.tradeGoals)state.tradeGoals=[];
+  const el=document.getElementById('t-goal-list');if(!el)return;
+  let goals=goalPeriodFilter==='전체'?state.tradeGoals:state.tradeGoals.filter(g=>g.period===goalPeriodFilter);
+  if(!goals.length){
+    el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">투자 목표를 세워보세요 🎯<br><span style="font-size:11px;margin-top:6px;display:block">구체적인 목표가 성장을 만듭니다</span></div>';
+    return;
+  }
+  const periodColors={단기:{bg:'#e8ecfd',color:'#5c7ae0',label:'📅 단기'},중기:{bg:'#e8f5ee',color:'#5c9e6e',label:'📆 중기'},장기:{bg:'#fff3dc',color:'#c9a84c',label:'🗓️ 장기'}};
+  el.innerHTML=goals.map(function(g){
+    const pc=periodColors[g.period]||periodColors['단기'];
+    const pct=Math.max(0,Math.min(100,g.progress||0));
+    const pctColor=pct>=100?'var(--green)':pct>=60?'var(--accent)':'var(--blue)';
+    const planText=(g.plan||'').replace(/<[^>]*>/g,'').slice(0,100);
+    const memoText=(g.memo||'').replace(/<[^>]*>/g,'').slice(0,80);
+
+    // 수치 목표 배지
+    let numHtml='';
+    if(g.winrate||g.profit||g.count){
+      numHtml='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">';
+      if(g.winrate)numHtml+='<div style="background:#e8ecfd;border-radius:8px;padding:5px 11px;font-size:11px"><span style="color:var(--text2)">목표 승률</span> <b style="color:var(--blue)">'+g.winrate+'%</b></div>';
+      if(g.profit)numHtml+='<div style="background:#e8f5ee;border-radius:8px;padding:5px 11px;font-size:11px"><span style="color:var(--text2)">목표 수익</span> <b style="color:var(--green)">'+Number(g.profit).toLocaleString()+'원</b></div>';
+      if(g.count)numHtml+='<div style="background:#fff3dc;border-radius:8px;padding:5px 11px;font-size:11px"><span style="color:var(--text2)">매매횟수</span> <b style="color:var(--accent)">'+g.count+'회</b></div>';
+      numHtml+='</div>';
+    }
+
+    // 달성률 바
+    const progressHtml=
+      '<div style="margin-bottom:10px">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'+
+          '<span style="font-size:11px;color:var(--text2)">달성률</span>'+
+          '<div style="display:flex;align-items:center;gap:6px">'+
+            '<input type="number" min="0" max="100" value="'+pct+'" onchange="updateGoalProgress('+g.id+',this.value)" style="width:55px;padding:2px 6px;font-size:11px;border:1px solid var(--border);border-radius:5px;text-align:center">'+
+            '<span style="font-size:11px;font-weight:700;color:'+pctColor+'">'+pct+'%</span>'+
+          '</div>'+
+        '</div>'+
+        '<div style="height:8px;background:#f0e8d8;border-radius:4px;overflow:hidden">'+
+          '<div style="height:100%;width:'+pct+'%;background:'+pctColor+';border-radius:4px;transition:.4s"></div>'+
+        '</div>'+
+      '</div>';
+
+    return '<div class="card" style="margin-bottom:12px;border-left:4px solid '+pc.color+'">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'+
+        '<div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">'+
+          '<span style="background:'+pc.bg+';color:'+pc.color+';padding:2px 9px;border-radius:9px;font-size:11px;font-weight:700">'+pc.label+'</span>'+
+          '<span style="font-weight:700;font-size:15px">'+g.title+'</span>'+
+          (pct>=100?'<span style="background:#e8f5ee;color:var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:9px">✅ 달성!</span>':'')+
+        '</div>'+
+        '<div style="display:flex;gap:5px;flex-shrink:0">'+
+          '<button class="btn btn-outline btn-sm" onclick="openTradeGoalModal('+g.id+')" style="font-size:10px;padding:2px 8px">✏️</button>'+
+          '<button class="btn btn-danger btn-sm" onclick="delTradeGoal('+g.id+')">삭제</button>'+
+        '</div>'+
+      '</div>'+
+      (g.start||g.end?'<div style="font-size:11px;color:var(--text2);margin-bottom:8px">📅 '+(g.start||'?')+' ~ '+(g.end||'미정')+'</div>':'')+
+      numHtml+
+      progressHtml+
+      (planText?'<div style="margin-bottom:7px;padding:9px 12px;background:var(--bg);border-radius:9px;border-left:3px solid var(--accent)"><div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:3px">📝 계획</div><div style="font-size:12px;line-height:1.7">'+planText+(planText.length>=100?'...':'')+'</div></div>':'')+
+      (memoText?'<div style="padding:9px 12px;background:var(--bg);border-radius:9px"><div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:3px">💬 중간 점검</div><div style="font-size:12px;line-height:1.7">'+memoText+(memoText.length>=80?'...':'')+'</div></div>':'')+
     '</div>';
   }).join('');
 }
