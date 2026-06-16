@@ -3901,7 +3901,7 @@ function renderBooks(){
     let quotesHtml='';
     if(quotes.length){
       // 첫 번째 문구만 미리보기로 보여주고 나머지는 접힘
-      const previewQ=quotes[0];
+      const previewQ=quotes[quotes.length-1]; // 최신 문구 미리보기
       const rawText=(previewQ.text||'').replace(/<[^>]*>/g,'');const previewText=rawText.slice(0,60)+(rawText.length>60?'...':'');
       quotesHtml='<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">';
       quotesHtml+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
@@ -3995,7 +3995,9 @@ function openBookQuoteModal(bi){
   if(!quotes.length){
     html+='<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">등록된 문구가 없습니다</div>';
   } else {
-    quotes.forEach(function(q,qi){
+    // 최신 추가 순(역순) 표시 — qi는 원래 배열 인덱스 유지
+    [...quotes].map(function(q,qi){return {q:q,qi:qi};}).reverse().forEach(function(item){
+      const q=item.q; const qi=item.qi;
       const textHtml=q.text||'';
       html+=
         '<div style="background:var(--active);border-radius:9px;padding:11px 13px;margin-bottom:8px;position:relative">'+
