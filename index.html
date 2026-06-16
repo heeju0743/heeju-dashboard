@@ -4099,7 +4099,7 @@ function saveBookQuote(){
     state.books[quoteBookIdx].quotes[quoteEditIdx]=obj;
     quoteEditIdx=null;
   } else {
-    state.books[quoteBookIdx].quotes.push(obj);
+    state.books[quoteBookIdx].quotes.unshift(obj);
   }
   closeModal('modal-book-quote');save();renderBooks();
 }
