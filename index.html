@@ -3892,7 +3892,10 @@ function renderBooks(){
   const statusLabel={reading:'📖 읽는 중',done:'✅ 완독',wish:'🔖 읽고 싶음'};
   const statusColor={reading:'var(--blue)',done:'var(--green)',wish:'var(--text2)'};
   let html='';
-  state.books.forEach(function(b,i){
+  // 최신 추가 순 (역순)
+  const booksToShow=[...state.books].map(function(b,i){return {b:b,i:i};}).reverse();
+  booksToShow.forEach(function(item){
+    const b=item.b; const i=item.i;
     const status=b.status||'reading';
     const quotes=(b.quotes||[]);
     let quotesHtml='';
@@ -3993,10 +3996,10 @@ function openBookQuoteModal(bi){
     html+='<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">등록된 문구가 없습니다</div>';
   } else {
     quotes.forEach(function(q,qi){
-      const textHtml=q.text?q.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):'';
+      const textHtml=q.text||'';
       html+=
         '<div style="background:var(--active);border-radius:9px;padding:11px 13px;margin-bottom:8px;position:relative">'+
-          '<div style="font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--text);padding-right:60px">'+textHtml+'</div>'+
+          '<div style="font-size:13px;line-height:1.8;color:var(--text);padding-right:60px">'+textHtml+'</div>'+
           (q.page?'<div style="font-size:10px;color:var(--text2);margin-top:4px">'+q.page+'</div>':'')+
           '<div style="position:absolute;top:8px;right:8px;display:flex;gap:4px">'+
             '<button data-bi="'+bi+'" data-qi="'+qi+'" class="bq-edit-btn" style="background:none;border:1px solid var(--border);cursor:pointer;font-size:10px;color:var(--text2);padding:2px 6px;border-radius:4px">✏️</button>'+
