@@ -1846,7 +1846,7 @@ async function uploadToCloudinary(base64){
   try{
     const formData=new FormData();
     formData.append('file', base64);
-    formData.append('upload_preset', '희주_업로드');
+    formData.append('upload_preset', 'heeju_upload');
     formData.append('cloud_name', 'dwa9inmsj');
     const res=await fetch('https://api.cloudinary.com/v1_1/dwa9inmsj/image/upload',{
       method:'POST', body:formData
