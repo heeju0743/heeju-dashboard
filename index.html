@@ -1874,9 +1874,6 @@ try{
 
 document.getElementById('loading-screen').style.display='none';
 initApp();
-
-// 테마별 종목 초기화 (state 정의 후 실행)
-window._tsInit && window._tsInit();
 </script>
 
 <script>
@@ -2096,7 +2093,111 @@ function setRichValue(id, html){
   if(el) el.value = html;
 }
 
+
+function tsInit(){
+  var D={"반도체":{vc:["설계(Fabless)","제조(Foundry/IDM)","후공정(Packaging)","장비(Equipment)","소재(Materials)"],vcDesc:"AI수요·HBM 중심. CAPEX 발표가 장비·소재주 핵심 드라이버.",stocks:[{n:"SK하이닉스",c:"000660",ch:"제조/IDM·HBM"},{n:"삼성전자",c:"005930",ch:"제조/IDM·파운드리"},{n:"한미반도체",c:"042700",ch:"후공정장비"},{n:"리노공업",c:"058470",ch:"설계지원·테스트소켓"},{n:"HPSP",c:"403870",ch:"장비(고압수소어닐링)"},{n:"ISC",c:"095340",ch:"후공정·테스트소켓"},{n:"하나마이크론",c:"067310",ch:"후공정·패키징"},{n:"원익IPS",c:"240810",ch:"장비(증착)"},{n:"주성엔지니어링",c:"036930",ch:"장비(증착)"},{n:"솔브레인",c:"357780",ch:"소재(식각액)"},{n:"동진쎄미켐",c:"005290",ch:"소재(포토레지스트)"},{n:"SK머티리얼즈",c:"036490",ch:"소재(특수가스)"},{n:"테크윙",c:"089030",ch:"후공정·테스트장비"},{n:"삼성전기",c:"009150",ch:"부품(MLCC·서버용)"}],files:[]},"2차전지":{vc:["원재료(광물)","소재(양극재·음극재)","셀 제조","팩·BMS","완성차·ESS"],vcDesc:"전기차판매량·원자재가격(리튬·니켈)·IRA정책이 핵심 드라이버.",stocks:[{n:"LG에너지솔루션",c:"373220",ch:"셀제조(파우치·원통형)"},{n:"삼성SDI",c:"006400",ch:"셀제조(각형)·ESS"},{n:"POSCO홀딩스",c:"005490",ch:"원재료(리튬·니켈정련)"},{n:"에코프로비엠",c:"247540",ch:"양극재(NCM·NCA)"},{n:"에코프로",c:"086520",ch:"원재료(전구체)"},{n:"포스코퓨처엠",c:"003670",ch:"양극재+음극재"},{n:"엘앤에프",c:"066970",ch:"양극재(하이니켈)"},{n:"엔켐",c:"348370",ch:"소재(전해질)"},{n:"SK아이이테크놀로지",c:"361610",ch:"소재(분리막)"},{n:"대주전자재료",c:"078600",ch:"소재(실리콘음극재)"},{n:"현대모비스",c:"012330",ch:"팩·BMS"}],files:[]},"방산·우주항공":{vc:["핵심부품·소재","체계개발·제조","함정·잠수함","수출·MRO","우주·위성"],vcDesc:"수출계약·국방예산·지정학리스크. 수주는 3~5년 매출로 인식.",stocks:[{n:"한화에어로스페이스",c:"012450",ch:"체계개발(자주포·항공엔진)"},{n:"현대로템",c:"064350",ch:"체계개발(K2전차·궤도차량)"},{n:"LIG넥스원",c:"079550",ch:"체계개발(유도무기)"},{n:"한국항공우주",c:"047810",ch:"체계개발(KF-21·FA-50)"},{n:"한화오션",c:"042660",ch:"함정(잠수함·호위함)"},{n:"HD현대중공업",c:"329180",ch:"함정(상륙함·조계함)"},{n:"풍산",c:"103140",ch:"부품·소재(탄약·동합금)"},{n:"한화시스템",c:"272210",ch:"부품·소재(레이더·항전)"},{n:"쎄트렉아이",c:"099320",ch:"우주(관측위성)"},{n:"인텔리안테크",c:"189300",ch:"우주(위성안테나)"}],files:[]},"조선·해운":{vc:["선박설계","기자재공급","선박건조","해운(운영)","해체·리사이클"],vcDesc:"LNG선수주잔고·선가·BDI·SCFI·IMO친환경규제가 핵심.",stocks:[{n:"HD현대중공업",c:"329180",ch:"건조(LNG선·컨테이너·VLCC)"},{n:"삼성중공업",c:"010140",ch:"건조(LNG선·해양플랜트)"},{n:"한화오션",c:"042660",ch:"건조(잠수함·LNG선)"},{n:"HD한국조선해양",c:"009540",ch:"기자재(엔진)·지주"},{n:"한화엔진",c:"082740",ch:"기자재(선박용저속엔진)"},{n:"동성화인텍",c:"033500",ch:"기자재(LNG보냉재)"},{n:"태광",c:"023160",ch:"기자재(피팅·밸브·배관)"},{n:"세진중공업",c:"075580",ch:"기자재(선박블록)"},{n:"HMM",c:"011200",ch:"해운(컨테이너·벌크)"},{n:"팬오션",c:"028670",ch:"해운(벌크·탱커)"}],files:[]},"건설·인프라":{vc:["설계·엔지니어링","건자재공급","시공(종합건설)","분양·임대","유지보수"],vcDesc:"분양시장·SOC예산·해외수주·금리가 드라이버.",stocks:[{n:"현대건설",c:"000720",ch:"종합건설(주택·원전시공)"},{n:"GS건설",c:"006360",ch:"종합건설(자이브랜드)"},{n:"DL이앤씨",c:"375500",ch:"종합건설(마크로브랜드)"},{n:"대우건설",c:"047040",ch:"종합건설(푸르지오)"},{n:"삼성엔지니어링",c:"028050",ch:"설계·EPC(석유화학·가스)"},{n:"쌍용C&E",c:"003410",ch:"건자재(시멘트국내1위)"},{n:"KCC",c:"002380",ch:"건자재(유리·도료·실리콘)"},{n:"HDC현대산업개발",c:"294870",ch:"분양·개발(아이파크)"}],files:[]},"자동차·전기차":{vc:["원재료(철강·알루미늄)","부품(Tier1·Tier2)","완성차제조","판매·딜러","A/S·부품교체"],vcDesc:"글로벌판매량·EV전환속도·환율(원/달러)·자율주행이 드라이버.",stocks:[{n:"현대차",c:"005380",ch:"완성차(아이오닉·수소)"},{n:"기아",c:"000270",ch:"완성차(EV6·EV9)"},{n:"현대모비스",c:"012330",ch:"Tier1(섀시·코크핏·전장)"},{n:"HL만도",c:"204320",ch:"Tier1(조향·브레이크·ADAS)"},{n:"한온시스템",c:"018880",ch:"Tier1(냉난방시스템)"},{n:"현대위아",c:"011210",ch:"Tier1(구동계·엔진)"},{n:"현대제철",c:"004020",ch:"원재료(자동차강판)"},{n:"성우하이텍",c:"015750",ch:"Tier2(차체부품)"},{n:"서연이화",c:"200880",ch:"Tier2(내외장재)"}],files:[]},"AI·소프트웨어":{vc:["AI반도체(GPU·NPU)","서버·데이터센터","클라우드·플랫폼","AI솔루션·서비스","최종사용자"],vcDesc:"빅테크CAPEX·AI모델발전·B2B AI도입·데이터센터전력수요가 드라이버.",stocks:[{n:"삼성전자",c:"005930",ch:"AI반도체(HBM·파운드리)"},{n:"SK하이닉스",c:"000660",ch:"AI반도체(HBM글로벌선두)"},{n:"네이버",c:"035420",ch:"클라우드·플랫폼(HyperCLOVA X)"},{n:"카카오",c:"035720",ch:"플랫폼(카카오브레인·AI)"},{n:"KT",c:"030200",ch:"통신·AI플랫폼·IDC"},{n:"솔트룩스",c:"304100",ch:"AI솔루션(자연어처리)"},{n:"뷰노",c:"338220",ch:"AI솔루션(의료AI)"}],files:[]},"바이오·제약":{vc:["신약연구(Discovery)","임상시험(Clinical)","허가·출시","생산(CDMO)","유통·판매"],vcDesc:"임상결과·기술이전(L/O)·CDMO수주·특허만료가 핵심 이벤트.",stocks:[{n:"삼성바이오로직스",c:"207940",ch:"CDMO(항체위탁생산글로벌1위)"},{n:"셀트리온",c:"068270",ch:"바이오시밀러(람시마·트룩시마)"},{n:"유한양행",c:"000100",ch:"신약연구(오픈이노베이션)"},{n:"한미약품",c:"128940",ch:"신약연구(LAPSCOVERY)"},{n:"SK바이오사이언스",c:"302440",ch:"CDMO(백신·mRNA)"},{n:"HLB",c:"028300",ch:"신약(항암)"},{n:"종근당",c:"185750",ch:"제약(전문의약품·제네릭)"},{n:"녹십자",c:"006280",ch:"제약(혈액제제·백신)"},{n:"씨젠",c:"096530",ch:"진단(분자진단·PCR)"}],files:[]},"원전·에너지":{vc:["핵연료","원자로설계·제작","건설·시공","발전운영","해체·폐기물"],vcDesc:"에너지정책·원전수출(체코·폴란드)·SMR기술·탄소중립정책이 드라이버.",stocks:[{n:"두산에너빌리티",c:"034020",ch:"원자로·증기발생기·터빈제작"},{n:"한국전력기술",c:"052690",ch:"원전설계·엔지니어링"},{n:"한전KPS",c:"051600",ch:"원전정비·유지보수"},{n:"비에이치아이",c:"083650",ch:"원전기자재(열교환기)"},{n:"우진",c:"099440",ch:"원전기자재(계측기기)"},{n:"보성파워텍",c:"006910",ch:"원전기자재(배관·구조물)"},{n:"현대건설",c:"000720",ch:"원전건설·시공"},{n:"두산퓨얼셀",c:"336260",ch:"수소연료전지"},{n:"일진하이솔루스",c:"271940",ch:"수소(수소탱크)"},{n:"효성중공업",c:"298040",ch:"수소(액화수소)"}],files:[]},"금융":{vc:["수신(예금·보험료)","여신(대출·투자)","수수료서비스","IB·자본시장","핀테크·디지털"],vcDesc:"기준금리·가계부채·거래대금·배당이 드라이버. 10~12월 배당시즌 강세.",stocks:[{n:"KB금융",c:"105560",ch:"은행지주(국민은행·자산1위)"},{n:"신한지주",c:"055550",ch:"은행지주(신한은행·카드)"},{n:"하나금융지주",c:"086790",ch:"은행지주(하나은행)"},{n:"우리금융지주",c:"316140",ch:"은행지주(우리은행)"},{n:"메리츠금융지주",c:"138040",ch:"보험·증권통합지주"},{n:"삼성생명",c:"032830",ch:"보험(생명보험1위)"},{n:"삼성화재",c:"000810",ch:"보험(손해보험1위)"},{n:"미래에셋증권",c:"006800",ch:"증권(자산관리·IB)"},{n:"키움증권",c:"039490",ch:"증권(온라인거래점유율1위)"},{n:"카카오뱅크",c:"323410",ch:"핀테크(인터넷전문은행)"}],files:[]},"전력기기·전기장비":{vc:["발전설비","송전·변전(변압기·GIS)","배전·전선","전력부품","전력수요처"],vcDesc:"AI·데이터센터전력폭증·글로벌노후전력망교체(변압기슈퍼사이클)·신재생계통연계.",stocks:[{n:"HD현대일렉트릭",c:"267260",ch:"변압기·GIS(초고압변압기글로벌3위)"},{n:"효성중공업",c:"298040",ch:"변압기·차단기·HVDC"},{n:"일진전기",c:"103590",ch:"변압기·중전기기"},{n:"LS일렉트릭",c:"010120",ch:"배전·전선(배전반·자동화·ESS)"},{n:"대한전선",c:"001440",ch:"배전·전선(초고압전력케이블)"},{n:"두산에너빌리티",c:"034020",ch:"발전설비(가스터빈·원자로)"},{n:"제룡전기",c:"033100",ch:"전력부품(몰드변압기·배전반)"}],files:[]},"항공·여행·레저":{vc:["항공기·MRO","항공운송","여행·관광","면세·쇼핑","레저·카지노"],vcDesc:"국제선여객수·유가·환율·한류인바운드관광이 드라이버.",stocks:[{n:"대한항공",c:"003490",ch:"항공운송(FSC1위·아시아나합병)"},{n:"제주항공",c:"089590",ch:"항공운송(LCC1위)"},{n:"진에어",c:"272450",ch:"항공운송(한진그룹LCC)"},{n:"하나투어",c:"039130",ch:"여행·관광(여행사1위)"},{n:"호텔신라",c:"008770",ch:"면세·쇼핑(면세점·호텔)"},{n:"강원랜드",c:"035250",ch:"레저·카지노(내국인카지노독점)"},{n:"파라다이스",c:"034230",ch:"레저·카지노(외국인카지노·인천)"}],files:[]},"로봇·자동화":{vc:["핵심부품(감속기·서보모터)","로봇제조(OEM)","SI·소프트웨어","자동화설비(FA)","최종적용"],vcDesc:"인구감소·인건비상승·AI기술·물류자동화·정부로봇육성정책이 드라이버.",stocks:[{n:"레인보우로보틱스",c:"277810",ch:"로봇제조(이족보행·다관절)"},{n:"두산로보틱스",c:"454910",ch:"로봇제조(협동로봇글로벌Top5)"},{n:"에스피지",c:"058610",ch:"핵심부품(감속기·서보모터)"},{n:"삼익THK",c:"004380",ch:"핵심부품(LM가이드·정밀부품)"},{n:"로보스타",c:"090360",ch:"SI·소프트웨어(직교로봇·물류이송)"},{n:"뉴로메카",c:"348340",ch:"SI·소프트웨어(협동로봇·AI제어)"},{n:"현대무벡스",c:"115160",ch:"자동화설비(물류자동화·AS/RS)"},{n:"유진로봇",c:"056080",ch:"자동화설비(자율주행AGV·AMR)"}],files:[]},"게임":{vc:["게임엔진·툴","게임개발","퍼블리싱","플랫폼·스토어","이스포츠·IP확장"],vcDesc:"신작출시·흥행·글로벌시장확대·AI기술도입·규제환경이 드라이버.",stocks:[{n:"크래프톤",c:"259960",ch:"PC·콘솔(배틀그라운드·글로벌FPS)"},{n:"엔씨소프트",c:"036570",ch:"PC·콘솔(리니지·MMORPG IP)"},{n:"넷마블",c:"251270",ch:"모바일(세븐나이츠·다작)"},{n:"펄어비스",c:"263750",ch:"PC·콘솔(검은사막·붉은사막)"},{n:"카카오게임즈",c:"293490",ch:"퍼블리싱(카카오플랫폼기반)"},{n:"컴투스",c:"078340",ch:"모바일(서머너즈워·글로벌RPG)"}],files:[]},"신재생에너지":{vc:["소재·부품","모듈·시스템","EPC·시공","발전·운영","ESS·스마트그리드"],vcDesc:"IRA·탄소중립정책·전력수요증가·LCOE하락·해상풍력확대가 드라이버.",stocks:[{n:"한화솔루션",c:"009830",ch:"모듈(태양광모듈글로벌Top5)"},{n:"OCI",c:"010060",ch:"소재(폴리실리콘·태양광소재)"},{n:"씨에스윈드",c:"112610",ch:"소재(풍력타워글로벌1위)"},{n:"두산에너빌리티",c:"034020",ch:"모듈(해상풍력터빈·나셀)"},{n:"두산퓨얼셀",c:"336260",ch:"소재(수소연료전지·SOFC)"},{n:"삼성SDI",c:"006400",ch:"ESS(배터리글로벌공급)"},{n:"LG에너지솔루션",c:"373220",ch:"ESS(배터리)"},{n:"LS일렉트릭",c:"010120",ch:"ESS(PCS·인버터·ESS연계)"}],files:[]}};
+  if(!state.themeStocks)state.themeStocks=JSON.parse(JSON.stringify(D));
+  Object.keys(D).forEach(function(k){
+    if(!state.themeStocks[k])state.themeStocks[k]=JSON.parse(JSON.stringify(D[k]));
+    if(!state.themeStocks[k].files)state.themeStocks[k].files=[];
+    (state.themeStocks[k].stocks||[]).forEach(function(s){if(!s.files)s.files=[];});
+  });
+  window._C=window._C||Object.keys(state.themeStocks)[0];
+  window._DR=null;
+}
+window.renderThemeStocks=function(){
+  if(!window._C||!state.themeStocks[window._C])window._C=Object.keys(state.themeStocks)[0];
+  var el=document.getElementById('ts-theme-tabs');if(!el)return;
+  el.innerHTML=Object.keys(state.themeStocks).map(function(t){
+    var a=t===window._C;
+    var btn=document.createElement('button');
+    btn.textContent=t;
+    btn.dataset.t=t;
+    btn.onclick=function(){window._C=this.dataset.t;window.renderThemeStocks();};
+    btn.style.cssText='padding:5px 13px;border-radius:18px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.15s;margin-bottom:4px;border:1px solid '+(a?'var(--accent)':'var(--border)')+';background:'+(a?'var(--accent)':'var(--card)')+';color:'+(a?'#fff':'var(--text2)');
+    return btn.outerHTML;
+  }).join('')+'<button onclick="tsAddTheme()" style="padding:5px 13px;border-radius:18px;font-size:12px;cursor:pointer;border:1px dashed var(--border);background:transparent;color:var(--text2);font-family:inherit;white-space:nowrap;margin-bottom:4px">+ 새 테마</button>';
+  _tsP2();
+};
+window.tsSwitchTheme=function(t){window._C=t;window.renderThemeStocks();};
+function _tsP2(){
+  var td=state.themeStocks[window._C];if(!td)return;
+  var te=document.getElementById('ts-panel-title');if(te)te.textContent=window._C;
+  var ce=document.getElementById('ts-panel-count');if(ce)ce.textContent=(td.stocks||[]).length+' / 20개';
+  var le=document.getElementById('ts-limit-msg');if(le)le.style.display=(td.stocks||[]).length>=20?'block':'none';
+  var vw=document.getElementById('ts-vc-wrap');
+  if(td.vc&&td.vc.length){
+    if(vw)vw.style.display='block';
+    var vs=document.getElementById('ts-vc-steps');
+    if(vs){vs.innerHTML='';td.vc.forEach(function(s,i){if(i>0){var ar=document.createElement('span');ar.style.cssText='color:var(--accent);font-size:12px;margin:0 4px';ar.textContent='→';vs.appendChild(ar);}var sp=document.createElement('span');sp.style.cssText='background:var(--accent2);color:var(--text);padding:3px 9px;font-size:11px;font-weight:600;border-radius:4px;white-space:nowrap';sp.textContent=s;vs.appendChild(sp);});}
+    var vd=document.getElementById('ts-vc-desc');if(vd)vd.textContent=td.vcDesc||'';
+  }else{if(vw)vw.style.display='none';}
+  _tsRF2();_tsRL2();
+}
+function _tsRF2(){
+  var el=document.getElementById('ts-theme-files');if(!el)return;
+  el.innerHTML='';
+  (state.themeStocks[window._C].files||[]).forEach(function(f,i){
+    var sp=document.createElement('span');
+    sp.style.cssText='display:inline-flex;align-items:center;gap:5px;background:var(--active);border:1px solid var(--accent2);border-radius:9px;padding:3px 9px;font-size:11px';
+    var a=document.createElement('a');a.href=f.url;a.download=f.name;a.target='_blank';a.style.cssText='color:var(--blue);text-decoration:none';a.textContent=_tsIC(f.name)+' '+(f.name.length>16?f.name.slice(0,14)+'..':f.name);
+    var btn=document.createElement('button');btn.style.cssText='background:none;border:none;cursor:pointer;color:#ccc;font-size:11px;padding:0 2px';btn.textContent='✕';btn.dataset.i=i;btn.onclick=function(){tsDelTF(+this.dataset.i);};
+    sp.appendChild(a);sp.appendChild(btn);el.appendChild(sp);
+  });
+}
+function _tsRL2(){
+  var list=document.getElementById('ts-stock-list');if(!list)return;
+  list.innerHTML='';
+  var stocks=state.themeStocks[window._C].stocks||[];
+  stocks.forEach(function(s,i){
+    var li=document.createElement('li');
+    li.draggable=true;li.dataset.idx=i;
+    li.style.cssText='display:flex;align-items:center;gap:9px;padding:8px 16px;border-bottom:1px solid var(--border);transition:background .1s';
+    li.addEventListener('mouseover',function(){this.style.background='#fffdf8';});
+    li.addEventListener('mouseout',function(){this.style.background='';});
+    li.addEventListener('dragstart',function(e){tsDS(e,i);});
+    li.addEventListener('dragover',function(e){tsDO(e,i);});
+    li.addEventListener('dragleave',function(e){tsDL(e);});
+    li.addEventListener('drop',function(e){tsDP(e,i);});
+    var rc=i===0?'var(--accent)':i===1?'#9da8ad':i===2?'#a07060':'var(--text2)';
+    var rs=i===0?'15px':i===1?'14px':i===2?'13px':'12px';
+    li.innerHTML='<span style="font-size:'+rs+';font-weight:700;min-width:22px;text-align:center;color:'+rc+'">'+(i+1)+'</span>'+
+      '<span style="cursor:grab;color:#ccc;font-size:16px;padding:0 2px;user-select:none">⠿</span>'+
+      '<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
+        '<span style="font-size:13px;font-weight:600">'+s.n+'</span>'+
+        (s.c&&s.c!=='-'?'<span style="font-size:10px;color:var(--text2);background:#f0e8d8;padding:1px 6px;border-radius:5px">'+s.c+'</span>':'')+
+        (s.ch?'<span style="font-size:10px;color:var(--blue);background:#e8ecfd;padding:1px 7px;border-radius:5px">'+s.ch+'</span>':'')+
+      '</div>'+(s.memo?'<div style="font-size:10px;color:var(--text2);margin-top:2px">'+s.memo+'</div>':'')+
+      ((s.files&&s.files.length)?'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:3px">'+s.files.map(function(f){return '<span style="font-size:10px;color:var(--blue);background:#e8ecfd;padding:1px 7px;border-radius:5px;cursor:pointer" onclick="tsOF(\''+f.url+'\',\''+f.name+'\')">'+_tsIC(f.name)+' '+(f.name.length>14?f.name.slice(0,12)+'..':f.name)+'</span>';}).join('')+'</div>':'')+
+      '</div>';
+    var lbl=document.createElement('label');lbl.style.cssText='width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0';lbl.title='파일첨부';lbl.textContent='📎';var fi=document.createElement('input');fi.type='file';fi.multiple=true;fi.style.display='none';fi.dataset.i=i;fi.addEventListener('change',function(){tsHSF(this,+this.dataset.i);});lbl.appendChild(fi);li.appendChild(lbl);
+    var be=document.createElement('button');be.style.cssText='width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;flex-shrink:0';be.textContent='✏️';be.dataset.i=i;be.onclick=function(){tsEd(+this.dataset.i);};li.appendChild(be);
+    var bu=document.createElement('button');bu.style.cssText='width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;flex-shrink:0'+(i===0?';opacity:.3':'');bu.textContent='▲';bu.disabled=(i===0);bu.dataset.i=i;bu.onclick=function(){tsMU(+this.dataset.i);};li.appendChild(bu);
+    var bd=document.createElement('button');bd.style.cssText='width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;flex-shrink:0'+(i===stocks.length-1?';opacity:.3':'');bd.textContent='▼';bd.disabled=(i===stocks.length-1);bd.dataset.i=i;bd.onclick=function(){tsMD(+this.dataset.i);};li.appendChild(bd);
+    var bx=document.createElement('button');bx.style.cssText='width:26px;height:26px;border-radius:7px;border:1px solid #fbc8c8;background:transparent;cursor:pointer;font-size:12px;color:var(--red);flex-shrink:0';bx.textContent='✕';bx.dataset.i=i;bx.onclick=function(){tsDel(+this.dataset.i);};li.appendChild(bx);
+    list.appendChild(li);
+  });
+}
+window.tsAddStock=function(){var n=(document.getElementById('ts-add-name')||{}).value;if(!n||!n.trim())return;var td=state.themeStocks[window._C];if(!td)return;if((td.stocks||[]).length>=20){var l=document.getElementById('ts-limit-msg');if(l)l.style.display='block';return;}td.stocks.push({n:n.trim(),c:(document.getElementById('ts-add-code')||{}).value||'-',ch:(document.getElementById('ts-add-chain')||{}).value||'',files:[]});['ts-add-name','ts-add-code','ts-add-chain'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});save();_tsP2();};
+window.tsDel=function(i){if(!confirm('삭제할까요?'))return;state.themeStocks[window._C].stocks.splice(i,1);save();_tsP2();};
+window.tsMU=function(i){if(i===0)return;var a=state.themeStocks[window._C].stocks;var t=a[i-1];a[i-1]=a[i];a[i]=t;save();_tsRL2();};
+window.tsMD=function(i){var a=state.themeStocks[window._C].stocks;if(i===a.length-1)return;var t=a[i+1];a[i+1]=a[i];a[i]=t;save();_tsRL2();};
+window.tsDS=function(e,i){window._DR=i;e.dataTransfer.effectAllowed='move';setTimeout(function(){var el=document.querySelector('#ts-stock-list li[data-idx="'+i+'"]');if(el)el.style.opacity='.4';},0);};
+window.tsDO=function(e,i){e.preventDefault();document.querySelectorAll('#ts-stock-list li').forEach(function(el){el.style.background='';});var el=document.querySelector('#ts-stock-list li[data-idx="'+i+'"]');if(el)el.style.background='#fff3dc';};
+window.tsDL=function(e){e.currentTarget.style.background='';};
+window.tsDP=function(e,i){e.preventDefault();document.querySelectorAll('#ts-stock-list li').forEach(function(el){el.style.opacity='';el.style.background='';});if(window._DR===null||window._DR===i)return;var a=state.themeStocks[window._C].stocks;var m=a.splice(window._DR,1)[0];a.splice(i,0,m);window._DR=null;save();_tsRL2();};
+window.tsAddTheme=function(){var n=prompt('새 테마 이름:');if(!n||!n.trim())return;if(state.themeStocks[n.trim()]){alert('이미 있는 테마예요!');return;}state.themeStocks[n.trim()]={vc:[],vcDesc:'',stocks:[],files:[]};window._C=n.trim();save();window.renderThemeStocks();};
+window.tsHandleThemeFile=function(input){_tsPC(Array.from(input.files),'theme',null);input.value='';};
+window.tsHSF=function(input,i){_tsPC(Array.from(input.files),'stock',i);input.value='';};
+window.tsDelTF=function(i){state.themeStocks[window._C].files.splice(i,1);save();_tsRF2();};
+function _tsPC(files,type,idx){Promise.all(files.map(function(f){return new Promise(function(res){var r=new FileReader();r.onload=function(e){res({name:f.name,url:e.target.result});};r.readAsDataURL(f);});})).then(function(rs){if(type==='theme'){if(!state.themeStocks[window._C].files)state.themeStocks[window._C].files=[];[].push.apply(state.themeStocks[window._C].files,rs);save();_tsRF2();}else{if(!state.themeStocks[window._C].stocks[idx].files)state.themeStocks[window._C].stocks[idx].files=[];[].push.apply(state.themeStocks[window._C].stocks[idx].files,rs);save();_tsRL2();}});}
+window.tsOF=function(url,name){var a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();document.body.removeChild(a);};
+window.tsEd=function(i){var s=state.themeStocks[window._C].stocks[i];var n=prompt('종목명:',s.n);if(n===null)return;var c=prompt('코드:',s.c);if(c===null)return;var ch=prompt('밸류체인 위치:',s.ch||'');if(ch===null)return;var m=prompt('메모:',s.memo||'');if(m===null)return;s.n=n.trim()||s.n;s.c=c.trim()||'-';s.ch=ch.trim();s.memo=m.trim();save();_tsP2();};
+function _tsIC(name){var e=(name||'').split('.').pop().toLowerCase();return({pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',ppt:'📊',pptx:'📊',png:'🖼️',jpg:'🖼️',jpeg:'🖼️',gif:'🖼️',webp:'🖼️',zip:'📦',csv:'📊',txt:'📃'})[e]||'📎';}
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target&&e.target.id==='ts-add-name')window.tsAddStock();});
+
 function initApp(){
+  tsInit();
   const n=new Date();
   document.getElementById('sb-day').textContent=n.getDate();
   document.getElementById('sb-datestr').textContent=n.toLocaleDateString('ko-KR',{year:'numeric',month:'long',weekday:'long'});
@@ -5663,121 +5764,6 @@ function openModal(id){
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function switchTab(el,id){const parent=el.closest('.page')||document;parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById(id).classList.add('active');}
 function openFullModal(title,meta,body){document.getElementById('full-title').textContent=title;document.getElementById('full-meta').textContent=meta;document.getElementById('full-body').textContent=body.replace(/\\n/g,'\n');openModal('modal-full');}
-
-// ===== 테마별 종목 =====
-var TS_THEMES = {
-  "반도체":{vc:["설계(Fabless)","제조(Foundry/IDM)","후공정(Packaging)","장비(Equipment)","소재(Materials)"],vcDesc:"AI수요·HBM 중심. CAPEX 발표가 장비·소재주 핵심 드라이버.",stocks:[{n:"SK하이닉스",c:"000660",ch:"제조/IDM·HBM"},{n:"삼성전자",c:"005930",ch:"제조/IDM·파운드리"},{n:"한미반도체",c:"042700",ch:"후공정장비"},{n:"리노공업",c:"058470",ch:"설계지원·테스트소켓"},{n:"HPSP",c:"403870",ch:"장비(고압수소어닐링)"},{n:"ISC",c:"095340",ch:"후공정·테스트소켓"},{n:"하나마이크론",c:"067310",ch:"후공정·패키징"},{n:"원익IPS",c:"240810",ch:"장비(증착)"},{n:"주성엔지니어링",c:"036930",ch:"장비(증착)"},{n:"솔브레인",c:"357780",ch:"소재(식각액)"},{n:"동진쎄미켐",c:"005290",ch:"소재(포토레지스트)"},{n:"SK머티리얼즈",c:"036490",ch:"소재(특수가스)"},{n:"테크윙",c:"089030",ch:"후공정·테스트장비"},{n:"삼성전기",c:"009150",ch:"부품(MLCC·서버용)"}],files:[]},
-  "2차전지":{vc:["원재료(광물)","소재(양극재·음극재)","셀 제조","팩·BMS","완성차·ESS"],vcDesc:"전기차판매량·원자재가격(리튬·니켈)·IRA정책이 핵심 드라이버.",stocks:[{n:"LG에너지솔루션",c:"373220",ch:"셀제조(파우치·원통형)"},{n:"삼성SDI",c:"006400",ch:"셀제조(각형)·ESS"},{n:"POSCO홀딩스",c:"005490",ch:"원재료(리튬·니켈정련)"},{n:"에코프로비엠",c:"247540",ch:"양극재(NCM·NCA)"},{n:"에코프로",c:"086520",ch:"원재료(전구체)"},{n:"포스코퓨처엠",c:"003670",ch:"양극재+음극재"},{n:"엘앤에프",c:"066970",ch:"양극재(하이니켈)"},{n:"엔켐",c:"348370",ch:"소재(전해질)"},{n:"SK아이이테크놀로지",c:"361610",ch:"소재(분리막)"},{n:"대주전자재료",c:"078600",ch:"소재(실리콘음극재)"},{n:"현대모비스",c:"012330",ch:"팩·BMS"}],files:[]},
-  "방산·우주항공":{vc:["핵심부품·소재","체계개발·제조","함정·잠수함","수출·MRO","우주·위성"],vcDesc:"수출계약·국방예산·지정학리스크. 수주는 3~5년 매출로 인식.",stocks:[{n:"한화에어로스페이스",c:"012450",ch:"체계개발(자주포·항공엔진)"},{n:"현대로템",c:"064350",ch:"체계개발(K2전차·궤도차량)"},{n:"LIG넥스원",c:"079550",ch:"체계개발(유도무기)"},{n:"한국항공우주",c:"047810",ch:"체계개발(KF-21·FA-50)"},{n:"한화오션",c:"042660",ch:"함정(잠수함·호위함)"},{n:"HD현대중공업",c:"329180",ch:"함정(상륙함·조계함)"},{n:"풍산",c:"103140",ch:"부품·소재(탄약·동합금)"},{n:"한화시스템",c:"272210",ch:"부품·소재(레이더·항전)"},{n:"쎄트렉아이",c:"099320",ch:"우주(관측위성)"},{n:"인텔리안테크",c:"189300",ch:"우주(위성안테나)"}],files:[]},
-  "조선·해운":{vc:["선박설계","기자재공급","선박건조","해운(운영)","해체·리사이클"],vcDesc:"LNG선수주잔고·선가·BDI·SCFI·IMO친환경규제가 핵심.",stocks:[{n:"HD현대중공업",c:"329180",ch:"건조(LNG선·컨테이너·VLCC)"},{n:"삼성중공업",c:"010140",ch:"건조(LNG선·해양플랜트)"},{n:"한화오션",c:"042660",ch:"건조(잠수함·LNG선)"},{n:"HD한국조선해양",c:"009540",ch:"기자재(엔진)·지주"},{n:"한화엔진",c:"082740",ch:"기자재(선박용저속엔진)"},{n:"동성화인텍",c:"033500",ch:"기자재(LNG보냉재)"},{n:"태광",c:"023160",ch:"기자재(피팅·밸브·배관)"},{n:"세진중공업",c:"075580",ch:"기자재(선박블록)"},{n:"HMM",c:"011200",ch:"해운(컨테이너·벌크)"},{n:"팬오션",c:"028670",ch:"해운(벌크·탱커)"}],files:[]},
-  "건설·인프라":{vc:["설계·엔지니어링","건자재공급","시공(종합건설)","분양·임대","유지보수"],vcDesc:"분양시장·SOC예산·해외수주·금리가 드라이버.",stocks:[{n:"현대건설",c:"000720",ch:"종합건설(주택·원전시공)"},{n:"GS건설",c:"006360",ch:"종합건설(자이브랜드)"},{n:"DL이앤씨",c:"375500",ch:"종합건설(마크로브랜드)"},{n:"대우건설",c:"047040",ch:"종합건설(푸르지오)"},{n:"삼성엔지니어링",c:"028050",ch:"설계·EPC(석유화학·가스)"},{n:"쌍용C&E",c:"003410",ch:"건자재(시멘트국내1위)"},{n:"KCC",c:"002380",ch:"건자재(유리·도료·실리콘)"},{n:"HDC현대산업개발",c:"294870",ch:"분양·개발(아이파크)"}],files:[]},
-  "자동차·전기차":{vc:["원재료(철강·알루미늄)","부품(Tier1·Tier2)","완성차제조","판매·딜러","A/S·부품교체"],vcDesc:"글로벌판매량·EV전환속도·환율(원/달러)·자율주행이 드라이버.",stocks:[{n:"현대차",c:"005380",ch:"완성차(아이오닉·수소)"},{n:"기아",c:"000270",ch:"완성차(EV6·EV9)"},{n:"현대모비스",c:"012330",ch:"Tier1(섀시·코크핏·전장)"},{n:"HL만도",c:"204320",ch:"Tier1(조향·브레이크·ADAS)"},{n:"한온시스템",c:"018880",ch:"Tier1(냉난방시스템)"},{n:"현대위아",c:"011210",ch:"Tier1(구동계·엔진)"},{n:"현대제철",c:"004020",ch:"원재료(자동차강판)"},{n:"성우하이텍",c:"015750",ch:"Tier2(차체부품)"},{n:"서연이화",c:"200880",ch:"Tier2(내외장재)"}],files:[]},
-  "AI·소프트웨어":{vc:["AI반도체(GPU·NPU)","서버·데이터센터","클라우드·플랫폼","AI솔루션·서비스","최종사용자"],vcDesc:"빅테크CAPEX·AI모델발전·B2B AI도입·데이터센터전력수요가 드라이버.",stocks:[{n:"삼성전자",c:"005930",ch:"AI반도체(HBM·파운드리)"},{n:"SK하이닉스",c:"000660",ch:"AI반도체(HBM글로벌선두)"},{n:"네이버",c:"035420",ch:"클라우드·플랫폼(HyperCLOVA X)"},{n:"카카오",c:"035720",ch:"플랫폼(카카오브레인·AI)"},{n:"KT",c:"030200",ch:"통신·AI플랫폼·IDC"},{n:"솔트룩스",c:"304100",ch:"AI솔루션(자연어처리)"},{n:"뷰노",c:"338220",ch:"AI솔루션(의료AI)"}],files:[]},
-  "바이오·제약":{vc:["신약연구(Discovery)","임상시험(Clinical)","허가·출시","생산(CDMO)","유통·판매"],vcDesc:"임상결과·기술이전(L/O)·CDMO수주·특허만료가 핵심 이벤트.",stocks:[{n:"삼성바이오로직스",c:"207940",ch:"CDMO(항체위탁생산글로벌1위)"},{n:"셀트리온",c:"068270",ch:"바이오시밀러(람시마·트룩시마)"},{n:"유한양행",c:"000100",ch:"신약연구(오픈이노베이션)"},{n:"한미약품",c:"128940",ch:"신약연구(LAPSCOVERY)"},{n:"SK바이오사이언스",c:"302440",ch:"CDMO(백신·mRNA)"},{n:"HLB",c:"028300",ch:"신약(항암)"},{n:"종근당",c:"185750",ch:"제약(전문의약품·제네릭)"},{n:"녹십자",c:"006280",ch:"제약(혈액제제·백신)"},{n:"씨젠",c:"096530",ch:"진단(분자진단·PCR)"}],files:[]},
-  "원전·에너지":{vc:["핵연료","원자로설계·제작","건설·시공","발전운영","해체·폐기물"],vcDesc:"에너지정책·원전수출(체코·폴란드)·SMR기술·탄소중립정책이 드라이버.",stocks:[{n:"두산에너빌리티",c:"034020",ch:"원자로·증기발생기·터빈제작"},{n:"한국전력기술",c:"052690",ch:"원전설계·엔지니어링"},{n:"한전KPS",c:"051600",ch:"원전정비·유지보수"},{n:"비에이치아이",c:"083650",ch:"원전기자재(열교환기)"},{n:"우진",c:"099440",ch:"원전기자재(계측기기)"},{n:"보성파워텍",c:"006910",ch:"원전기자재(배관·구조물)"},{n:"현대건설",c:"000720",ch:"원전건설·시공"},{n:"두산퓨얼셀",c:"336260",ch:"수소연료전지"},{n:"일진하이솔루스",c:"271940",ch:"수소(수소탱크)"},{n:"효성중공업",c:"298040",ch:"수소(액화수소)"}],files:[]},
-  "금융":{vc:["수신(예금·보험료)","여신(대출·투자)","수수료서비스","IB·자본시장","핀테크·디지털"],vcDesc:"기준금리·가계부채·거래대금·배당이 드라이버. 10~12월 배당시즌 강세.",stocks:[{n:"KB금융",c:"105560",ch:"은행지주(국민은행·자산1위)"},{n:"신한지주",c:"055550",ch:"은행지주(신한은행·카드)"},{n:"하나금융지주",c:"086790",ch:"은행지주(하나은행)"},{n:"우리금융지주",c:"316140",ch:"은행지주(우리은행)"},{n:"메리츠금융지주",c:"138040",ch:"보험·증권통합지주"},{n:"삼성생명",c:"032830",ch:"보험(생명보험1위)"},{n:"삼성화재",c:"000810",ch:"보험(손해보험1위)"},{n:"미래에셋증권",c:"006800",ch:"증권(자산관리·IB)"},{n:"키움증권",c:"039490",ch:"증권(온라인거래점유율1위)"},{n:"카카오뱅크",c:"323410",ch:"핀테크(인터넷전문은행)"}],files:[]},
-  "전력기기·전기장비":{vc:["발전설비","송전·변전(변압기·GIS)","배전·전선","전력부품","전력수요처"],vcDesc:"AI·데이터센터전력폭증·글로벌노후전력망교체(변압기슈퍼사이클)·신재생계통연계.",stocks:[{n:"HD현대일렉트릭",c:"267260",ch:"변압기·GIS(초고압변압기글로벌3위)"},{n:"효성중공업",c:"298040",ch:"변압기·차단기·HVDC"},{n:"일진전기",c:"103590",ch:"변압기·중전기기"},{n:"LS일렉트릭",c:"010120",ch:"배전·전선(배전반·자동화·ESS)"},{n:"대한전선",c:"001440",ch:"배전·전선(초고압전력케이블)"},{n:"두산에너빌리티",c:"034020",ch:"발전설비(가스터빈·원자로)"},{n:"제룡전기",c:"033100",ch:"전력부품(몰드변압기·배전반)"}],files:[]},
-  "항공·여행·레저":{vc:["항공기·MRO","항공운송","여행·관광","면세·쇼핑","레저·카지노"],vcDesc:"국제선여객수·유가·환율·한류인바운드관광이 드라이버.",stocks:[{n:"대한항공",c:"003490",ch:"항공운송(FSC1위·아시아나합병)"},{n:"제주항공",c:"089590",ch:"항공운송(LCC1위)"},{n:"진에어",c:"272450",ch:"항공운송(한진그룹LCC)"},{n:"하나투어",c:"039130",ch:"여행·관광(여행사1위)"},{n:"호텔신라",c:"008770",ch:"면세·쇼핑(면세점·호텔)"},{n:"강원랜드",c:"035250",ch:"레저·카지노(내국인카지노독점)"},{n:"파라다이스",c:"034230",ch:"레저·카지노(외국인카지노·인천)"}],files:[]},
-  "로봇·자동화":{vc:["핵심부품(감속기·서보모터)","로봇제조(OEM)","SI·소프트웨어","자동화설비(FA)","최종적용"],vcDesc:"인구감소·인건비상승·AI기술·물류자동화·정부로봇육성정책이 드라이버.",stocks:[{n:"레인보우로보틱스",c:"277810",ch:"로봇제조(이족보행·다관절)"},{n:"두산로보틱스",c:"454910",ch:"로봇제조(협동로봇글로벌Top5)"},{n:"에스피지",c:"058610",ch:"핵심부품(감속기·서보모터)"},{n:"삼익THK",c:"004380",ch:"핵심부품(LM가이드·정밀부품)"},{n:"로보스타",c:"090360",ch:"SI·소프트웨어(직교로봇·물류이송)"},{n:"뉴로메카",c:"348340",ch:"SI·소프트웨어(협동로봇·AI제어)"},{n:"현대무벡스",c:"115160",ch:"자동화설비(물류자동화·AS/RS)"},{n:"유진로봇",c:"056080",ch:"자동화설비(자율주행AGV·AMR)"}],files:[]},
-  "게임":{vc:["게임엔진·툴","게임개발","퍼블리싱","플랫폼·스토어","이스포츠·IP확장"],vcDesc:"신작출시·흥행·글로벌시장확대·AI기술도입·규제환경이 드라이버.",stocks:[{n:"크래프톤",c:"259960",ch:"PC·콘솔(배틀그라운드·글로벌FPS)"},{n:"엔씨소프트",c:"036570",ch:"PC·콘솔(리니지·MMORPG IP)"},{n:"넷마블",c:"251270",ch:"모바일(세븐나이츠·다작)"},{n:"펄어비스",c:"263750",ch:"PC·콘솔(검은사막·붉은사막)"},{n:"카카오게임즈",c:"293490",ch:"퍼블리싱(카카오플랫폼기반)"},{n:"컴투스",c:"078340",ch:"모바일(서머너즈워·글로벌RPG)"}],files:[]},
-  "신재생에너지":{vc:["소재·부품","모듈·시스템","EPC·시공","발전·운영","ESS·스마트그리드"],vcDesc:"IRA·탄소중립정책·전력수요증가·LCOE하락·해상풍력확대가 드라이버.",stocks:[{n:"한화솔루션",c:"009830",ch:"모듈(태양광모듈글로벌Top5)"},{n:"OCI",c:"010060",ch:"소재(폴리실리콘·태양광소재)"},{n:"씨에스윈드",c:"112610",ch:"소재(풍력타워글로벌1위)"},{n:"두산에너빌리티",c:"034020",ch:"모듈(해상풍력터빈·나셀)"},{n:"두산퓨얼셀",c:"336260",ch:"소재(수소연료전지·SOFC)"},{n:"삼성SDI",c:"006400",ch:"ESS(배터리글로벌공급)"},{n:"LG에너지솔루션",c:"373220",ch:"ESS(배터리)"},{n:"LS일렉트릭",c:"010120",ch:"ESS(PCS·인버터·ESS연계)"}],files:[]}
-};
-var _tsCur = null;
-var _tsDrag = null;
-
-window._tsInit = function(){
-  if(!state.themeStocks){state.themeStocks=JSON.parse(JSON.stringify(TS_THEMES));}
-  Object.keys(TS_THEMES).forEach(function(k){
-    if(!state.themeStocks[k])state.themeStocks[k]=JSON.parse(JSON.stringify(TS_THEMES[k]));
-    if(!state.themeStocks[k].files)state.themeStocks[k].files=[];
-    (state.themeStocks[k].stocks||[]).forEach(function(s){if(!s.files)s.files=[];});
-  });
-  _tsCur=Object.keys(state.themeStocks)[0];
-};
-
-window.renderThemeStocks=function(){
-  if(!_tsCur||!state.themeStocks[_tsCur])_tsCur=Object.keys(state.themeStocks)[0];
-  var tabEl=document.getElementById("ts-theme-tabs");if(!tabEl)return;
-  var h="";
-  Object.keys(state.themeStocks).forEach(function(t){
-    var a=t===_tsCur;
-    h+="<button data-t=\""+t.replace(/&/g,"&amp;").replace(/"/g,"&quot;")+"\" onclick=\"tsSwitchTheme(this.dataset.t)\" style=\"padding:5px 13px;border-radius:18px;font-size:12px;cursor:pointer;border:1px solid "+(a?"var(--accent)":"var(--border)")+";background:"+(a?"var(--accent)":"var(--card)")+";color:"+(a?"#fff":"var(--text2)")+";font-family:inherit;white-space:nowrap;transition:.15s;margin-bottom:4px\">"+t+"</button>";
-  });
-  h+="<button onclick=\"tsAddTheme()\" style=\"padding:5px 13px;border-radius:18px;font-size:12px;cursor:pointer;border:1px dashed var(--border);background:transparent;color:var(--text2);font-family:inherit;white-space:nowrap;margin-bottom:4px\">+ 새 테마</button>";
-  tabEl.innerHTML=h;
-  _tsPanelRender();
-};
-window.tsSwitchTheme=function(t){_tsCur=t;window.renderThemeStocks();};
-function _tsPanelRender(){
-  var td=state.themeStocks[_tsCur];if(!td)return;
-  var te=document.getElementById("ts-panel-title");if(te)te.textContent=_tsCur;
-  var ce=document.getElementById("ts-panel-count");if(ce)ce.textContent=(td.stocks||[]).length+" / 20개";
-  var le=document.getElementById("ts-limit-msg");if(le)le.style.display=(td.stocks||[]).length>=20?"block":"none";
-  var vcw=document.getElementById("ts-vc-wrap");
-  if(td.vc&&td.vc.length){
-    if(vcw)vcw.style.display="block";
-    var vcs=document.getElementById("ts-vc-steps");
-    if(vcs){var vh="";td.vc.forEach(function(s,i){if(i>0)vh+="<span style=\"color:var(--accent);font-size:12px;margin:0 4px\">→</span>";vh+="<span style=\"background:var(--accent2);color:var(--text);padding:3px 9px;font-size:11px;font-weight:600;border-radius:4px;white-space:nowrap\">"+s+"</span>";});vcs.innerHTML=vh;}
-    var vcd=document.getElementById("ts-vc-desc");if(vcd)vcd.textContent=td.vcDesc||"";
-  }else{if(vcw)vcw.style.display="none";}
-  _tsRFFiles();_tsRList();
-}
-function _tsRFFiles(){
-  var el=document.getElementById("ts-theme-files");if(!el)return;
-  var h="";
-  (state.themeStocks[_tsCur].files||[]).forEach(function(f,i){
-    h+="<span style=\"display:inline-flex;align-items:center;gap:5px;background:var(--active);border:1px solid var(--accent2);border-radius:9px;padding:3px 9px;font-size:11px\"><a href=\""+f.url+"\" download=\""+f.name+"\" target=\"_blank\" style=\"color:var(--blue);text-decoration:none\">"+_tsFI(f.name)+" "+(f.name.length>16?f.name.slice(0,14)+"..":f.name)+"</a><button data-i=\""+i+"\" onclick=\"tsDelTF(+this.dataset.i)\" style=\"background:none;border:none;cursor:pointer;color:#ccc;font-size:11px;padding:0 2px\">✕</button></span>";
-  });
-  el.innerHTML=h;
-}
-function _tsRList(){
-  var list=document.getElementById("ts-stock-list");if(!list)return;
-  var stocks=state.themeStocks[_tsCur].stocks||[];
-  var h="";
-  stocks.forEach(function(s,i){
-    var rc=i===0?"var(--accent)":i===1?"#9da8ad":i===2?"#a07060":"var(--text2)";
-    var rs=i===0?"15px":i===1?"14px":i===2?"13px":"12px";
-    var fh="";
-    if(s.files&&s.files.length){fh="<div style=\"display:flex;gap:5px;flex-wrap:wrap;margin-top:3px\">";s.files.forEach(function(f){fh+="<button data-url=\""+f.url+"\" data-name=\""+f.name+"\" onclick=\"tsOF(this.dataset.url,this.dataset.name)\" style=\"font-size:10px;color:var(--blue);background:#e8ecfd;padding:1px 7px;border-radius:5px;border:none;cursor:pointer;font-family:inherit\">"+_tsFI(f.name)+" "+(f.name.length>14?f.name.slice(0,12)+"..":f.name)+"</button>";});fh+="</div>";}
-    h+="<li draggable=\"true\" data-idx=\""+i+"\" style=\"display:flex;align-items:center;gap:9px;padding:8px 16px;border-bottom:1px solid var(--border);transition:background .1s\" ondragstart=\"tsDS(event,"+i+")\" ondragover=\"tsDO(event,"+i+")\" ondragleave=\"tsDL(event)\" ondrop=\"tsDP(event,"+i+")\">";
-    h+="<span style=\"font-size:"+rs+";font-weight:700;min-width:22px;text-align:center;color:"+rc+"\">"+(i+1)+"</span>";
-    h+="<span style=\"cursor:grab;color:#ccc;font-size:16px;padding:0 2px;user-select:none\">⠿</span>";
-    h+="<div style=\"flex:1;min-width:0\"><div style=\"display:flex;align-items:center;gap:6px;flex-wrap:wrap\"><span style=\"font-size:13px;font-weight:600\">"+s.n+"</span>";
-    if(s.c&&s.c!=="-")h+="<span style=\"font-size:10px;color:var(--text2);background:#f0e8d8;padding:1px 6px;border-radius:5px\">"+s.c+"</span>";
-    if(s.ch)h+="<span style=\"font-size:10px;color:var(--blue);background:#e8ecfd;padding:1px 7px;border-radius:5px\">"+s.ch+"</span>";
-    h+="</div>";
-    if(s.memo)h+="<div style=\"font-size:10px;color:var(--text2);margin-top:2px\">"+s.memo+"</div>";
-    h+=fh+"</div>";
-    h+="<label style=\"width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0\">📎<input type=\"file\" multiple style=\"display:none\" data-i=\""+i+"\" onchange=\"tsHSF(this,+this.dataset.i)\"></label>";
-    h+="<button data-i=\""+i+"\" onclick=\"tsEd(+this.dataset.i)\" style=\"width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;flex-shrink:0\">✏️</button>";
-    h+="<button data-i=\""+i+"\" onclick=\"tsMU(+this.dataset.i)\""+(i===0?" disabled":"")+" style=\"width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;flex-shrink:0"+(i===0?";opacity:.3":"")+";\">▲</button>";
-    h+="<button data-i=\""+i+"\" onclick=\"tsMD(+this.dataset.i)\""+(i===stocks.length-1?" disabled":"")+" style=\"width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;flex-shrink:0"+(i===stocks.length-1?";opacity:.3":"")+";\">▼</button>";
-    h+="<button data-i=\""+i+"\" onclick=\"tsDel(+this.dataset.i)\" style=\"width:26px;height:26px;border-radius:7px;border:1px solid #fbc8c8;background:transparent;cursor:pointer;font-size:12px;color:var(--red);flex-shrink:0\">✕</button></li>";
-  });
-  list.innerHTML=h;
-  list.querySelectorAll("li").forEach(function(li){
-    li.addEventListener("mouseover",function(){this.style.background="#fffdf8";});
-    li.addEventListener("mouseout",function(){this.style.background="";});
-  });
-}
-window.tsAddStock=function(){var n=(document.getElementById("ts-add-name")||{}).value;if(!n||!n.trim())return;var td=state.themeStocks[_tsCur];if(!td)return;if((td.stocks||[]).length>=20){var l=document.getElementById("ts-limit-msg");if(l)l.style.display="block";return;}td.stocks.push({n:n.trim(),c:(document.getElementById("ts-add-code")||{}).value||"-",ch:(document.getElementById("ts-add-chain")||{}).value||"",files:[]});["ts-add-name","ts-add-code","ts-add-chain"].forEach(function(id){var e=document.getElementById(id);if(e)e.value="";});save();_tsPanelRender();};
-window.tsDel=function(i){if(!confirm("삭제할까요?"))return;state.themeStocks[_tsCur].stocks.splice(i,1);save();_tsPanelRender();};
-window.tsMU=function(i){if(i===0)return;var a=state.themeStocks[_tsCur].stocks;var t=a[i-1];a[i-1]=a[i];a[i]=t;save();_tsRList();};
-window.tsMD=function(i){var a=state.themeStocks[_tsCur].stocks;if(i===a.length-1)return;var t=a[i+1];a[i+1]=a[i];a[i]=t;save();_tsRList();};
-window.tsDS=function(e,i){_tsDrag=i;e.dataTransfer.effectAllowed="move";setTimeout(function(){var el=document.querySelector("#ts-stock-list [data-idx=\""+i+"\"]");if(el)el.style.opacity=".4";},0);};
-window.tsDO=function(e,i){e.preventDefault();document.querySelectorAll("#ts-stock-list li").forEach(function(el){el.style.background="";});var el=document.querySelector("#ts-stock-list [data-idx=\""+i+"\"]");if(el)el.style.background="#fff3dc";};
-window.tsDL=function(e){e.currentTarget.style.background="";};
-window.tsDP=function(e,i){e.preventDefault();document.querySelectorAll("#ts-stock-list li").forEach(function(el){el.style.opacity="";el.style.background="";});if(_tsDrag===null||_tsDrag===i)return;var a=state.themeStocks[_tsCur].stocks;var m=a.splice(_tsDrag,1)[0];a.splice(i,0,m);_tsDrag=null;save();_tsRList();};
-window.tsAddTheme=function(){var n=prompt("새 테마 이름:");if(!n||!n.trim())return;if(state.themeStocks[n.trim()]){alert("이미 있는 테마예요!");return;}state.themeStocks[n.trim()]={vc:[],vcDesc:"",stocks:[],files:[]};_tsCur=n.trim();save();window.renderThemeStocks();};
-window.tsHandleThemeFile=function(input){_tsP(Array.from(input.files),"theme",null);input.value="";};
-window.tsHSF=function(input,i){_tsP(Array.from(input.files),"stock",i);input.value="";};
-window.tsDelTF=function(i){state.themeStocks[_tsCur].files.splice(i,1);save();_tsRFFiles();};
-function _tsP(files,type,idx){Promise.all(files.map(function(f){return new Promise(function(res){var r=new FileReader();r.onload=function(e){res({name:f.name,url:e.target.result});};r.readAsDataURL(f);});})).then(function(results){if(type==="theme"){if(!state.themeStocks[_tsCur].files)state.themeStocks[_tsCur].files=[];[].push.apply(state.themeStocks[_tsCur].files,results);save();_tsRFFiles();}else{if(!state.themeStocks[_tsCur].stocks[idx].files)state.themeStocks[_tsCur].stocks[idx].files=[];[].push.apply(state.themeStocks[_tsCur].stocks[idx].files,results);save();_tsRList();}});}
-window.tsOF=function(url,name){var a=document.createElement("a");a.href=url;a.download=name;a.target="_blank";document.body.appendChild(a);a.click();document.body.removeChild(a);};
-window.tsEd=function(i){var s=state.themeStocks[_tsCur].stocks[i];var n=prompt("종목명:",s.n);if(n===null)return;var c=prompt("코드:",s.c);if(c===null)return;var ch=prompt("밸류체인 위치:",s.ch||"");if(ch===null)return;var m=prompt("메모:",s.memo||"");if(m===null)return;s.n=n.trim()||s.n;s.c=c.trim()||"-";s.ch=ch.trim();s.memo=m.trim();save();_tsPanelRender();};
-function _tsFI(name){var e=(name||"").split(".").pop().toLowerCase();return({pdf:"📄",doc:"📝",docx:"📝",xls:"📊",xlsx:"📊",ppt:"📊",pptx:"📊",png:"🖼️",jpg:"🖼️",jpeg:"🖼️",gif:"🖼️",webp:"🖼️",zip:"📦",csv:"📊",txt:"📃"})[e]||"📎";}
-document.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target&&e.target.id==="ts-add-name")window.tsAddStock();});
-
 </script>
 
 <!-- 모바일 하단 탭바 -->
