@@ -2233,86 +2233,71 @@ function _tsRContent(){
   while(el.firstChild)el.removeChild(el.firstChild);
   var td=state.themeStocks[_tsC];if(!td||!td.subs)return;
 
+  // 2열 그리드
+  var grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:10px';
+
   td.subs.forEach(function(sub,si){
+    var card=document.createElement('div');
+    card.style.cssText='border:1px solid var(--border);border-radius:10px;overflow:hidden';
+
     // 중분류 헤더
     var hdr=document.createElement('div');
-    hdr.style.cssText='background:#1a2744;color:#fff;padding:9px 16px;border-radius:10px 10px 0 0;margin-top:12px;display:flex;align-items:center;justify-content:space-between';
-    var htxt=document.createElement('span');htxt.style.cssText='font-size:13px;font-weight:700';htxt.textContent=sub.name;
-    hdr.appendChild(htxt);
-    var hbadge=document.createElement('span');hbadge.style.cssText='font-size:11px;color:rgba(255,255,255,.6)';hbadge.textContent='상위 '+Math.min(sub.stocks.length,5)+'종목';
-    hdr.appendChild(hbadge);
-    el.appendChild(hdr);
+    hdr.style.cssText='background:#1a2744;color:#fff;padding:7px 12px;display:flex;align-items:center;justify-content:space-between';
+    var htxt=document.createElement('span');htxt.style.cssText='font-size:12px;font-weight:700';htxt.textContent=sub.name;hdr.appendChild(htxt);
+    var hbadge=document.createElement('span');hbadge.style.cssText='font-size:10px;color:rgba(255,255,255,.55)';hbadge.textContent='TOP '+Math.min(sub.stocks.length,3);hdr.appendChild(hbadge);
+    card.appendChild(hdr);
 
-    // 테이블
-    var tbl=document.createElement('div');
-    tbl.style.cssText='border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;overflow:hidden;margin-bottom:4px';
-
-    // 헤더행
-    var thdr=document.createElement('div');
-    thdr.style.cssText='display:grid;grid-template-columns:'+((_tsEdit)?'32px ':'')+' 36px 1fr 80px 70px 60px 60px;background:#f5f0e8;border-bottom:1px solid var(--border)';
-    [_tsEdit?'체크':null,'순위','종목명','코드','상한가','재무','밸류체인'].forEach(function(h,hi){
-      if(h===null)return;
-      var th=document.createElement('div');th.style.cssText='padding:6px 10px;font-size:10px;font-weight:700;color:var(--text2)';th.textContent=h;
-      thdr.appendChild(th);
-    });
-    tbl.appendChild(thdr);
-
-    // 종목행 (상위 5개)
-    var top5=sub.stocks.slice(0,5);
-    top5.forEach(function(s,ri){
+    // 종목 3행
+    var top3=sub.stocks.slice(0,3);
+    top3.forEach(function(s,ri){
       var row=document.createElement('div');
-      row.style.cssText='display:grid;grid-template-columns:'+((_tsEdit)?'32px ':'')+' 36px 1fr 80px 70px 60px 60px;border-bottom:1px solid var(--border);align-items:center';
-      if(ri===top5.length-1)row.style.borderBottom='none';
+      row.style.cssText='display:flex;align-items:center;gap:7px;padding:6px 10px;border-bottom:1px solid var(--border)'+(ri===top3.length-1?';border-bottom:none':'');
       row.addEventListener('mouseover',function(){this.style.background='#fffdf8';});
       row.addEventListener('mouseout',function(){this.style.background='';});
 
-      // 체크박스 (편집 모드)
+      // 편집 체크박스
       if(_tsEdit){
-        var ck=document.createElement('div');ck.style.cssText='padding:6px 8px;display:flex;align-items:center;justify-content:center';
-        var cb=document.createElement('input');cb.type='checkbox';cb.style.cssText='width:14px;height:14px;accent-color:var(--accent);cursor:pointer';
-        var key=si+'-'+ri;
-        cb.checked=!!_tsChecked[key];
+        var cb=document.createElement('input');cb.type='checkbox';cb.style.cssText='width:13px;height:13px;accent-color:var(--accent);cursor:pointer;flex-shrink:0';
+        var key=si+'-'+ri;cb.checked=!!_tsChecked[key];
         (function(k){cb.addEventListener('change',function(){_tsChecked[k]=this.checked;});})(key);
-        ck.appendChild(cb);row.appendChild(ck);
+        row.appendChild(cb);
       }
 
       // 순위
-      var rankColors=['var(--accent)','#9da8ad','#a07060','var(--text2)','var(--text2)'];
-      var rk=document.createElement('div');rk.style.cssText='padding:6px 10px;font-weight:700;font-size:13px;color:'+rankColors[ri]+';text-align:center';rk.textContent=ri+1;row.appendChild(rk);
+      var rankColors=['var(--accent)','#9da8ad','#a07060'];
+      var rk=document.createElement('span');rk.style.cssText='font-size:13px;font-weight:700;min-width:16px;text-align:center;color:'+rankColors[ri];rk.textContent=ri+1;row.appendChild(rk);
 
       // 종목명
-      var nm=document.createElement('div');nm.style.cssText='padding:6px 10px;font-size:13px;font-weight:600';nm.textContent=s.n;row.appendChild(nm);
+      var nm=document.createElement('span');nm.style.cssText='font-size:12px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';nm.textContent=s.n;row.appendChild(nm);
 
-      // 코드
-      var cd=document.createElement('div');cd.style.cssText='padding:6px 10px;font-size:11px;color:var(--text2)';cd.textContent=s.c&&s.c!=='-'?s.c:'-';row.appendChild(cd);
+      // 상한가 배지
+      if(s.uh){var ub=document.createElement('span');ub.style.cssText='font-size:9px;background:#fef3c7;color:#d97706;padding:1px 5px;border-radius:4px;font-weight:600;white-space:nowrap;flex-shrink:0';ub.textContent=s.uh+'회';row.appendChild(ub);}
 
-      // 상한가
-      var uh=document.createElement('div');uh.style.cssText='padding:6px 10px;font-size:11px;text-align:center';
-      var uhsp=document.createElement('span');uhsp.style.cssText='background:#fef3c7;color:#d97706;padding:1px 6px;border-radius:5px;font-weight:600;font-size:10px';uhsp.textContent=s.uh+'회';
-      uh.appendChild(uhsp);row.appendChild(uh);
+      // 재무 배지
+      if(s.fi){var fc=s.fi==='A'?'#065f46':s.fi==='B'?'#1e40af':'#374151';var fbg=s.fi==='A'?'#d1fae5':s.fi==='B'?'#dbeafe':'#f3f4f6';var fb=document.createElement('span');fb.style.cssText='font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;color:'+fc+';background:'+fbg+';flex-shrink:0';fb.textContent=s.fi;row.appendChild(fb);}
 
-      // 재무
-      var fi=document.createElement('div');fi.style.cssText='padding:6px 10px;text-align:center';
-      var fisp=document.createElement('span');
-      var fc=s.fi==='A'?'#065f46':s.fi==='B'?'#1e40af':'#374151';
-      var fbg=s.fi==='A'?'#d1fae5':s.fi==='B'?'#dbeafe':'#f3f4f6';
-      fisp.style.cssText='font-size:10px;font-weight:700;padding:1px 7px;border-radius:5px;color:'+fc+';background:'+fbg;
-      fisp.textContent=s.fi;
-      fi.appendChild(fisp);row.appendChild(fi);
-
-      // 밸류체인 (중분류명 - 종목 자체 체인 없으면 중분류로)
-      var ch=document.createElement('div');ch.style.cssText='padding:6px 10px;font-size:10px;color:var(--text2)';ch.textContent=s.ch||sub.name;row.appendChild(ch);
-
-      tbl.appendChild(row);
+      card.appendChild(row);
     });
 
-    el.appendChild(tbl);
+    // 편집모드: 중분류 삭제 버튼
+    if(_tsEdit){
+      var delSub=document.createElement('div');
+      delSub.style.cssText='padding:4px 10px;background:#fafaf7;border-top:1px solid var(--border);text-align:right';
+      var ds=document.createElement('button');ds.className='btn btn-danger btn-sm';ds.style.fontSize='10px';ds.textContent='중분류 삭제';
+      (function(idx){ds.addEventListener('click',function(){if(!confirm('"'+sub.name+'" 중분류를 삭제할까요?'))return;state.themeStocks[_tsC].subs.splice(idx,1);save();window.renderThemeStocks();});})(si);
+      delSub.appendChild(ds);card.appendChild(delSub);
+    }
+
+    grid.appendChild(card);
   });
 
-  // 중분류 추가 (편집모드)
+  el.appendChild(grid);
+
+  // 편집모드: 중분류 추가 + 종목추가 select 채우기
   if(_tsEdit){
-    var addSub=document.createElement('div');
-    addSub.style.cssText='display:flex;gap:8px;align-items:center;margin-top:8px';
+    var addSubRow=document.createElement('div');
+    addSubRow.style.cssText='display:flex;gap:8px;align-items:center;margin-top:10px';
     var inp=document.createElement('input');inp.placeholder='중분류(밸류체인) 이름 입력...';
     inp.style.cssText='flex:1;padding:7px 11px;border:1px dashed var(--accent);border-radius:8px;font-size:12px;font-family:inherit';
     var addSubBtn=document.createElement('button');addSubBtn.className='btn btn-outline btn-sm';addSubBtn.textContent='+ 중분류 추가';
@@ -2321,10 +2306,9 @@ function _tsRContent(){
       state.themeStocks[_tsC].subs.push({name:name,stocks:[]});
       inp.value='';save();window.renderThemeStocks();
     });
-    addSub.appendChild(inp);addSub.appendChild(addSubBtn);
-    el.appendChild(addSub);
+    addSubRow.appendChild(inp);addSubRow.appendChild(addSubBtn);
+    el.appendChild(addSubRow);
 
-    // 종목추가 select에 중분류 목록 채우기
     var sel=document.getElementById('ts-add-sub');
     if(sel){
       while(sel.firstChild)sel.removeChild(sel.firstChild);
@@ -2334,6 +2318,7 @@ function _tsRContent(){
     }
   }
 }
+
 
 // 체크된 종목 위/아래 이동
 function _tsMoveChecked(dir){
