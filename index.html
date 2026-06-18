@@ -3283,8 +3283,12 @@ function renderMarketCal(){
 
 function mkCellClick(ds){
   var data=state.marketCalendar[ds];
-  if(data){_mkSel=(_mkSel===ds)?null:ds;renderMarketCal();}
-  else mkOpenInputModal(ds);
+  if(data){
+    if(_mkSel===ds){_mkSel=null;renderMarketCal();}
+    else{_mkSel=ds;renderMarketCal();}
+  } else {
+    mkOpenInputModal(ds);
+  }
 }
 
 function mkRenderDetail(ds){
@@ -3403,10 +3407,10 @@ function mkRenderStkRows(){
       '<select style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" onchange="_mkEditStocks['+i+'].theme=this.value">'+
         '<option value="">-</option>'+allThemes.map(function(t){return '<option value="'+t+'"'+(s.theme===t?' selected':'')+'>'+t+'</option>';}).join('')+
       '</select>'+
-      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="현재가" value="'+(s.price||'')+'" oninput="_mkEditStocks['+i+'].price=this.value">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="현재가" value="'+(s.price||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_mkEditStocks['+i+'].price=this.value">'+
       '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="+0.00%/상한가" value="'+(s.change||'')+'" oninput="_mkEditStocks['+i+'].change=this.value">'+
-      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="거래대금" value="'+(s.vol||'')+'" oninput="_mkEditStocks['+i+'].vol=this.value">'+
-      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:center;font-family:inherit" placeholder="HH:MM" value="'+(s.time||'')+'" oninput="_mkEditStocks['+i+'].time=this.value">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="거래대금(억)" value="'+(s.vol||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_mkEditStocks['+i+'].vol=this.value">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:center;font-family:inherit" placeholder="09:30" maxlength="5" value="'+(s.time||'')+'" oninput="(function(el,idx){var v=el.value.replace(/[^0-9]/g,\'\');if(v.length>=3)v=v.slice(0,2)+\':\'+v.slice(2,4);el.value=v;_mkEditStocks[idx].time=v;})(this,'+i+')">'+
       '<button style="background:none;border:none;cursor:pointer;color:#ccc;font-size:14px;padding:0" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'#ccc\'" onclick="_mkEditStocks.splice('+i+',1);mkRenderStkRows()">✕</button>'+
     '</div>';
   }).join('');
