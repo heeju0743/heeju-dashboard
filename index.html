@@ -3139,7 +3139,14 @@ var MK_PALETTE=[
   {hex:'#166534',txt:'#fff',name:'다크그린'},
   {hex:'#4c1d95',txt:'#fff',name:'딥퍼플'},
 ];
-var MK_DEF={반도체:0,바이오:2,전력기기:15,조선:3,로봇:1,방산:10,'2차전지':7,AI:0,소재:8,소프트웨어:14,MLCC:4,양자:6};
+var MK_DEF={
+  '반도체':0,'2차전지':1,'방산·우주항공':2,'조선·해운':3,'건설·인프라':4,
+  '자동차·부품':5,'AI·소프트웨어':6,'바이오·제약':7,'원전·에너지':8,'금융':9,
+  '화학·정유':10,'철강·비철금속':11,'엔터·콘텐츠':12,'유통·소비재':13,'통신·플랫폼':14,
+  '전력기기·전기장비':15,'항공·여행·레저':2,'로봇·자동화':1,'게임':4,'신재생에너지':8,
+  'AI':6,'반도체·AI':0,'MLCC':3,'바이오':7,'전력기기':15,'조선':3,'로봇':1,'방산':2,'소재':11,'소프트웨어':6,'양자':1
+};
+// 수기 테마 감지: state.themeStocks에 없으면 커스텀(빨간색)
 var _mkY=new Date().getFullYear(),_mkM=new Date().getMonth(),_mkTab='sector',_mkSel=null,_mkEditDate=null,_mkEditStocks=[];
 var _tsNewThemeColor=0,_tsPendingTheme=null;
 
@@ -3164,7 +3171,8 @@ function mkThemeColor(theme){
   }
   var idx=MK_DEF[theme];
   if(idx!==undefined)return MK_PALETTE[idx];
-  return MK_PALETTE[Math.abs((theme.charCodeAt(0)||0))%MK_PALETTE.length];
+  // 수기 테마 (20섹터/MK_DEF에 없는 경우) → 빨간색 바탕 흰글씨
+  return {hex:'#dc2626',txt:'#fff'};
 }
 
 function mkWeekdays(yr,mo){var r=[],dim=new Date(yr,mo+1,0).getDate();for(var d=1;d<=dim;d++){var dw=new Date(yr,mo,d).getDay();if(dw>0&&dw<6)r.push(d);}return r;}
@@ -3404,11 +3412,10 @@ function mkRenderStkRows(){
   el.innerHTML=_mkEditStocks.map(function(s,i){
     return '<div style="display:grid;grid-template-columns:2fr 1.3fr 1.3fr 1fr 1.3fr 80px 28px;gap:4px;margin-bottom:4px">'+
       '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" placeholder="종목명" value="'+(s.name||'')+'" oninput="_mkEditStocks['+i+'].name=this.value">'+
-      '<select style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" onchange="_mkEditStocks['+i+'].theme=this.value">'+
-        '<option value="">-</option>'+allThemes.map(function(t){return '<option value="'+t+'"'+(s.theme===t?' selected':'')+'>'+t+'</option>';}).join('')+
-      '</select>'+
+      (function(){var dlId='mkThemeDl'+i;return '<input list="'+dlId+'" style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" placeholder="테마" value="'+(s.theme||'')+'" oninput="_mkEditStocks['+i+'].theme=this.value">'+
+        '<datalist id="'+dlId+'">'+allThemes.map(function(t){return '<option value="'+t+'">';}).join('')+'</datalist>';})()+
       '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="현재가" value="'+(s.price||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_mkEditStocks['+i+'].price=this.value">'+
-      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="+0.00%/상한가" value="'+(s.change||'')+'" oninput="_mkEditStocks['+i+'].change=this.value">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="+0.00%" value="'+(s.change||'')+'" oninput="(function(el,idx){var v=el.value;if(v===\'상한가\'||v===\'+30%\'){_mkEditStocks[idx].change=v;return;}v=v.replace(/%/g,\'\');if(v&&v!==\'+\'&&v!==\'-\'){el.value=v+\'%\';}else{el.value=v;}_mkEditStocks[idx].change=el.value;})(this,'+i+')">'+
       '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="거래대금(억)" value="'+(s.vol||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_mkEditStocks['+i+'].vol=this.value">'+
       '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:center;font-family:inherit" placeholder="09:30" maxlength="5" value="'+(s.time||'')+'" oninput="(function(el,idx){var v=el.value.replace(/[^0-9]/g,\'\');if(v.length>=3)v=v.slice(0,2)+\':\'+v.slice(2,4);el.value=v;_mkEditStocks[idx].time=v;})(this,'+i+')">'+
       '<button style="background:none;border:none;cursor:pointer;color:#ccc;font-size:14px;padding:0" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'#ccc\'" onclick="_mkEditStocks.splice('+i+',1);mkRenderStkRows()">✕</button>'+
