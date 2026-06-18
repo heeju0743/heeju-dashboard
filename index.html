@@ -2586,32 +2586,7 @@ var _tsNewThemeColor=0,_tsPendingTheme=null;
 
 function mkInitData(){
   if(!state.marketCalendar)state.marketCalendar={};
-  if(!state.marketCalendar['2026-06-18']){
-    state.marketCalendar['2026-06-18']={
-      sectors:['반도체','바이오','전력기기'],
-      stocks:[
-        {name:'SK하이닉스',theme:'반도체',price:'2,502,000',change:'+5.04%',vol:'18.37조',time:''},
-        {name:'SK스퀘어',theme:'반도체',price:'1,596,000',change:'+6.33%',vol:'2.18조',time:''},
-        {name:'한화오션',theme:'조선',price:'135,000',change:'+4.49%',vol:'1.60조',time:''},
-        {name:'디앤디파마텍',theme:'바이오',price:'107,900',change:'+17.79%',vol:'1.18조',time:''},
-        {name:'제주반도체',theme:'반도체',price:'111,500',change:'+10.18%',vol:'9,972억',time:''},
-        {name:'대원전선',theme:'전력기기',price:'12,330',change:'+10.58%',vol:'5,789억',time:''},
-        {name:'알테오젠',theme:'바이오',price:'371,000',change:'+5.25%',vol:'4,302억',time:''},
-        {name:'한화엔진',theme:'조선',price:'67,700',change:'+14.17%',vol:'3,047억',time:''},
-        {name:'동진쎄미켐',theme:'반도체',price:'63,500',change:'+5.31%',vol:'2,778억',time:''},
-        {name:'가온전선',theme:'전력기기',price:'341,000',change:'+29.90%',vol:'2,286억',time:''},
-        {name:'이노테크',theme:'반도체',price:'19,810',change:'상한가',vol:'107억',time:'08:09'},
-        {name:'한솔테크닉스',theme:'반도체',price:'15,340',change:'상한가',vol:'812억',time:'14:40'},
-      ],
-      market:{
-        kospi:'8,864.24',kospiC:'+1.58%',kosdaq:'1,031.96',kosdaqC:'+1.30%',
-        ndx:'30,445.25',ndxC:'+0.43%',
-        supKpInd:'+5,393',supKpFor:'-9,923',supKpIns:'+5,805',
-        supKdInd:'-201',supKdFor:'+320',supKdIns:'-155',
-        supFtInd:'-555',supFtFor:'-5,219',supFtIns:'+5,314',memo:''
-      }
-    };
-  }
+
 }
 
 function mkThemeColor(theme){
