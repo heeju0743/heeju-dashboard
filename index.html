@@ -7172,7 +7172,7 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     </div>
     <div class="modal-row">
       <label>페이지 <span style="font-size:10px;color:var(--text2)">(선택)</span></label>
-      <input id="bq-page" placeholder="42" style="width:120px" oninput="(function(el){var v=el.value.replace(/^P\.\s*/i,'');if(v&&!isNaN(v.replace(/[^0-9]/g,'')))el.value='P. '+v.replace(/[^0-9]/g,'');else if(v==='')el.value='';else el.value='P. '+v;})(this)" onfocus="(function(el){if(el.value==='P. '||el.value==='')el.value='P. ';})(this)">
+      <input id="bq-page" placeholder="예: 42, 42~45, 42·45" style="width:160px" oninput="(function(el){var v=el.value;if(!v.match(/^P\\. /))el.value='P. '+v.replace(/^P\\.?\\s*/i,'');})(this)" onfocus="(function(el){if(!el.value)el.value='P. ';})(this)" onblur="(function(el){if(el.value==='P. ')el.value='';})(this)">
     </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-book-quote')">취소</button>
