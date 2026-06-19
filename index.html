@@ -3157,21 +3157,28 @@ function mkInitData(){
 
 function mkThemeColor(theme){
   if(!theme)return{hex:'#888780',txt:'#fff'};
+  // 1) state.themeStocks에 직접 color 속성 있으면 우선
   if(state.themeStocks&&state.themeStocks[theme]&&state.themeStocks[theme].color!==undefined)
     return MK_PALETTE[state.themeStocks[theme].color]||MK_PALETTE[0];
+  // 2) MK_DEF 정확 매칭
+  if(MK_DEF[theme]!==undefined)return MK_PALETTE[MK_DEF[theme]];
+  // 3) MK_DEF 부분 매칭 (예: "반도체·AI" → "반도체", "AI" 등 포함 여부)
+  var defKeys=Object.keys(MK_DEF);
+  for(var i=0;i<defKeys.length;i++){
+    if(theme.indexOf(defKeys[i])>=0||defKeys[i].indexOf(theme)>=0)
+      return MK_PALETTE[MK_DEF[defKeys[i]]];
+  }
+  // 4) state.themeStocks 키 부분 매칭
   if(state.themeStocks){
-    var keys=Object.keys(state.themeStocks);
-    for(var k=0;k<keys.length;k++){
-      var subs=(state.themeStocks[keys[k]].subs||[]);
-      for(var s=0;s<subs.length;s++){
-        if(subs[s].name===theme&&subs[s].color!==undefined)
-          return MK_PALETTE[subs[s].color]||MK_PALETTE[0];
+    var tsKeys=Object.keys(state.themeStocks);
+    for(var j=0;j<tsKeys.length;j++){
+      if(theme.indexOf(tsKeys[j])>=0||tsKeys[j].indexOf(theme)>=0){
+        var colorIdx=MK_DEF[tsKeys[j]];
+        if(colorIdx!==undefined)return MK_PALETTE[colorIdx];
       }
     }
   }
-  var idx=MK_DEF[theme];
-  if(idx!==undefined)return MK_PALETTE[idx];
-  // 수기 테마 (20섹터/MK_DEF에 없는 경우) → 빨간색 바탕 흰글씨
+  // 5) 수기 테마 → 빨간색
   return {hex:'#dc2626',txt:'#fff'};
 }
 
