@@ -5441,6 +5441,7 @@ function openBookQuoteModal(bi){
       html+=
         '<div style="background:var(--active);border-radius:9px;padding:11px 13px;margin-bottom:8px;position:relative">'+
           '<div style="font-size:13px;line-height:1.8;color:var(--text);padding-right:60px">'+textHtml+'</div>'+
+          (q.img?'<div style="margin-top:8px"><img src="'+q.img+'" style="max-width:100%;max-height:220px;border-radius:7px;border:1px solid var(--border)"></div>':'')+
           (q.page?'<div style="font-size:10px;color:var(--text2);margin-top:4px">'+q.page+'</div>':'')+
           '<div style="position:absolute;top:8px;right:8px;display:flex;gap:4px">'+
             '<button data-bi="'+bi+'" data-qi="'+qi+'" class="bq-edit-btn" style="background:none;border:1px solid var(--border);cursor:pointer;font-size:10px;color:var(--text2);padding:2px 6px;border-radius:4px">✏️</button>'+
@@ -5506,6 +5507,7 @@ function openAddQuote(i){
   quoteBookIdx=i;quoteEditIdx=null;
   resetModalRichEditor('modal-book-quote','bq-text');
   document.getElementById('bq-page').value='';
+  bqResetImg();
   const titleEl=document.querySelector('#modal-book-quote .modal-title');
   const btnEl=document.querySelector('#modal-book-quote .btn-primary');
   if(titleEl)titleEl.textContent='✨ 감명깊은 문구 추가';
@@ -5517,6 +5519,8 @@ function openEditQuote(bi,qi){
   const q=state.books[bi].quotes[qi];if(!q)return;
   resetModalRichEditor('modal-book-quote','bq-text');
   document.getElementById('bq-page').value=q.page||'';
+  bqResetImg();
+  if(q.img){bqSetImgPreview(q.img);}
   const titleEl=document.querySelector('#modal-book-quote .modal-title');
   const btnEl=document.querySelector('#modal-book-quote .btn-primary');
   if(titleEl)titleEl.textContent='✏️ 문구 수정';
@@ -5535,7 +5539,9 @@ function openEditQuote(bi,qi){
 function saveBookQuote(){
   const text=document.getElementById('bq-text').value.trim();if(!text)return;
   if(!state.books[quoteBookIdx].quotes)state.books[quoteBookIdx].quotes=[];
+  const imgUrl=document.getElementById('bq-img-url').value.trim();
   const obj={text:text,page:document.getElementById('bq-page').value};
+  if(imgUrl)obj.img=imgUrl;
   if(quoteEditIdx!==null){
     state.books[quoteBookIdx].quotes[quoteEditIdx]=obj;
     quoteEditIdx=null;
@@ -5543,6 +5549,41 @@ function saveBookQuote(){
     state.books[quoteBookIdx].quotes.unshift(obj);
   }
   closeModal('modal-book-quote');save();renderBooks();
+}
+
+// ===== 독서노트 문구 이미지 처리 =====
+function bqResetImg(){
+  document.getElementById('bq-img-url').value='';
+  document.getElementById('bq-img-preview').style.display='none';
+  document.getElementById('bq-img-thumb').src='';
+  document.getElementById('bq-img-btn').style.display='inline-flex';
+  document.getElementById('bq-img-uploading').style.display='none';
+}
+function bqSetImgPreview(url){
+  document.getElementById('bq-img-url').value=url;
+  document.getElementById('bq-img-thumb').src=url;
+  document.getElementById('bq-img-preview').style.display='block';
+  document.getElementById('bq-img-btn').style.display='none';
+  document.getElementById('bq-img-uploading').style.display='none';
+}
+function bqRemoveImg(){
+  bqResetImg();
+}
+async function bqHandleImg(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  const reader=new FileReader();
+  reader.onload=async function(e){
+    document.getElementById('bq-img-btn').style.display='none';
+    document.getElementById('bq-img-uploading').style.display='block';
+    try{
+      const url=await processImg(e.target.result);
+      if(url){bqSetImgPreview(url);}
+      else{alert('이미지 업로드 실패');bqResetImg();}
+    }catch(err){alert('이미지 업로드 오류: '+err.message);bqResetImg();}
+  };
+  reader.readAsDataURL(file);
+  input.value='';
 }
 function delBook(i){if(!confirm('삭제할까요?'))return;state.books.splice(i,1);save();renderBooks();updateDashStats();}
 function delBookQuote(bi,qi){if(!confirm('문구를 삭제할까요?'))return;state.books[bi].quotes.splice(qi,1);save();renderBooks();}
@@ -7164,7 +7205,7 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
 
 <!-- 감명깊은 문구 모달 -->
 <div id="modal-book-quote" class="modal-overlay">
-  <div class="modal" style="width:520px">
+  <div class="modal" style="width:540px">
     <div class="modal-title">✨ 감명깊은 문구</div>
     <div class="modal-row">
       <label>문구</label>
@@ -7172,7 +7213,22 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     </div>
     <div class="modal-row">
       <label>페이지 <span style="font-size:10px;color:var(--text2)">(선택)</span></label>
-      <input id="bq-page" placeholder="예: 42, 42~45, 42·45" style="width:160px" oninput="(function(el){var v=el.value;if(!v.match(/^P\\. /))el.value='P. '+v.replace(/^P\\.?\\s*/i,'');})(this)" onfocus="(function(el){if(!el.value)el.value='P. ';})(this)" onblur="(function(el){if(el.value==='P. ')el.value='';})(this)">
+      <input id="bq-page" placeholder="예: 42, 42~45, 42·45" style="width:160px" oninput="(function(el){var v=el.value;if(!v.match(/^P\. /))el.value='P. '+v.replace(/^P\.?\s*/i,'');})(this)" onfocus="(function(el){if(!el.value)el.value='P. ';})(this)" onblur="(function(el){if(el.value==='P. ')el.value='';})(this)">
+    </div>
+    <div class="modal-row">
+      <label>이미지 <span style="font-size:10px;color:var(--text2)">(선택)</span></label>
+      <div id="bq-img-wrap" style="display:flex;flex-direction:column;gap:8px">
+        <div id="bq-img-preview" style="display:none;position:relative;width:fit-content">
+          <img id="bq-img-thumb" src="" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--border);display:block">
+          <button onclick="bqRemoveImg()" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center">✕</button>
+        </div>
+        <label id="bq-img-btn" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1.5px dashed var(--accent);border-radius:8px;cursor:pointer;font-size:12px;color:var(--accent);width:fit-content">
+          📷 이미지 선택
+          <input type="file" accept="image/*" style="display:none" onchange="bqHandleImg(this)">
+        </label>
+        <div id="bq-img-uploading" style="display:none;font-size:12px;color:var(--text2)">⏳ 업로드 중...</div>
+        <input type="hidden" id="bq-img-url" value="">
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-book-quote')">취소</button>
