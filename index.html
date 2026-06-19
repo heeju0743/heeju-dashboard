@@ -1709,9 +1709,9 @@ textarea{resize:vertical;min-height:80px}
       <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:12px">
         <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:9px">📊 주요 지수</div>
         <div class="mg3">
-          <div class="modal-row"><label>코스피</label><div style="display:flex;gap:5px"><input id="mk-kp" placeholder="8,864.24" style="flex:1"><input id="mk-kpc" placeholder="+1.58%" style="width:75px"></div></div>
-          <div class="modal-row"><label>코스닥</label><div style="display:flex;gap:5px"><input id="mk-kd" placeholder="1,031.96" style="flex:1"><input id="mk-kdc" placeholder="+1.30%" style="width:75px"></div></div>
-          <div class="modal-row"><label>나스닥100 선물</label><div style="display:flex;gap:5px"><input id="mk-ndx" placeholder="30,445.25" style="flex:1"><input id="mk-ndxc" placeholder="+0.43%" style="width:75px"></div></div>
+          <div class="modal-row"><label>코스피</label><div style="display:flex;gap:5px"><input id="mk-kp" placeholder="8,864.24" style="flex:1"><input id="mk-kpc" placeholder="+1.58%" style="width:75px" oninput="mkAutoPercent(this)"></div></div>
+          <div class="modal-row"><label>코스닥</label><div style="display:flex;gap:5px"><input id="mk-kd" placeholder="1,031.96" style="flex:1"><input id="mk-kdc" placeholder="+1.30%" style="width:75px" oninput="mkAutoPercent(this)"></div></div>
+          <div class="modal-row"><label>나스닥100 선물</label><div style="display:flex;gap:5px"><input id="mk-ndx" placeholder="30,445.25" style="flex:1"><input id="mk-ndxc" placeholder="+0.43%" style="width:75px" oninput="mkAutoPercent(this)"></div></div>
         </div>
       </div>
       <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:12px">
@@ -3181,6 +3181,7 @@ function mkToday(){var t=new Date();return t.getFullYear()+'-'+String(t.getMonth
 function mkFmt(ds){var d=new Date(ds+'T00:00:00'),dn=['일','월','화','수','목','금','토'];return(d.getMonth()+1)+'월 '+d.getDate()+'일 '+dn[d.getDay()]+'요일';}
 function mkIsUp(c){return c&&(c.startsWith('+')||c==='상한가');}
 function mkSupColor(v){return v&&v.startsWith('-')?'var(--red)':'var(--green)';}
+function mkAutoPercent(el){var v=el.value.replace(/%/g,'');if(v===''||v==='+'||v==='-')return;if(!v.endsWith('%'))el.value=v+'%';}
 function mkGV(id){var e=document.getElementById(id);return e?e.value.trim():'';}
 
 function mkSwitchTab(tab,btn){
@@ -7171,7 +7172,7 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     </div>
     <div class="modal-row">
       <label>페이지 <span style="font-size:10px;color:var(--text2)">(선택)</span></label>
-      <input id="bq-page" placeholder="예: p.42" style="width:120px">
+      <input id="bq-page" placeholder="42" style="width:120px" oninput="(function(el){var v=el.value.replace(/^P\.\s*/i,'');if(v&&!isNaN(v.replace(/[^0-9]/g,'')))el.value='P. '+v.replace(/[^0-9]/g,'');else if(v==='')el.value='';else el.value='P. '+v;})(this)" onfocus="(function(el){if(el.value==='P. '||el.value==='')el.value='P. ';})(this)">
     </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-book-quote')">취소</button>
