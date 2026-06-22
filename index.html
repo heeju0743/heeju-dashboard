@@ -338,6 +338,39 @@ textarea{resize:vertical;min-height:80px}
   .stat-grid,.budget-summary{grid-template-columns:1fr 1fr}
   .quarter-grid{grid-template-columns:1fr 1fr}
 }
+<style>
+/* ===== AI 채팅 위젯 ===== */
+#ai-fab{position:fixed;bottom:80px;right:22px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;cursor:pointer;font-size:24px;box-shadow:0 4px 18px rgba(79,70,229,.45);z-index:800;display:flex;align-items:center;justify-content:center;transition:.2s;user-select:none}
+#ai-fab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(79,70,229,.55)}
+#ai-fab.open{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
+#ai-panel{position:fixed;bottom:148px;right:22px;width:360px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 200px);background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.18);z-index:799;display:none;flex-direction:column;overflow:hidden;border:1px solid #e0d8f8}
+#ai-panel.open{display:flex}
+.ai-panel-header{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ai-panel-header h3{font-size:14px;font-weight:700;margin:0;display:flex;align-items:center;gap:7px}
+.ai-panel-header button{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:7px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:inherit}
+.ai-panel-header button:hover{background:rgba(255,255,255,.35)}
+#ai-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#fafaf7}
+.ai-msg{max-width:88%;word-break:break-word;line-height:1.7;font-size:13px;border-radius:12px;padding:9px 13px}
+.ai-msg.user{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-msg.assistant{background:#fff;color:#3a3020;align-self:flex-start;border-bottom-left-radius:4px;border:1px solid #e8dcc8;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.ai-msg.thinking{color:#9da8ad;font-style:italic;background:transparent;border:none;padding:4px 0;font-size:12px}
+.ai-input-row{display:flex;gap:7px;padding:10px 12px;border-top:1px solid #e8dcc8;background:#fff;flex-shrink:0;align-items:flex-end}
+#ai-input{flex:1;padding:9px 12px;border:1px solid #e8dcc8;border-radius:12px;font-size:13px;font-family:inherit;resize:none;min-height:38px;max-height:100px;outline:none;line-height:1.5;background:#fafaf7;transition:.15s}
+#ai-input:focus{border-color:#7c3aed;background:#fff}
+#ai-send-btn{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+#ai-send-btn:hover{transform:scale(1.07)}
+#ai-send-btn:disabled{opacity:.45;cursor:default;transform:none}
+.ai-key-row{padding:12px 14px;background:#f5f0fb;border-bottom:1px solid #e0d8f8;display:flex;gap:7px;align-items:center;flex-shrink:0}
+#ai-key-input{flex:1;padding:7px 11px;border:1px solid #c4b5fd;border-radius:9px;font-size:12px;font-family:monospace;background:#fff;outline:none}
+#ai-key-input:focus{border-color:#7c3aed}
+#ai-key-save{padding:6px 12px;background:#7c3aed;color:#fff;border:none;border-radius:9px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600;white-space:nowrap}
+.ai-quick-btns{display:flex;gap:5px;padding:8px 12px;flex-wrap:wrap;border-bottom:1px solid #e8dcc8;background:#fff;flex-shrink:0}
+.ai-quick-btn{padding:4px 10px;border:1px solid #c4b5fd;border-radius:14px;font-size:11px;color:#7c3aed;background:#f5f0fb;cursor:pointer;white-space:nowrap;font-family:inherit;transition:.1s}
+.ai-quick-btn:hover{background:#ede9fe;border-color:#7c3aed}
+.ai-msg pre{background:#f5f0e8;border-radius:7px;padding:8px 10px;font-size:11px;overflow-x:auto;margin:4px 0;white-space:pre-wrap}
+.ai-msg strong{font-weight:700}
+.ai-msg em{font-style:italic;color:var(--text2)}
+</style>
 </style>
 </head>
 <body>
@@ -3754,6 +3787,205 @@ function initApp(){
   });
 });
 }
+
+
+// ===================================================================
+// AI 채팅 위젯
+// ===================================================================
+var _aiOpen=false, _aiLoading=false, _aiHistory=[];
+var AI_KEY_STORAGE='heeju_ai_key';
+
+function aiGetKey(){
+  return localStorage.getItem(AI_KEY_STORAGE)||'';
+}
+function aiSaveKey(){
+  var k=document.getElementById('ai-key-input').value.trim();
+  if(!k){alert('API 키를 입력해주세요');return;}
+  if(!k.startsWith('sk-ant-')){alert('올바른 Anthropic API 키가 아닌 것 같아요\n(sk-ant-로 시작해야 해요)');return;}
+  localStorage.setItem(AI_KEY_STORAGE,k);
+  document.getElementById('ai-key-row').style.display='none';
+  aiAddMsg('assistant','✅ API 키가 저장됐어요! 이제 질문해보세요 😊');
+}
+
+function aiToggle(){
+  _aiOpen=!_aiOpen;
+  var fab=document.getElementById('ai-fab');
+  var panel=document.getElementById('ai-panel');
+  fab.classList.toggle('open',_aiOpen);
+  panel.classList.toggle('open',_aiOpen);
+  fab.textContent=_aiOpen?'✕':'✨';
+  if(_aiOpen){
+    // API 키 미설정 시 입력창 표시
+    var keyRow=document.getElementById('ai-key-row');
+    if(keyRow){keyRow.style.display=aiGetKey()?'none':'flex';}
+    // 입력창 포커스
+    setTimeout(function(){var inp=document.getElementById('ai-input');if(inp)inp.focus();},200);
+  }
+}
+
+function aiQuick(q){
+  var inp=document.getElementById('ai-input');
+  if(inp)inp.value=q;
+  aiSend();
+}
+
+function aiClear(){
+  _aiHistory=[];
+  var el=document.getElementById('ai-messages');
+  if(el)el.innerHTML='<div class="ai-msg assistant">대화를 초기화했어요. 새로운 질문을 해보세요! 😊</div>';
+}
+
+function aiAddMsg(role,text){
+  var el=document.getElementById('ai-messages');if(!el)return;
+  var div=document.createElement('div');
+  div.className='ai-msg '+(role==='user'?'user':'assistant');
+  // 마크다운 간단 렌더링
+  var html=text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```([\s\S]*?)```/g,'<pre>$1</pre>')
+    .replace(/`([^`]+)`/g,'<code style="background:#f0e8d8;padding:1px 5px;border-radius:4px;font-size:11px">$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+    .replace(/\n/g,'<br>');
+  div.innerHTML=html;
+  el.appendChild(div);
+  el.scrollTop=el.scrollHeight;
+  return div;
+}
+
+function aiAddThinking(){
+  var el=document.getElementById('ai-messages');if(!el)return null;
+  var div=document.createElement('div');
+  div.className='ai-msg thinking';
+  div.id='ai-thinking';
+  div.textContent='✨ 생각하는 중...';
+  el.appendChild(div);
+  el.scrollTop=el.scrollHeight;
+  return div;
+}
+
+async function aiSend(){
+  if(_aiLoading)return;
+  var key=aiGetKey();
+  if(!key){
+    var keyRow=document.getElementById('ai-key-row');
+    if(keyRow)keyRow.style.display='flex';
+    aiAddMsg('assistant','먼저 Anthropic API 키를 입력해주세요 (위 입력창에 붙여넣기)');
+    return;
+  }
+  var inp=document.getElementById('ai-input');
+  var text=(inp?inp.value.trim():'');
+  if(!text)return;
+
+  // 입력창 초기화 & 사용자 메시지 표시
+  inp.value='';inp.style.height='auto';
+  aiAddMsg('user',text);
+  _aiHistory.push({role:'user',content:text});
+
+  // 히스토리 최대 20턴 유지
+  if(_aiHistory.length>40)_aiHistory=_aiHistory.slice(-40);
+
+  // 로딩 상태
+  _aiLoading=true;
+  var sendBtn=document.getElementById('ai-send-btn');
+  if(sendBtn)sendBtn.disabled=true;
+  var thinking=aiAddThinking();
+
+  // 대시보드 컨텍스트 수집 (현재 페이지 정보)
+  var ctx=aiGetContext();
+
+  try{
+    var systemPrompt='당신은 희주님의 개인 대시보드에 내장된 AI 어시스턴트 Claude입니다.\n'+
+      '희주님은 제주도에서 깨비농원을 운영하면서 한국 주식시장(코스피/코스닥) 트레이딩을 공부 중인 1982년생입니다.\n'+
+      '주요 매매 방식: 단타/스캘핑, 눌림목 패턴, -2% 손절 원칙, +3~7% 분할 익절.\n'+
+      '항상 한국어로 답하고, 간결하고 실용적으로 답변하세요.\n'+
+      (ctx?'현재 대시보드 컨텍스트:\n'+ctx:'');
+
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1500,
+        system:systemPrompt,
+        messages:_aiHistory
+      })
+    });
+
+    if(thinking)thinking.remove();
+
+    if(!res.ok){
+      var errData=await res.json().catch(function(){return {};});
+      var errMsg=errData.error?errData.error.message:'알 수 없는 오류';
+      if(res.status===401){
+        aiAddMsg('assistant','❌ API 키가 올바르지 않아요. 다시 확인해주세요.\n\n상단 키 입력창에 올바른 키를 붙여넣어 주세요.');
+        localStorage.removeItem(AI_KEY_STORAGE);
+        var keyRow=document.getElementById('ai-key-row');
+        if(keyRow)keyRow.style.display='flex';
+      } else if(res.status===429){
+        aiAddMsg('assistant','⏳ API 사용량 한도에 도달했어요. 잠시 후 다시 시도해주세요.');
+      } else {
+        aiAddMsg('assistant','❌ 오류가 발생했어요: '+errMsg);
+      }
+      _aiHistory.pop();
+    } else {
+      var data=await res.json();
+      var reply=(data.content&&data.content[0]&&data.content[0].text)||'응답을 가져올 수 없어요.';
+      aiAddMsg('assistant',reply);
+      _aiHistory.push({role:'assistant',content:reply});
+    }
+  } catch(e){
+    if(thinking)thinking.remove();
+    aiAddMsg('assistant','❌ 네트워크 오류가 발생했어요.\n'+e.message);
+    _aiHistory.pop();
+  }
+
+  _aiLoading=false;
+  if(sendBtn)sendBtn.disabled=false;
+  if(inp)inp.focus();
+}
+
+function aiGetContext(){
+  // 현재 활성 페이지 파악
+  var activePage='';
+  document.querySelectorAll('.page.active').forEach(function(el){activePage=el.id.replace('page-','');});
+
+  var ctx='현재 페이지: '+activePage+'\n';
+
+  // 매매 기록 요약 (최근 5개)
+  if(window.state&&state.trades&&state.trades.length){
+    var recent=state.trades.slice(-5);
+    ctx+='최근 매매(5개): '+recent.map(function(t){
+      return t.date+' '+t.name+' '+(t.pct?t.pct.toFixed(2)+'%':'')+'('+t.result+')';
+    }).join(', ')+'\n';
+    var closed=state.trades.filter(function(t){return t.sellTotal>0;});
+    var wins=closed.filter(function(t){return t.result==='승';});
+    if(closed.length){
+      ctx+='전체 승률: '+Math.round(wins.length/closed.length*100)+'% ('+wins.length+'/'+closed.length+')\n';
+    }
+  }
+
+  // 오늘 할 일
+  if(window.state&&state.todos&&state.todos.length){
+    var today=new Date().toISOString().split('T')[0];
+    var todayTodos=state.todos.filter(function(t){return !t.done;}).slice(0,5);
+    if(todayTodos.length)ctx+='미완료 할일: '+todayTodos.map(function(t){return t.text;}).join(', ')+'\n';
+  }
+
+  // 현재 읽는 책
+  if(window.state&&state.books&&state.books.length){
+    var reading=state.books.filter(function(b){return b.status==='reading';});
+    if(reading.length)ctx+='읽는 중인 책: '+reading.map(function(b){return b.title;}).join(', ')+'\n';
+  }
+
+  return ctx;
+}
+
 
 // ===== NAV =====
 function nav(id){
@@ -7497,6 +7729,49 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
       <button class="btn btn-outline" onclick="closeModal('modal-tm-note')">취소</button>
       <button class="btn btn-primary" onclick="tmSaveNote()">저장</button>
     </div>
+  </div>
+</div>
+
+
+<!-- ===== AI 채팅 위젯 ===== -->
+<!-- FAB 버튼 -->
+<button id="ai-fab" onclick="aiToggle()" title="AI 어시스턴트">✨</button>
+
+<!-- 채팅 패널 -->
+<div id="ai-panel">
+  <div class="ai-panel-header">
+    <h3>✨ AI 어시스턴트</h3>
+    <div style="display:flex;gap:5px">
+      <button onclick="aiClear()">🗑️ 대화 초기화</button>
+      <button onclick="aiToggle()">✕</button>
+    </div>
+  </div>
+
+  <!-- API 키 입력 (미설정 시 표시) -->
+  <div id="ai-key-row" class="ai-key-row" style="display:none">
+    <input id="ai-key-input" type="password" placeholder="Anthropic API 키 입력 (sk-ant-...)">
+    <button id="ai-key-save" onclick="aiSaveKey()">저장</button>
+  </div>
+
+  <!-- 빠른 질문 버튼 -->
+  <div class="ai-quick-btns" id="ai-quick-btns">
+    <button class="ai-quick-btn" onclick="aiQuick('오늘 매매에서 개선할 점을 분석해줘')">📊 매매 분석</button>
+    <button class="ai-quick-btn" onclick="aiQuick('풍요와 감사를 주제로 오늘의 필사 문구 7줄을 만들어줘')">✍️ 필사 생성</button>
+    <button class="ai-quick-btn" onclick="aiQuick('오늘 주식시장 주요 이슈와 주도 섹터를 정리해줘')">📈 시장 정리</button>
+    <button class="ai-quick-btn" onclick="aiQuick('지금 내 매매 습관에서 가장 고쳐야 할 점 한 가지를 말해줘')">🧠 매매 습관</button>
+  </div>
+
+  <!-- 메시지 영역 -->
+  <div id="ai-messages">
+    <div class="ai-msg assistant">안녕하세요 희주님 👋<br>무엇이든 물어보세요! 매매 분석, 필사 생성, 시장 정리 등 도와드릴게요.</div>
+  </div>
+
+  <!-- 입력 영역 -->
+  <div class="ai-input-row">
+    <textarea id="ai-input" placeholder="질문을 입력하세요... (Enter 전송, Shift+Enter 줄바꿈)" rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"
+      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+    <button id="ai-send-btn" onclick="aiSend()" title="전송">➤</button>
   </div>
 </div>
 
