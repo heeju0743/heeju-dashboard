@@ -821,7 +821,7 @@ textarea{resize:vertical;min-height:80px}
   <div class="trade-nav">
     <div class="trade-nav-tab active" onclick="tradeNav('t-dash')">📊 대시보드</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-trades')">📝 매매기록</div>
-    
+    <div class="trade-nav-tab" onclick="tradeNav('t-method')">🧩 매매법</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-pattern')">📈 패턴분석</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-balance')">📉 잔고추이</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-diary')">🔄 매매 복기</div>
@@ -874,7 +874,14 @@ textarea{resize:vertical;min-height:80px}
     </div>
   </div>
 
-
+  <!-- 매매법 -->
+  <div id="t-method" class="trade-page">
+    <div id="tm-top-bar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:15px;font-weight:700">🧩 매매법</div>
+    </div>
+    <div id="tm-cat-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"></div>
+    <div id="tm-content"></div>
+  </div>
 
   <!-- 패턴분석 -->
   <div id="t-pattern" class="trade-page">
@@ -1854,7 +1861,9 @@ window.state={
   meditations:[],medRecords:[],
   checklistMemos:{},chartReviews:[],stockWatchlist:[],
   balanceInit:{dom:200000,us:0,fut:0,coin:0},
-  marketCalendar:{}
+  marketCalendar:{},
+  tradeMethodCats:[],
+  tradeMethodNotes:{}
 };
 
 let saveTimer=null;
@@ -3462,6 +3471,218 @@ function mkDelData(ds){
   _mkSel=null;save();renderMarketCal();
 }
 
+// ===================================================================
+// 매매법 (기법별 분류 + 노트, 자기계발 투자탭과 동일 구조)
+// ===================================================================
+let tmCat=null, tmEditId=null, tmImgs=[], tmFiles=[];
+
+function tmInit(){
+  if(!state.tradeMethodCats)state.tradeMethodCats=[];
+  if(!state.tradeMethodNotes)state.tradeMethodNotes={};
+  if(!tmCat||!state.tradeMethodCats.includes(tmCat)){
+    tmCat=state.tradeMethodCats.length?state.tradeMethodCats[0]:null;
+  }
+}
+
+function renderTradeMethod(){
+  tmInit();
+  _tmRTabs();
+  _tmRContent();
+}
+
+function _tmRTabs(){
+  const el=document.getElementById('tm-cat-tabs');if(!el)return;
+  let html='';
+  state.tradeMethodCats.forEach(function(c){
+    const act=c===tmCat;
+    html+='<span style="display:inline-flex;align-items:center;border:1px solid '+(act?'var(--accent)':'var(--border)')+';border-radius:18px;overflow:hidden;margin-bottom:4px">';
+    html+='<button onclick="tmSwitchCat(\''+escTmAttr(c)+'\')" style="background:'+(act?'var(--accent)':'var(--card)')+';color:'+(act?'#fff':'var(--text2)')+';border:none;cursor:pointer;padding:6px 13px;font-size:12px;font-family:inherit;font-weight:'+(act?'700':'400')+'">'+c+'</button>';
+    html+='<button onclick="tmDelCat(\''+escTmAttr(c)+'\')" style="background:'+(act?'var(--accent)':'var(--card)')+';color:'+(act?'rgba(255,255,255,.7)':'#bbb')+';border:none;border-left:1px solid rgba(0,0,0,.08);cursor:pointer;padding:6px 9px;font-size:10px;font-family:inherit" title="기법 삭제">✕</button>';
+    html+='</span>';
+  });
+  html+='<button onclick="tmAddCat()" style="background:none;border:1px dashed var(--accent);border-radius:18px;cursor:pointer;padding:6px 14px;font-size:12px;color:var(--accent);font-family:inherit;font-weight:600;margin-bottom:4px">+ 기법 추가</button>';
+  el.innerHTML=html;
+}
+
+function escTmAttr(s){return (s||'').replace(/'/g,"\\'");}
+
+function tmSwitchCat(c){tmCat=c;renderTradeMethod();}
+
+function tmAddCat(){
+  const name=prompt('새 매매법(기법) 이름을 입력하세요:\n예: 눌림목, 돌파, 5224, 갭상승 등');
+  if(!name||!name.trim())return;
+  const trimmed=name.trim();
+  if(state.tradeMethodCats.includes(trimmed)){alert('이미 있는 기법이에요!');return;}
+  state.tradeMethodCats.push(trimmed);
+  if(!state.tradeMethodNotes[trimmed])state.tradeMethodNotes[trimmed]=[];
+  tmCat=trimmed;
+  save();renderTradeMethod();
+}
+
+function tmRenameCat(oldName){
+  const name=prompt('기법 이름 수정:',oldName);
+  if(!name||!name.trim()||name.trim()===oldName)return;
+  const trimmed=name.trim();
+  if(state.tradeMethodCats.includes(trimmed)){alert('이미 있는 기법이에요!');return;}
+  const idx=state.tradeMethodCats.indexOf(oldName);
+  if(idx>=0)state.tradeMethodCats[idx]=trimmed;
+  state.tradeMethodNotes[trimmed]=state.tradeMethodNotes[oldName]||[];
+  delete state.tradeMethodNotes[oldName];
+  if(tmCat===oldName)tmCat=trimmed;
+  save();renderTradeMethod();
+}
+
+function tmDelCat(c){
+  const notes=(state.tradeMethodNotes[c]||[]).length;
+  const msg=notes?('"'+c+'" 기법과 그 안의 노트 '+notes+'개를 모두 삭제할까요?'):('"'+c+'" 기법을 삭제할까요?');
+  if(!confirm(msg))return;
+  state.tradeMethodCats=state.tradeMethodCats.filter(function(x){return x!==c;});
+  delete state.tradeMethodNotes[c];
+  if(tmCat===c)tmCat=state.tradeMethodCats.length?state.tradeMethodCats[0]:null;
+  save();renderTradeMethod();
+}
+
+function _tmRContent(){
+  const el=document.getElementById('tm-content');if(!el)return;
+  if(!state.tradeMethodCats.length){
+    el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">매매법(기법)을 추가해보세요 🧩<br><span style="font-size:11px;display:block;margin-top:5px">예: 눌림목, 돌파, 5224, 갭상승 등 나만의 기법을 분류하고 노트를 기록하세요</span></div>';
+    return;
+  }
+  if(!tmCat){el.innerHTML='';return;}
+
+  let html='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
+  html+='<div style="display:flex;align-items:center;gap:8px">';
+  html+='<span style="font-size:14px;font-weight:700;color:var(--accent)">📌 '+tmCat+'</span>';
+  html+='<button onclick="tmRenameCat(\''+escTmAttr(tmCat)+'\')" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:11px" title="기법명 수정">✏️</button>';
+  html+='</div>';
+  html+='<button class="btn btn-primary btn-sm" onclick="tmOpenNoteModal()">+ 노트 추가</button>';
+  html+='</div>';
+
+  const notes=state.tradeMethodNotes[tmCat]||[];
+  if(!notes.length){
+    html+='<div class="card" style="text-align:center;color:var(--text2);padding:26px;font-size:13px">"'+tmCat+'" 기법에 대한 노트를 추가해보세요 📝</div>';
+  } else {
+    notes.forEach(function(n){
+      const imgs=(n.images||[]).length?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">'+(n.images||[]).map(function(img){return '<img src="'+img+'" onclick="showFullImg(\''+img+'\')" style="width:84px;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer">';}).join('')+'</div>':'';
+      const files=(n.files||[]).length?'<div style="display:flex;flex-direction:column;gap:5px;margin-top:9px">'+(n.files||[]).map(function(f){return '<a href="'+f.url+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--blue);text-decoration:none;background:#eff6ff;border-radius:7px;padding:5px 10px;width:fit-content">📎 '+(f.name||'첨부파일')+'</a>';}).join('')+'</div>':'';
+      html+='<div class="concept-card" style="margin-bottom:11px">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">';
+      html+='<span style="font-weight:700;font-size:14px">'+n.title+'</span>';
+      html+='<div style="display:flex;gap:5px;flex-shrink:0">';
+      html+='<button class="btn btn-outline btn-sm" onclick="tmOpenNoteModal('+n.id+')" style="font-size:10px;padding:3px 8px">✏️</button>';
+      html+='<button class="del-btn" onclick="tmDelNote('+n.id+')">✕</button>';
+      html+='</div></div>';
+      if(n.content)html+='<div style="font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-wrap">'+n.content+'</div>';
+      if(n.url)html+='<a href="'+n.url+'" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none;display:inline-block;margin-top:7px">🔗 '+n.url.slice(0,60)+(n.url.length>60?'...':'')+'</a>';
+      html+=imgs+files;
+      html+='<div style="font-size:10px;color:var(--text2);margin-top:7px">'+(n.date||'')+'</div>';
+      html+='</div>';
+    });
+  }
+  el.innerHTML=html;
+}
+
+function tmOpenNoteModal(editId){
+  tmEditId=editId||null;tmImgs=[];tmFiles=[];
+  document.getElementById('tm-note-modal-title').textContent=editId?'✏️ 매매법 노트 수정':'📝 매매법 노트 추가';
+  document.getElementById('tm-note-cat-label').textContent=tmCat;
+  document.getElementById('tm-note-img-prev').innerHTML='';
+  document.getElementById('tm-note-file-prev').innerHTML='';
+  ['tm-note-title','tm-note-url'].forEach(function(id){document.getElementById(id).value='';});
+  resetModalRichEditor('modal-tm-note','tm-note-content');
+  if(editId){
+    const n=(state.tradeMethodNotes[tmCat]||[]).find(function(x){return x.id===editId;});
+    if(!n)return;
+    document.getElementById('tm-note-title').value=n.title||'';
+    document.getElementById('tm-note-url').value=n.url||'';
+    tmImgs=n.images?[...n.images]:[];
+    tmFiles=n.files?[...n.files]:[];
+    tmRenderImgPrev();tmRenderFilePrev();
+    openModal('modal-tm-note');
+    setTimeout(function(){
+      if(window._richEditors&&window._richEditors['tm-note-content'])window._richEditors['tm-note-content'].setHTML(n.content||'');
+      else{const ta=document.getElementById('tm-note-content');if(ta)ta.value=n.content||'';}
+    },120);
+    return;
+  }
+  openModal('modal-tm-note');
+}
+
+function tmHandleImg(input){
+  Array.from(input.files).forEach(function(f){
+    const r=new FileReader();
+    r.onload=function(e){
+      processImg(e.target.result).then(function(url){tmImgs.push(url);tmRenderImgPrev();});
+    };
+    r.readAsDataURL(f);
+  });
+  input.value='';
+}
+function tmRenderImgPrev(){
+  const el=document.getElementById('tm-note-img-prev');if(!el)return;
+  el.innerHTML=tmImgs.map(function(src,i){
+    return '<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(\''+src+'\')" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="tmImgs.splice('+i+',1);tmRenderImgPrev()">✕</button></div>';
+  }).join('');
+}
+
+function tmHandleFile(input){
+  Array.from(input.files).forEach(function(f){
+    const reader=new FileReader();
+    reader.onload=function(e){
+      const dataUrl=e.target.result;
+      const sizeKB=Math.round(f.size/1024);
+      if(f.size>4500000){
+        alert('"'+f.name+'" 파일이 너무 커요 (최대 약 4MB). 클라우드 링크를 URL란에 추가해주세요.');
+        return;
+      }
+      tmFiles.push({name:f.name,url:dataUrl,size:sizeKB});
+      tmRenderFilePrev();
+    };
+    reader.readAsDataURL(f);
+  });
+  input.value='';
+}
+function tmRenderFilePrev(){
+  const el=document.getElementById('tm-note-file-prev');if(!el)return;
+  el.innerHTML=tmFiles.map(function(f,i){
+    return '<div style="display:flex;align-items:center;gap:7px;background:#eff6ff;border-radius:7px;padding:5px 10px;font-size:12px;color:var(--blue);margin-bottom:5px">'+
+      '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">📎 '+f.name+' <span style="color:var(--text2);font-size:10px">('+(f.size||0)+'KB)</span></span>'+
+      '<button onclick="tmFiles.splice('+i+',1);tmRenderFilePrev()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:12px">✕</button>'+
+    '</div>';
+  }).join('');
+}
+
+function tmSaveNote(){
+  const title=document.getElementById('tm-note-title').value.trim();
+  if(!title){alert('제목을 입력해주세요');return;}
+  if(!tmCat){alert('먼저 기법을 선택하거나 추가해주세요');return;}
+  if(!state.tradeMethodNotes[tmCat])state.tradeMethodNotes[tmCat]=[];
+  const obj={
+    id:tmEditId||Date.now(),
+    title:title,
+    content:getRichValue('tm-note-content'),
+    url:document.getElementById('tm-note-url').value.trim(),
+    images:[...tmImgs],
+    files:[...tmFiles],
+    date:new Date().toLocaleDateString('ko-KR')
+  };
+  if(tmEditId){
+    const idx=state.tradeMethodNotes[tmCat].findIndex(function(x){return x.id===tmEditId;});
+    if(idx>=0)state.tradeMethodNotes[tmCat][idx]=obj;
+    tmEditId=null;
+  } else {
+    state.tradeMethodNotes[tmCat].unshift(obj);
+  }
+  closeModal('modal-tm-note');save();renderTradeMethod();
+}
+
+function tmDelNote(id){
+  if(!confirm('이 노트를 삭제할까요?'))return;
+  state.tradeMethodNotes[tmCat]=(state.tradeMethodNotes[tmCat]||[]).filter(function(x){return x.id!==id;});
+  save();renderTradeMethod();
+}
+
+
 // ===== 테마별 종목 - 컬러 팔레트 연동 tsAddTheme 교체 =====
 window.tsAddTheme=function(){
   var n=prompt('새 테마(대분류) 이름:');if(!n||!n.trim())return;
@@ -3499,6 +3720,7 @@ window.tsAddTheme=function(){
 
 function initApp(){
   tsInit();
+  tmInit();
   const n=new Date();
   document.getElementById('sb-day').textContent=n.getDate();
   document.getElementById('sb-datestr').textContent=n.toLocaleDateString('ko-KR',{year:'numeric',month:'long',weekday:'long'});
@@ -3563,10 +3785,11 @@ function tradeNav(id){
   document.querySelectorAll('.trade-page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs=document.querySelectorAll('.trade-nav-tab');
-  const map={'t-dash':0,'t-trades':1,'t-pattern':2,'t-balance':3,'t-diary':4,'t-scenario':5,'t-trade-diary':6,'t-goal':7,'t-stock-study':8,'t-theme-stocks':9};
+  const map={'t-dash':0,'t-trades':1,'t-method':2,'t-pattern':3,'t-balance':4,'t-diary':5,'t-scenario':6,'t-trade-diary':7,'t-goal':8,'t-stock-study':9,'t-theme-stocks':10};
   tabs[map[id]]?.classList.add('active');
   if(id==='t-dash')renderTDash();
   if(id==='t-trades')renderTrades();
+  if(id==='t-method')renderTradeMethod();
   if(id==='t-pattern')renderTPattern();
   if(id==='t-scenario')renderScenarios();
   if(id==='t-trade-diary')renderTradeDailyDiaries();
@@ -7243,5 +7466,39 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     </div>
   </div>
 </div>
+
+<!-- 매매법 노트 모달 -->
+<div id="modal-tm-note" class="modal-overlay">
+  <div class="modal" style="width:580px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <div class="modal-title" id="tm-note-modal-title" style="margin-bottom:0">📝 매매법 노트 추가</div>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:14px">기법: <span id="tm-note-cat-label" style="font-weight:700;color:var(--accent)"></span></div>
+    <div class="modal-row"><label>제목</label><input id="tm-note-title" placeholder="예: 진입 타이밍, 손절 기준, 실전 사례..."></div>
+    <div class="modal-row"><label>내용</label><textarea id="tm-note-content" style="min-height:120px" placeholder="이 기법에 대한 설명, 메모, 실전 사례 등을 기록하세요..."></textarea></div>
+    <div class="modal-row"><label>🔗 참고 URL</label><input id="tm-note-url" placeholder="https://..."></div>
+    <div class="modal-row">
+      <label>📸 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('tm-note-img-in').click()">
+        <input type="file" id="tm-note-img-in" accept="image/*" multiple style="display:none" onchange="tmHandleImg(this)">
+        📁 클릭하여 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="tm-note-img-prev"></div>
+    </div>
+    <div class="modal-row">
+      <label>📎 파일 첨부 <span style="font-size:10px;color:var(--text2)">(PDF, 문서 등 · 개당 약 4MB 이하)</span></label>
+      <div class="img-upload-area" onclick="document.getElementById('tm-note-file-in').click()">
+        <input type="file" id="tm-note-file-in" multiple style="display:none" onchange="tmHandleFile(this)">
+        📁 클릭하여 파일 첨부 (여러 개 가능)
+      </div>
+      <div style="margin-top:8px" id="tm-note-file-prev"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-tm-note')">취소</button>
+      <button class="btn btn-primary" onclick="tmSaveNote()">저장</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
