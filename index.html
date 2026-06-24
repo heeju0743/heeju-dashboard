@@ -862,6 +862,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="trade-nav-tab" onclick="tradeNav('t-stock-study')">📚 종목공부</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-theme-stocks')">📋 테마별 종목</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-market-calendar')">📅 시장달력</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-uh-calendar')">🔴 상한가달력</div>
   </div>
 
   <!-- 대시보드 -->
@@ -1034,6 +1035,39 @@ textarea{resize:vertical;min-height:80px}
         </div>
         <div class="mkcal-grid" id="mkcal-grid"></div>
         <div id="mkcal-detail" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 상한가달력 -->
+  <div id="t-uh-calendar" class="trade-page">
+    <div class="mkcal-wrap">
+      <div class="mkcal-tab-bar" style="border-radius:10px 10px 0 0">
+        <button class="mkcal-tab on" id="uh-tab-cal" onclick="uhSwitchTab('cal',this)">📅 상한가 달력</button>
+        <button class="mkcal-tab" id="uh-tab-stat" onclick="uhSwitchTab('stat',this)">📊 누적 통계</button>
+        <span style="color:rgba(255,255,255,.5);font-size:11px;padding:10px 0;display:flex;align-items:center;gap:12px;margin-left:auto;margin-right:12px">
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#dc2626;display:inline-block"></span>상한가</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#2563eb;display:inline-block"></span>20%이상</span>
+        </span>
+      </div>
+      <!-- 달력 패널 -->
+      <div id="uh-panel-cal" class="mkcal-panel">
+        <div class="mkcal-header">
+          <button class="mkcal-nav" onclick="uhChangeMonth(-1)">◀</button>
+          <span class="mkcal-title" id="uhcal-title"></span>
+          <button class="mkcal-nav" onclick="uhChangeMonth(1)">▶</button>
+        </div>
+        <div class="mkcal-dow">
+          <div class="mkcal-dow-cell">월</div><div class="mkcal-dow-cell">화</div>
+          <div class="mkcal-dow-cell">수</div><div class="mkcal-dow-cell">목</div>
+          <div class="mkcal-dow-cell">금</div>
+        </div>
+        <div class="mkcal-grid" id="uhcal-grid"></div>
+        <div id="uhcal-detail" style="display:none"></div>
+      </div>
+      <!-- 통계 패널 -->
+      <div id="uh-panel-stat" class="mkcal-panel" style="display:none">
+        <div id="uh-stat-content"></div>
       </div>
     </div>
   </div>
@@ -1726,7 +1760,7 @@ textarea{resize:vertical;min-height:80px}
           <div style="font-size:10px;font-weight:700;color:var(--text2)">테마</div>
           <div style="font-size:10px;font-weight:700;color:var(--text2)">현재가</div>
           <div style="font-size:10px;font-weight:700;color:var(--text2)">등락률</div>
-          <div style="font-size:10px;font-weight:700;color:var(--text2)">거래대금</div>
+          <div style="font-size:10px;font-weight:700;color:var(--text2)">거래대금(백만)</div>
           <div style="font-size:10px;font-weight:700;color:var(--text2)">상한가시간</div>
           <div></div>
         </div>
@@ -1753,7 +1787,7 @@ textarea{resize:vertical;min-height:80px}
         </div>
       </div>
       <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">💰 매매동향 (억원)</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">💰 매매동향 (백만원)</div>
         <table style="width:100%;border-collapse:collapse;font-size:11px">
           <thead><tr style="background:#1a2744;color:#fff">
             <th style="padding:5px 8px">시장</th><th style="padding:5px 8px;text-align:right">개인</th><th style="padding:5px 8px;text-align:right">외국인</th><th style="padding:5px 8px;text-align:right">기관</th>
@@ -1893,6 +1927,7 @@ window.state={
   checklistMemos:{},chartReviews:[],stockWatchlist:[],
   balanceInit:{dom:200000,us:0,fut:0,coin:0},
   marketCalendar:{},
+  uhCalendar:{},
   tradeMethodCats:[],
   tradeMethodNotes:{}
 };
@@ -3372,7 +3407,7 @@ function mkRenderDetail(ds){
     if(!stocks.length)html+='<div style="color:var(--text2);font-size:13px">종목 없음</div>';
     else{
       html+='<div style="overflow-x:auto"><table class="mkcal-stock-det-table">';
-      html+='<thead><tr><th>#</th><th style="text-align:left">종목명</th><th>테마</th><th style="text-align:right">현재가</th><th style="text-align:right">등락률</th><th style="text-align:right">거래대금</th><th>상한가</th></tr></thead><tbody>';
+      html+='<thead><tr><th>#</th><th style="text-align:left">종목명</th><th>테마</th><th style="text-align:right">현재가</th><th style="text-align:right">등락률</th><th style="text-align:right">거래대금(백만)</th><th>상한가</th></tr></thead><tbody>';
       stocks.forEach(function(s,i){
         var c=s.theme?mkThemeColor(s.theme):{hex:'#888',txt:'#fff'};
         var isUH=s.change==='상한가';
@@ -3396,7 +3431,7 @@ function mkRenderDetail(ds){
     html+=mkIdxCard('🇰🇷 코스닥',m.kosdaq,m.kosdaqC);
     html+=mkIdxCard('🇺🇸 나스닥100 선물',m.ndx,m.ndxC);
     html+='</div>';
-    html+='<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">💰 매매동향 (억원)</div>';
+    html+='<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">💰 매매동향 (백만원)</div>';
     html+='<table class="mkcal-sup-table"><thead><tr><th>시장</th><th>개인</th><th>외국인</th><th>기관</th></tr></thead><tbody>';
     html+=mkSupRow('코스피',m.supKpInd,m.supKpFor,m.supKpIns);
     html+=mkSupRow('코스닥',m.supKdInd,m.supKdFor,m.supKdIns);
@@ -3464,7 +3499,7 @@ function mkRenderStkRows(){
         '<datalist id="'+dlId+'">'+allThemes.map(function(t){return '<option value="'+t+'">';}).join('')+'</datalist>';})()+
       '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="현재가" value="'+(s.price||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_mkEditStocks['+i+'].price=this.value">'+
       '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="+0.00%" value="'+(s.change||'')+'" oninput="(function(el,idx){var v=el.value;if(v===\'상한가\'||v===\'+30%\'){_mkEditStocks[idx].change=v;return;}v=v.replace(/%/g,\'\');if(v&&v!==\'+\'&&v!==\'-\'){el.value=v+\'%\';}else{el.value=v;}_mkEditStocks[idx].change=el.value;})(this,'+i+')">'+
-      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="거래대금(억)" value="'+(s.vol||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_mkEditStocks['+i+'].vol=this.value">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="거래대금(백만)" value="'+(s.vol||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_mkEditStocks['+i+'].vol=this.value">'+
       '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:center;font-family:inherit" placeholder="09:30" maxlength="5" value="'+(s.time||'')+'" oninput="(function(el,idx){var v=el.value.replace(/[^0-9]/g,\'\');if(v.length>=3)v=v.slice(0,2)+\':\'+v.slice(2,4);el.value=v;_mkEditStocks[idx].time=v;})(this,'+i+')">'+
       '<button style="background:none;border:none;cursor:pointer;color:#ccc;font-size:14px;padding:0" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'#ccc\'" onclick="_mkEditStocks.splice('+i+',1);mkRenderStkRows()">✕</button>'+
     '</div>';
@@ -3501,6 +3536,389 @@ function mkDelData(ds){
   if(state.marketCalendar[ds])delete state.marketCalendar[ds];
   _mkSel=null;save();renderMarketCal();
 }
+
+// ===== 상한가달력 탭 전환 =====
+var _uhTabMode = 'cal';
+
+function uhSwitchTab(tab, btn){
+  _uhTabMode = tab;
+  document.querySelectorAll('#t-uh-calendar .mkcal-tab').forEach(function(b){b.classList.remove('on');});
+  if(btn) btn.classList.add('on');
+  var calPanel = document.getElementById('uh-panel-cal');
+  var statPanel = document.getElementById('uh-panel-stat');
+  if(calPanel) calPanel.style.display = tab==='cal' ? 'block' : 'none';
+  if(statPanel) statPanel.style.display = tab==='stat' ? 'block' : 'none';
+  if(tab==='stat') renderUHStat();
+}
+
+// ===== 상한가달력 누적 통계 =====
+function renderUHStat(){
+  uhInitData();
+  var el = document.getElementById('uh-stat-content');
+  if(!el) return;
+
+  // 전체 데이터 집계
+  var stockMap = {}; // {종목명: {uh:0, high:0}}
+  Object.keys(state.uhCalendar).forEach(function(ds){
+    var d = state.uhCalendar[ds];
+    if(!d || !d.stocks) return;
+    d.stocks.forEach(function(s){
+      if(!s.name) return;
+      if(!stockMap[s.name]) stockMap[s.name] = {uh:0, high:0, themes:{}};
+      if(s.type === '상한가') stockMap[s.name].uh++;
+      else stockMap[s.name].high++;
+      if(s.theme) stockMap[s.name].themes[s.theme] = (stockMap[s.name].themes[s.theme]||0)+1;
+    });
+  });
+
+  var stocks = Object.keys(stockMap).map(function(name){
+    var themes = Object.keys(stockMap[name].themes);
+    var mainTheme = themes.length ? themes.sort(function(a,b){return stockMap[name].themes[b]-stockMap[name].themes[a];})[0] : '-';
+    return {
+      name: name,
+      uh: stockMap[name].uh,
+      high: stockMap[name].high,
+      total: stockMap[name].uh + stockMap[name].high,
+      theme: mainTheme
+    };
+  });
+
+  if(!stocks.length){
+    el.innerHTML = '<div style="text-align:center;color:var(--text2);padding:40px;font-size:13px">상한가달력에 데이터를 입력하면 통계가 표시됩니다 📊</div>';
+    return;
+  }
+
+  // 상한가 TOP10
+  var uhTop10 = stocks.filter(function(s){return s.uh>0;})
+    .sort(function(a,b){return b.uh-a.uh || b.total-a.total;})
+    .slice(0,10);
+
+  // 20%이상 TOP10
+  var highTop10 = stocks.filter(function(s){return s.high>0;})
+    .sort(function(a,b){return b.high-a.high || b.total-a.total;})
+    .slice(0,10);
+
+  // 전체 합산 TOP10 (상한가+20%이상)
+  var totalTop10 = stocks.sort(function(a,b){return b.total-a.total || b.uh-a.uh;}).slice(0,10);
+
+  var maxUH = uhTop10.length ? uhTop10[0].uh : 1;
+  var maxHigh = highTop10.length ? highTop10[0].high : 1;
+  var maxTotal = totalTop10.length ? totalTop10[0].total : 1;
+
+  var totalUH = stocks.reduce(function(s,x){return s+x.uh;},0);
+  var totalHigh = stocks.reduce(function(s,x){return s+x.high;},0);
+  var uniqueStocks = stocks.length;
+
+  var html = '';
+
+  // 요약 카드
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">';
+  html += '<div style="background:#fee2e2;border-radius:11px;padding:14px;text-align:center"><div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:4px">🔴 총 상한가 횟수</div><div style="font-size:28px;font-weight:700;color:#dc2626">'+totalUH+'</div><div style="font-size:10px;color:#dc2626">회</div></div>';
+  html += '<div style="background:#dbeafe;border-radius:11px;padding:14px;text-align:center"><div style="font-size:11px;font-weight:700;color:#2563eb;margin-bottom:4px">🔵 총 20%이상 횟수</div><div style="font-size:28px;font-weight:700;color:#2563eb">'+totalHigh+'</div><div style="font-size:10px;color:#2563eb">회</div></div>';
+  html += '<div style="background:#f0fdf4;border-radius:11px;padding:14px;text-align:center"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px">📊 기록 종목 수</div><div style="font-size:28px;font-weight:700;color:var(--green)">'+uniqueStocks+'</div><div style="font-size:10px;color:var(--green)">종목</div></div>';
+  html += '</div>';
+
+  // 전체 TOP10 그래프 (상한가+20% 누적 막대)
+  html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px">';
+  html += '<div style="font-weight:700;font-size:14px;margin-bottom:4px">🏆 종합 TOP 10 (상한가 + 20%이상)</div>';
+  html += '<div style="font-size:11px;color:var(--text2);margin-bottom:14px">전체 기간 누적 기준</div>';
+  totalTop10.forEach(function(s, i){
+    var uhW = Math.round(s.uh/maxTotal*100);
+    var highW = Math.round(s.high/maxTotal*100);
+    html += '<div style="margin-bottom:10px">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
+    html += '<div style="display:flex;align-items:center;gap:7px">';
+    html += '<span style="background:'+(i<3?'var(--accent)':'#e0d8c8')+';color:'+(i<3?'#fff':'var(--text2)')+';border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">'+(i+1)+'</span>';
+    html += '<span style="font-weight:700;font-size:13px">'+s.name+'</span>';
+    if(s.theme!=='-') html += '<span style="background:#e0e7ff;color:#3730a3;font-size:10px;padding:1px 6px;border-radius:5px">'+s.theme+'</span>';
+    html += '</div>';
+    html += '<div style="display:flex;gap:8px;font-size:11px;flex-shrink:0">';
+    if(s.uh) html += '<span style="color:#dc2626;font-weight:700">🔴 '+s.uh+'회</span>';
+    if(s.high) html += '<span style="color:#2563eb;font-weight:700">🔵 '+s.high+'회</span>';
+    html += '<span style="color:var(--text2)">합계 '+s.total+'회</span>';
+    html += '</div></div>';
+    // 누적 막대 (상한가 빨강 + 20%이상 파랑)
+    html += '<div style="height:22px;background:#f0e8d8;border-radius:6px;overflow:hidden;display:flex">';
+    if(s.uh) html += '<div style="width:'+uhW+'%;background:#dc2626;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;min-width:'+(s.uh?'18px':'0')+'">'+s.uh+'</div>';
+    if(s.high) html += '<div style="width:'+highW+'%;background:#2563eb;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;min-width:'+(s.high?'18px':'0')+'">'+s.high+'</div>';
+    html += '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // 상한가 전용 TOP10
+  if(uhTop10.length){
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">';
+    html += '<div style="background:var(--card);border:1px solid #fecaca;border-radius:12px;padding:16px">';
+    html += '<div style="font-weight:700;font-size:13px;color:#dc2626;margin-bottom:12px">🔴 상한가 TOP 10</div>';
+    uhTop10.forEach(function(s,i){
+      var w = Math.round(s.uh/maxUH*100);
+      html += '<div style="margin-bottom:8px">';
+      html += '<div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:12px">';
+      html += '<span style="font-weight:600">'+(i+1)+'. '+s.name+'</span>';
+      html += '<span style="color:#dc2626;font-weight:700">'+s.uh+'회</span></div>';
+      html += '<div style="height:14px;background:#fee2e2;border-radius:4px;overflow:hidden">';
+      html += '<div style="width:'+w+'%;height:100%;background:#dc2626;border-radius:4px"></div></div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    // 20%이상 전용 TOP10
+    html += '<div style="background:var(--card);border:1px solid #bfdbfe;border-radius:12px;padding:16px">';
+    html += '<div style="font-weight:700;font-size:13px;color:#2563eb;margin-bottom:12px">🔵 20%이상 TOP 10</div>';
+    highTop10.forEach(function(s,i){
+      var w = Math.round(s.high/maxHigh*100);
+      html += '<div style="margin-bottom:8px">';
+      html += '<div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:12px">';
+      html += '<span style="font-weight:600">'+(i+1)+'. '+s.name+'</span>';
+      html += '<span style="color:#2563eb;font-weight:700">'+s.high+'회</span></div>';
+      html += '<div style="height:14px;background:#dbeafe;border-radius:4px;overflow:hidden">';
+      html += '<div style="width:'+w+'%;height:100%;background:#2563eb;border-radius:4px"></div></div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
+// ===================================================================
+// 상한가 달력
+// ===================================================================
+var _uhY=new Date().getFullYear(),_uhM=new Date().getMonth(),_uhSel=null,_uhEditDate=null,_uhEditStocks=[];
+
+function mkMigrateVolToMillion(){
+  // 거래대금 억원 → 백만원 마이그레이션 (1회성, 이미 변환된 경우 스킵)
+  if(state._volMigrated)return;
+  if(!state.marketCalendar)return;
+  Object.keys(state.marketCalendar).forEach(function(ds){
+    var d=state.marketCalendar[ds];
+    if(!d||!d.stocks)return;
+    d.stocks.forEach(function(s){
+      if(!s.vol)return;
+      // 숫자만 추출해서 100으로 나눔 (억→백만: /100)
+      var raw=String(s.vol).replace(/[^0-9]/g,'');
+      if(!raw)return;
+      var num=parseInt(raw);
+      // 억 단위로 입력된 경우(7자리 이상)는 그대로, 이미 백만단위면 스킵
+      // 10억(=1,000,000,000)이상이면 억단위로 입력된 것으로 판단
+      if(num>=10000){
+        // 억단위: 10000억 = 1조 → 백만단위로 변환(*100)은 너무 커짐
+        // 실제로 억 단위로 입력한 값이 백만단위보다 100배 크므로 /100
+        // 예: 5000억 입력 → 5000 저장 → 백만으로는 500,000백만 = 너무 큰 값
+        // 키움증권 거래대금은 보통 수천~수만백만 단위
+        // 10자리 이상(1000억이상)이면 이미 백만단위로 저장된 것
+        // 단순히 자릿수로 판단: 8자리 이상(억단위로 치면 수십억) → 이미 백만
+        if(raw.length <= 6){
+          // 억 단위로 입력된 것으로 추정 (예: 3000 = 3000억) → 백만으로: 300,000
+          var inMillion=num*100;
+          s.vol=inMillion.toLocaleString('ko-KR');
+        }
+        // 7자리 이상이면 이미 백만 단위로 추정 → 그대로 유지
+      }
+    });
+  });
+  state._volMigrated=true;
+  save();
+}
+
+function uhInitData(){
+  if(!state.uhCalendar)state.uhCalendar={};
+}
+
+function uhChangeMonth(d){
+  _uhM+=d;if(_uhM>11){_uhM=0;_uhY++;}if(_uhM<0){_uhM=11;_uhY--;}
+  _uhSel=null;renderUHCal();
+}
+
+function uhWeekdays(yr,mo){
+  var r=[],dim=new Date(yr,mo+1,0).getDate();
+  for(var d=1;d<=dim;d++){var dw=new Date(yr,mo,d).getDay();if(dw>0&&dw<6)r.push(d);}
+  return r;
+}
+function uhDS(yr,mo,d){return yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
+function uhToday(){var t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');}
+function uhFmt(ds){var d=new Date(ds+'T00:00:00'),dn=['일','월','화','수','목','금','토'];return(d.getMonth()+1)+'월 '+d.getDate()+'일 '+dn[d.getDay()]+'요일';}
+
+function renderUHCal(){
+  uhInitData();
+  var mn=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  var titleEl=document.getElementById('uhcal-title');
+  if(titleEl)titleEl.textContent=_uhY+'년 '+mn[_uhM];
+
+  var wd=uhWeekdays(_uhY,_uhM);
+  var firstDow=wd.length?new Date(_uhY,_uhM,wd[0]).getDay()-1:0;
+  var td=uhToday();
+  var grid=document.getElementById('uhcal-grid');if(!grid)return;
+  var html='';
+
+  for(var b=0;b<firstDow;b++)html+='<div class="mkcal-cell mkcal-empty"></div>';
+
+  wd.forEach(function(d){
+    var ds=uhDS(_uhY,_uhM,d);
+    var data=state.uhCalendar[ds];
+    var isToday=ds===td,isFuture=ds>td,isSel=_uhSel===ds;
+    var stocks=data?(data.stocks||[]):[];
+
+    // 상한가/20%이상 분류
+    var uhStocks=stocks.filter(function(s){return s.type==='상한가';});
+    var highStocks=stocks.filter(function(s){return s.type==='20%이상';});
+
+    var cellBg='#fafaf7';
+    if(uhStocks.length>0&&highStocks.length===0)cellBg='#fff1f2';
+    else if(highStocks.length>0&&uhStocks.length===0)cellBg='#eff6ff';
+    else if(uhStocks.length>0&&highStocks.length>0)cellBg='#fff8f8';
+
+    var dayColor=(cellBg==='#fafaf7')?'var(--text2)':'var(--text)';
+    if(isToday)dayColor='var(--accent)';
+
+    var cellContent='';
+    uhStocks.slice(0,3).forEach(function(s){
+      cellContent+='<div class="mkcal-stock-row" style="background:#fecaca;color:#991b1b">';
+      cellContent+='<span class="mkcal-stock-name" style="font-size:9px;font-weight:700">'+s.name+'</span>';
+      cellContent+='<span class="mkcal-stock-chg" style="font-size:8px">'+(s.time||'🔴')+'</span>';
+      cellContent+='</div>';
+    });
+    highStocks.slice(0,3).forEach(function(s){
+      cellContent+='<div class="mkcal-stock-row" style="background:#bfdbfe;color:#1e40af">';
+      cellContent+='<span class="mkcal-stock-name" style="font-size:9px;font-weight:700">'+s.name+'</span>';
+      cellContent+='<span class="mkcal-stock-chg" style="font-size:8px">'+(s.change||'')+'</span>';
+      cellContent+='</div>';
+    });
+    var totalMore=(uhStocks.length+highStocks.length)-6;
+    if(totalMore>0)cellContent+='<div class="mkcal-more">+'+totalMore+'개</div>';
+    if(!data&&!isFuture)cellContent+='<div class="mkcal-add-hint">+ 입력</div>';
+
+    // 요약 배지
+    var badges='';
+    if(uhStocks.length)badges+='<div style="font-size:9px;font-weight:700;color:#dc2626;background:#fee2e2;border-radius:4px;padding:1px 5px;margin-bottom:2px">🔴 '+uhStocks.length+'종목</div>';
+    if(highStocks.length)badges+='<div style="font-size:9px;font-weight:700;color:#2563eb;background:#dbeafe;border-radius:4px;padding:1px 5px;margin-bottom:2px">🔵 '+highStocks.length+'종목</div>';
+
+    html+='<div class="mkcal-cell'+(isFuture?' mkcal-future':'')+(isToday?' mkcal-today':'')+(isSel?' mkcal-today':'')+'" style="background:'+cellBg+';cursor:'+(isFuture?'default':'pointer')+'" onclick="'+(isFuture?'':'uhCellClick(\''+ds+'\')')+'">';
+    html+='<div class="mkcal-daynum" style="color:'+dayColor+'">'+d+'</div>';
+    html+=badges+cellContent;
+    html+='</div>';
+  });
+
+  grid.innerHTML=html;
+
+  var det=document.getElementById('uhcal-detail');
+  if(det){
+    if(_uhSel&&state.uhCalendar[_uhSel]){det.style.display='block';det.innerHTML=uhRenderDetail(_uhSel);}
+    else det.style.display='none';
+  }
+}
+
+function uhCellClick(ds){
+  var data=state.uhCalendar[ds];
+  if(data){
+    if(_uhSel===ds){_uhSel=null;renderUHCal();}
+    else{_uhSel=ds;renderUHCal();}
+  } else {
+    uhOpenInputModal(ds);
+  }
+}
+
+function uhRenderDetail(ds){
+  var data=state.uhCalendar[ds];if(!data)return '';
+  var stocks=data.stocks||[];
+  var uhStocks=stocks.filter(function(s){return s.type==='상한가';});
+  var highStocks=stocks.filter(function(s){return s.type==='20%이상';});
+
+  var html='<div class="mkcal-detail">';
+  html+='<div class="mkcal-det-head"><span class="mkcal-det-title">'+uhFmt(ds)+'</span>';
+  html+='<div style="display:flex;gap:6px">';
+  html+='<button class="btn btn-outline btn-sm" onclick="uhOpenInputModal(\''+ds+'\')">✏️ 수정</button>';
+  html+='<button class="btn btn-danger btn-sm" onclick="uhDelData(\''+ds+'\')">삭제</button>';
+  html+='<button class="btn btn-outline btn-sm" onclick="_uhSel=null;renderUHCal()">✕</button>';
+  html+='</div></div>';
+
+  // 요약
+  html+='<div style="display:flex;gap:10px;margin-bottom:14px">';
+  html+='<div style="background:#fee2e2;border-radius:9px;padding:10px 18px;text-align:center"><div style="font-size:11px;color:#dc2626;font-weight:700">🔴 상한가</div><div style="font-size:22px;font-weight:700;color:#dc2626">'+uhStocks.length+'</div><div style="font-size:10px;color:#dc2626">종목</div></div>';
+  html+='<div style="background:#dbeafe;border-radius:9px;padding:10px 18px;text-align:center"><div style="font-size:11px;color:#2563eb;font-weight:700">🔵 20%이상</div><div style="font-size:22px;font-weight:700;color:#2563eb">'+highStocks.length+'</div><div style="font-size:10px;color:#2563eb">종목</div></div>';
+  html+='<div style="background:#f0fdf4;border-radius:9px;padding:10px 18px;text-align:center"><div style="font-size:11px;color:var(--green);font-weight:700">📊 전체</div><div style="font-size:22px;font-weight:700;color:var(--green)">'+stocks.length+'</div><div style="font-size:10px;color:var(--green)">종목</div></div>';
+  html+='</div>';
+
+  if(!stocks.length){
+    html+='<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">등록된 종목이 없습니다</div>';
+  } else {
+    html+='<div style="overflow-x:auto"><table class="mkcal-stock-det-table">';
+    html+='<thead><tr><th>#</th><th style="text-align:left">종목명</th><th>구분</th><th>테마</th><th style="text-align:right">등락률</th><th style="text-align:right">거래대금(백만)</th><th>상한가시간</th></tr></thead><tbody>';
+    stocks.forEach(function(s,i){
+      var isUH=s.type==='상한가';
+      var rowBg=isUH?'#fff5f5':'#eff6ff';
+      var typeBadge=isUH?'<span style="background:#dc2626;color:#fff;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700">🔴 상한가</span>':'<span style="background:#2563eb;color:#fff;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700">🔵 20%이상</span>';
+      html+='<tr style="background:'+rowBg+'">';
+      html+='<td style="text-align:center;font-size:10px;color:var(--text2)">'+(i+1)+'</td>';
+      html+='<td style="font-weight:700">'+s.name+'</td>';
+      html+='<td style="text-align:center">'+typeBadge+'</td>';
+      html+='<td><span class="mkcal-theme-badge" style="background:#e0e7ff;color:#3730a3">'+(s.theme||'-')+'</span></td>';
+      html+='<td style="text-align:right;font-weight:700;color:#dc2626">'+(s.change||'-')+'</td>';
+      html+='<td style="text-align:right;color:var(--text2)">'+(s.vol||'-')+'</td>';
+      html+='<td style="text-align:center;color:var(--text2)">'+(s.time||'-')+'</td>';
+      html+='</tr>';
+    });
+    html+='</tbody></table></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function uhOpenInputModal(ds){
+  _uhEditDate=ds;
+  var data=state.uhCalendar[ds]||{};
+  var dateEl=document.getElementById('uhcal-inp-date');if(dateEl)dateEl.textContent=uhFmt(ds);
+  _uhEditStocks=data.stocks?JSON.parse(JSON.stringify(data.stocks)):[];
+  if(!_uhEditStocks.length)_uhEditStocks.push({name:'',type:'상한가',theme:'',change:'',vol:'',time:''});
+  uhRenderStockRows();
+  openModal('modal-uh-stocks');
+}
+
+function uhRenderStockRows(){
+  var el=document.getElementById('uhcal-inp-rows');if(!el)return;
+  // 테마 자동완성 목록
+  var allThemes=[];
+  if(state.themeStocks)Object.keys(state.themeStocks).forEach(function(k){if(!allThemes.includes(k))allThemes.push(k);});
+
+  el.innerHTML=_uhEditStocks.map(function(s,i){
+    var dlId='uhThemeDl'+i;
+    return '<div style="display:grid;grid-template-columns:2fr 1fr 1.5fr 1fr 1fr 80px 28px;gap:4px;margin-bottom:5px;align-items:center">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" placeholder="종목명" value="'+(s.name||'')+'" oninput="_uhEditStocks['+i+'].name=this.value">'+
+      '<select style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" onchange="_uhEditStocks['+i+'].type=this.value">'+
+        '<option value="상한가"'+(s.type==='상한가'?' selected':'')+'>🔴 상한가</option>'+
+        '<option value="20%이상"'+(s.type==='20%이상'?' selected':'')+'>🔵 20%이상</option>'+
+      '</select>'+
+      '<input list="'+dlId+'" style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" placeholder="테마" value="'+(s.theme||'')+'" oninput="_uhEditStocks['+i+'].theme=this.value">'+
+      '<datalist id="'+dlId+'">'+allThemes.map(function(t){return '<option value="'+t+'">';}).join('')+'</datalist>'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="+29.9%" value="'+(s.change||'')+'" oninput="(function(el,idx){var v=el.value.replace(/%/g,\'\');if(v&&v!==\'+\'&&v!==\'-\'&&v!==\'+2\'&&v!==\'-2\'){el.value=v+\'%\';}else{el.value=v;}_uhEditStocks[idx].change=el.value;})(this,'+i+')">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="거래대금(백만)" value="'+(s.vol||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_uhEditStocks['+i+'].vol=this.value">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:center;font-family:inherit" placeholder="09:30" maxlength="5" value="'+(s.time||'')+'" oninput="(function(el,idx){var v=el.value.replace(/[^0-9]/g,\'\');if(v.length>=3)v=v.slice(0,2)+\':\'+v.slice(2,4);el.value=v;_uhEditStocks[idx].time=v;})(this,'+i+')">'+
+      '<button style="background:none;border:none;cursor:pointer;color:#ccc;font-size:14px;padding:0" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'#ccc\'" onclick="_uhEditStocks.splice('+i+',1);uhRenderStockRows()">✕</button>'+
+    '</div>';
+  }).join('');
+}
+
+function uhAddStockRow(){
+  _uhEditStocks.push({name:'',type:'상한가',theme:'',change:'',vol:'',time:''});
+  uhRenderStockRows();
+}
+
+function uhSaveStocks(){
+  uhInitData();
+  if(!state.uhCalendar[_uhEditDate])state.uhCalendar[_uhEditDate]={};
+  state.uhCalendar[_uhEditDate].stocks=_uhEditStocks.filter(function(s){return s.name.trim();});
+  _uhSel=_uhEditDate;
+  closeModal('modal-uh-stocks');save();renderUHCal();
+}
+
+function uhDelData(ds){
+  if(!confirm('이 날짜 데이터를 삭제할까요?'))return;
+  if(state.uhCalendar[ds])delete state.uhCalendar[ds];
+  _uhSel=null;save();renderUHCal();
+}
+
 
 // ===================================================================
 // 매매법 (기법별 분류 + 노트, 자기계발 투자탭과 동일 구조)
@@ -3752,6 +4170,7 @@ window.tsAddTheme=function(){
 function initApp(){
   tsInit();
   tmInit();
+  mkMigrateVolToMillion();
   const n=new Date();
   document.getElementById('sb-day').textContent=n.getDate();
   document.getElementById('sb-datestr').textContent=n.toLocaleDateString('ko-KR',{year:'numeric',month:'long',weekday:'long'});
@@ -4015,7 +4434,7 @@ function tradeNav(id){
   document.querySelectorAll('.trade-page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs=document.querySelectorAll('.trade-nav-tab');
-  const map={'t-dash':0,'t-trades':1,'t-method':2,'t-pattern':3,'t-balance':4,'t-diary':5,'t-scenario':6,'t-trade-diary':7,'t-goal':8,'t-stock-study':9,'t-theme-stocks':10};
+  const map={'t-dash':0,'t-trades':1,'t-method':2,'t-pattern':3,'t-balance':4,'t-diary':5,'t-scenario':6,'t-trade-diary':7,'t-goal':8,'t-stock-study':9,'t-theme-stocks':10,'t-market-calendar':11,'t-uh-calendar':12};
   tabs[map[id]]?.classList.add('active');
   if(id==='t-dash')renderTDash();
   if(id==='t-trades')renderTrades();
@@ -4027,6 +4446,7 @@ function tradeNav(id){
   if(id==='t-stock-study')renderStockStudy();
   if(id==='t-theme-stocks')renderThemeStocks();
   if(id==='t-market-calendar'){mkInitData();renderMarketCal();}
+  if(id==='t-uh-calendar')renderUHCal();
   if(id==='t-balance')renderTBalance();
   if(id==='t-diary')renderTDiaries();
 }
@@ -7770,6 +8190,35 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
       onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"
       oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
     <button id="ai-send-btn" onclick="aiSend()" title="전송">➤</button>
+  </div>
+</div>
+
+
+<!-- 상한가달력 종목 입력 모달 -->
+<div id="modal-uh-stocks" class="modal-overlay">
+  <div class="modal" style="width:820px">
+    <div class="modal-title">🔴 상한가 / 🔵 20%이상 종목 입력</div>
+    <div class="modal-row"><label>날짜</label><span id="uhcal-inp-date" style="font-size:13px;color:var(--text2)"></span></div>
+    <div style="overflow-x:auto;margin-bottom:10px">
+      <div style="display:grid;grid-template-columns:2fr 1fr 1.5fr 1fr 1fr 80px 28px;gap:4px;margin-bottom:6px;min-width:640px;padding:0 4px">
+        <div style="font-size:10px;font-weight:700;color:var(--text2)">종목명</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2)">구분</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2)">테마</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2)">등락률</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2)">거래대금(백만)</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2)">상한가시간</div>
+        <div></div>
+      </div>
+      <div id="uhcal-inp-rows" style="min-width:640px"></div>
+    </div>
+    <div onclick="uhAddStockRow()" class="add-row-btn">+ 종목 추가</div>
+    <div style="margin-top:10px;padding:9px 12px;background:#f8fafc;border-radius:9px;font-size:11px;color:var(--text2)">
+      💡 <b>상한가</b> = 당일 상한가(+29.xx%) 달성 종목 (빨간색) &nbsp;|&nbsp; <b>20%이상</b> = 상한가 미달이지만 20% 이상 급등 종목 (파란색)
+    </div>
+    <div class="modal-actions" style="margin-top:14px">
+      <button class="btn btn-outline" onclick="closeModal('modal-uh-stocks')">취소</button>
+      <button class="btn btn-primary" onclick="uhSaveStocks()">저장</button>
+    </div>
   </div>
 </div>
 
