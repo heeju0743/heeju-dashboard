@@ -4051,12 +4051,62 @@ function uhRenderDetail(ds){
   return html;
 }
 
+
+// ===== 상한가달력 입력 자동저장 =====
+var UH_DRAFT_KEY = 'uh_draft_stocks';
+
+function uhSaveDraft(){
+  try{
+    localStorage.setItem(UH_DRAFT_KEY, JSON.stringify({
+      date: _uhEditDate,
+      stocks: _uhEditStocks
+    }));
+  }catch(e){}
+}
+
+function uhLoadDraft(ds){
+  try{
+    var raw = localStorage.getItem(UH_DRAFT_KEY);
+    if(!raw) return null;
+    var draft = JSON.parse(raw);
+    if(draft.date === ds) return draft.stocks;
+  }catch(e){}
+  return null;
+}
+
+function uhClearDraft(){
+  try{ localStorage.removeItem(UH_DRAFT_KEY); }catch(e){}
+}
+
+function uhDiscardDraft(){
+  uhClearDraft();
+  var data=state.uhCalendar[_uhEditDate]||{};
+  _uhEditStocks=data.stocks?JSON.parse(JSON.stringify(data.stocks)):[];
+  if(!_uhEditStocks.length)_uhEditStocks.push({name:'',type:'상한가',theme:'',change:'',vol:'',time:''});
+  var banner=document.getElementById('uh-draft-banner');
+  if(banner)banner.style.display='none';
+  uhRenderStockRows();
+}
+
 function uhOpenInputModal(ds){
   _uhEditDate=ds;
   var data=state.uhCalendar[ds]||{};
   var dateEl=document.getElementById('uhcal-inp-date');if(dateEl)dateEl.textContent=uhFmt(ds);
-  _uhEditStocks=data.stocks?JSON.parse(JSON.stringify(data.stocks)):[];
-  if(!_uhEditStocks.length)_uhEditStocks.push({name:'',type:'상한가',theme:'',change:'',vol:'',time:''});
+  // 임시저장 데이터 우선 불러오기
+  var draft=uhLoadDraft(ds);
+  if(draft&&draft.length){
+    _uhEditStocks=draft;
+    // 임시저장 알림 표시
+    setTimeout(function(){
+      var draftBanner=document.getElementById('uh-draft-banner');
+      if(draftBanner)draftBanner.style.display='flex';
+    },100);
+  } else {
+    _uhEditStocks=data.stocks?JSON.parse(JSON.stringify(data.stocks)):[];
+    if(!_uhEditStocks.length)_uhEditStocks.push({name:'',type:'상한가',theme:'',change:'',vol:'',time:''});
+    var draftBanner=document.getElementById('uh-draft-banner');
+    if(draftBanner)draftBanner.style.display='none';
+  }
   uhRenderStockRows();
   openModal('modal-uh-stocks');
 }
@@ -4070,23 +4120,24 @@ function uhRenderStockRows(){
   el.innerHTML=_uhEditStocks.map(function(s,i){
     var dlId='uhThemeDl'+i;
     return '<div style="display:grid;grid-template-columns:2fr 1fr 1.5fr 1fr 1fr 80px 28px;gap:4px;margin-bottom:5px;align-items:center">'+
-      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" placeholder="종목명" value="'+(s.name||'')+'" oninput="_uhEditStocks['+i+'].name=this.value">'+
-      '<select style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" onchange="_uhEditStocks['+i+'].type=this.value">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" placeholder="종목명" value="'+(s.name||'')+'" oninput="_uhEditStocks['+i+'].name=this.value;uhSaveDraft()">'+
+      '<select style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" onchange="_uhEditStocks['+i+'].type=this.value;uhSaveDraft()">'+
         '<option value="상한가"'+(s.type==='상한가'?' selected':'')+'>🔴 상한가</option>'+
         '<option value="20%이상"'+(s.type==='20%이상'?' selected':'')+'>🔵 20%이상</option>'+
       '</select>'+
-      '<input list="'+dlId+'" style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" placeholder="테마" value="'+(s.theme||'')+'" oninput="_uhEditStocks['+i+'].theme=this.value">'+
+      '<input list="'+dlId+'" style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit" placeholder="테마" value="'+(s.theme||'')+'" oninput="_uhEditStocks['+i+'].theme=this.value;uhSaveDraft()">'+
       '<datalist id="'+dlId+'">'+allThemes.map(function(t){return '<option value="'+t+'">';}).join('')+'</datalist>'+
-      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="+29.9%" value="'+(s.change||'')+'" oninput="(function(el,idx){var v=el.value.replace(/%/g,\'\');if(v&&v!==\'+\'&&v!==\'-\'&&v!==\'+2\'&&v!==\'-2\'){el.value=v+\'%\';}else{el.value=v;}_uhEditStocks[idx].change=el.value;})(this,'+i+')">'+
-      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="거래대금(백만)" value="'+(s.vol||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_uhEditStocks['+i+'].vol=this.value">'+
-      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:center;font-family:inherit" placeholder="09:30" maxlength="5" value="'+(s.time||'')+'" oninput="(function(el,idx){var v=el.value.replace(/[^0-9]/g,\'\');if(v.length>=3)v=v.slice(0,2)+\':\'+v.slice(2,4);el.value=v;_uhEditStocks[idx].time=v;})(this,'+i+')">'+
-      '<button style="background:none;border:none;cursor:pointer;color:#ccc;font-size:14px;padding:0" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'#ccc\'" onclick="_uhEditStocks.splice('+i+',1);uhRenderStockRows()">✕</button>'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="+29.9%" value="'+(s.change||'')+'" oninput="(function(el,idx){var v=el.value.replace(/%/g,\'\');if(v&&v!==\'+\'&&v!==\'-\'&&v!==\'+2\'&&v!==\'-2\'){el.value=v+\'%\';}else{el.value=v;}_uhEditStocks[idx].change=el.value;uhSaveDraft();})(this,'+i+')">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:right;font-family:inherit" placeholder="거래대금(백만)" value="'+(s.vol||'')+'" oninput="var v=this.value.replace(/[^0-9]/g,\'\');if(v)this.value=Number(v).toLocaleString(\'ko-KR\');else this.value=\'\';_uhEditStocks['+i+'].vol=this.value;uhSaveDraft()">'+
+      '<input style="padding:5px 7px;border:1px solid var(--border);border-radius:7px;font-size:12px;text-align:center;font-family:inherit" placeholder="09:30" maxlength="5" value="'+(s.time||'')+'" oninput="(function(el,idx){var v=el.value.replace(/[^0-9]/g,\'\');if(v.length>=3)v=v.slice(0,2)+\':\'+v.slice(2,4);el.value=v;_uhEditStocks[idx].time=v;uhSaveDraft();})(this,'+i+')">'+
+      '<button style="background:none;border:none;cursor:pointer;color:#ccc;font-size:14px;padding:0" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'#ccc\'" onclick="_uhEditStocks.splice('+i+',1);uhSaveDraft();uhRenderStockRows()">✕</button>'+
     '</div>';
   }).join('');
 }
 
 function uhAddStockRow(){
   _uhEditStocks.push({name:'',type:'상한가',theme:'',change:'',vol:'',time:''});
+  uhSaveDraft();
   uhRenderStockRows();
 }
 
@@ -4095,6 +4146,7 @@ function uhSaveStocks(){
   if(!state.uhCalendar[_uhEditDate])state.uhCalendar[_uhEditDate]={};
   state.uhCalendar[_uhEditDate].stocks=_uhEditStocks.filter(function(s){return s.name.trim();});
   _uhSel=_uhEditDate;
+  uhClearDraft();
   closeModal('modal-uh-stocks');save();renderUHCal();
 }
 
@@ -8383,6 +8435,11 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
 <div id="modal-uh-stocks" class="modal-overlay">
   <div class="modal" style="width:820px">
     <div class="modal-title">🔴 상한가 / 🔵 20%이상 종목 입력</div>
+    <!-- 임시저장 배너 -->
+    <div id="uh-draft-banner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:9px;padding:9px 14px;margin-bottom:10px;font-size:12px;color:#92400e;align-items:center;justify-content:space-between">
+      <span>⚡ 이전에 입력하던 내용이 있어요! 자동으로 불러왔어요.</span>
+      <button onclick="uhDiscardDraft()" style="background:none;border:1px solid #f59e0b;border-radius:6px;padding:3px 9px;font-size:11px;color:#92400e;cursor:pointer;font-family:inherit">처음부터 입력</button>
+    </div>
     <div class="modal-row"><label>날짜</label><span id="uhcal-inp-date" style="font-size:13px;color:var(--text2)"></span></div>
     <div style="overflow-x:auto;margin-bottom:10px">
       <div style="display:grid;grid-template-columns:2fr 1fr 1.5fr 1fr 1fr 80px 28px;gap:4px;margin-bottom:6px;min-width:640px;padding:0 4px">
