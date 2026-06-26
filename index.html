@@ -863,7 +863,6 @@ textarea{resize:vertical;min-height:80px}
     <div class="trade-nav-tab" onclick="tradeNav('t-theme-stocks')">📋 테마별 종목</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-market-calendar')">📅 시장달력</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-uh-calendar')">🔴 상한가달력</div>
-    <div class="trade-nav-tab" onclick="tradeNav('t-sector-compare')">⚡ 섹터비교</div>
   </div>
 
   <!-- 대시보드 -->
@@ -1021,9 +1020,8 @@ textarea{resize:vertical;min-height:80px}
         <button class="mkcal-tab on" onclick="mkSwitchTab('sector',this)">🔥 주도섹터</button>
         <button class="mkcal-tab" onclick="mkSwitchTab('stocks',this)">📊 대금상위</button>
         <button class="mkcal-tab" onclick="mkSwitchTab('market',this)">📈 시장현황</button>
-        <button class="mkcal-tab" onclick="mkSwitchTab('theme',this)">🎨 테마 색상</button>
       </div>
-      <div id="mkcal-main-panel" class="mkcal-panel">
+      <div class="mkcal-panel">
         <div class="mkcal-header">
           <button class="mkcal-nav" onclick="mkChangeMonth(-1)">◀</button>
           <span class="mkcal-title" id="mkcal-title"></span>
@@ -1038,10 +1036,6 @@ textarea{resize:vertical;min-height:80px}
         <div class="mkcal-grid" id="mkcal-grid"></div>
         <div id="mkcal-detail" style="display:none"></div>
       </div>
-      <!-- 테마 색상 관리 패널 -->
-      <div id="mkcal-theme-panel" class="mkcal-panel" style="display:none">
-        <div id="mkcal-theme-content"></div>
-      </div>
     </div>
   </div>
 
@@ -1051,6 +1045,7 @@ textarea{resize:vertical;min-height:80px}
       <div class="mkcal-tab-bar" style="border-radius:10px 10px 0 0">
         <button class="mkcal-tab on" id="uh-tab-cal" onclick="uhSwitchTab('cal',this)">📅 상한가 달력</button>
         <button class="mkcal-tab" id="uh-tab-stat" onclick="uhSwitchTab('stat',this)">📊 누적 통계</button>
+        <button class="mkcal-tab" id="uh-tab-compare" onclick="uhSwitchTab('compare',this)">⚡ 섹터 비교</button>
         <span style="color:rgba(255,255,255,.5);font-size:11px;padding:10px 0;display:flex;align-items:center;gap:12px;margin-left:auto;margin-right:12px">
           <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#dc2626;display:inline-block"></span>상한가</span>
           <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#2563eb;display:inline-block"></span>20%이상</span>
@@ -1075,33 +1070,23 @@ textarea{resize:vertical;min-height:80px}
       <div id="uh-panel-stat" class="mkcal-panel" style="display:none">
         <div id="uh-stat-content"></div>
       </div>
-
-    </div>
-  </div>
-
-  <!-- 섹터 비교 -->
-  <div id="t-sector-compare" class="trade-page">
-    <div class="mkcal-wrap">
-      <div class="mkcal-tab-bar" style="border-radius:10px 10px 0 0">
-        <span style="color:#fff;font-size:13px;font-weight:700;padding:10px 18px;display:flex;align-items:center;gap:8px">⚡ 섹터 비교 달력</span>
-        <span style="color:rgba(255,255,255,.5);font-size:11px;padding:10px 0;display:flex;align-items:center;gap:14px;margin-left:auto;margin-right:14px">
-          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#1a2744;display:inline-block"></span>거래대금 주도섹터 (수기입력)</span>
-          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#dc2626;display:inline-block"></span>상한가 주도섹터 (자동집계)</span>
-        </span>
-      </div>
-      <div class="mkcal-panel">
+      <!-- 섹터 비교 패널 -->
+      <div id="uh-panel-compare" class="mkcal-panel" style="display:none">
         <div class="mkcal-header">
           <button class="mkcal-nav" onclick="uhCompareChangeMonth(-1)">◀</button>
           <span class="mkcal-title" id="uhcomp-title"></span>
           <button class="mkcal-nav" onclick="uhCompareChangeMonth(1)">▶</button>
         </div>
-        <div class="mkcal-dow">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div style="background:#1a2744;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px">🔥 거래대금 주도섹터</div>
+          <div style="background:#7f1d1d;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px">🔴 상한가 주도섹터</div>
+        </div>
+        <div class="mkcal-dow" style="grid-template-columns:repeat(5,1fr)">
           <div class="mkcal-dow-cell">월</div><div class="mkcal-dow-cell">화</div>
           <div class="mkcal-dow-cell">수</div><div class="mkcal-dow-cell">목</div>
           <div class="mkcal-dow-cell">금</div>
         </div>
         <div class="mkcal-grid" id="uhcomp-grid"></div>
-        <div id="uhcomp-detail" style="display:none"></div>
       </div>
     </div>
   </div>
@@ -1821,7 +1806,7 @@ textarea{resize:vertical;min-height:80px}
         </div>
       </div>
       <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">💰 매매동향 (억원)</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">💰 매매동향 (백만원)</div>
         <table style="width:100%;border-collapse:collapse;font-size:11px">
           <thead><tr style="background:#1a2744;color:#fff">
             <th style="padding:5px 8px">시장</th><th style="padding:5px 8px;text-align:right">개인</th><th style="padding:5px 8px;text-align:right">외국인</th><th style="padding:5px 8px;text-align:right">기관</th>
@@ -1962,7 +1947,6 @@ window.state={
   balanceInit:{dom:200000,us:0,fut:0,coin:0},
   marketCalendar:{},
   uhCalendar:{},
-  mkThemeColors:{},
   tradeMethodCats:[],
   tradeMethodNotes:{}
 };
@@ -2150,9 +2134,7 @@ try{
       }
     });
   }
-}catch(e){
-  console.error('Firebase 로드 오류:', e);
-}
+}catch(e){}
 
 document.getElementById('loading-screen').style.display='none';
 initApp();
@@ -3267,155 +3249,8 @@ function mkInitData(){
 
 }
 
-
-// ================================================================
-// 시장달력 테마 색상 관리 패널
-// ================================================================
-function renderMkThemePanel(){
-  var el=document.getElementById('mkcal-theme-content');
-  if(!el)return;
-  if(!state.themeStocks)state.themeStocks={};
-
-  // 사용자 커스텀 테마 색상 저장소
-  if(!state.mkThemeColors)state.mkThemeColors={};
-
-  var themes=Object.keys(state.themeStocks);
-  // MK_DEF 기반 기본 테마도 포함
-  var defThemes=Object.keys(MK_DEF);
-  var allThemeSet=new Set([...themes,...defThemes]);
-  var allThemes=[...allThemeSet].sort();
-
-  var html='';
-  html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">';
-  html+='<div>';
-  html+='<div style="font-size:15px;font-weight:700;margin-bottom:3px">🎨 테마 색상 관리</div>';
-  html+='<div style="font-size:11px;color:var(--text2)">달력에 표시되는 테마 색상을 직접 설정하세요</div>';
-  html+='</div>';
-  html+='<button class="btn btn-primary btn-sm" onclick="mkAddTheme()">+ 테마 추가</button>';
-  html+='</div>';
-
-  // 색상 팔레트 범례
-  html+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding:10px 12px;background:var(--bg);border-radius:9px">';
-  html+='<div style="font-size:11px;font-weight:700;color:var(--text2);width:100%;margin-bottom:5px">📋 사용 가능한 색상</div>';
-  MK_PALETTE.forEach(function(p,i){
-    html+='<div style="display:flex;align-items:center;gap:4px;font-size:10px">';
-    html+='<div style="width:18px;height:18px;border-radius:4px;background:'+p.hex+'"></div>';
-    html+='<span style="color:var(--text2)">'+p.name+'</span>';
-    html+='</div>';
-  });
-  html+='</div>';
-
-  // 테마 목록
-  html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">';
-  allThemes.forEach(function(theme){
-    var colorIdx=getThemeColorIdx(theme);
-    var pal=MK_PALETTE[colorIdx]||MK_PALETTE[0];
-    var isCustom=!!(state.themeStocks&&state.themeStocks[theme]);
-
-    html+='<div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">';
-    // 미리보기 헤더
-    html+='<div style="background:'+pal.hex+';padding:10px 12px;display:flex;align-items:center;justify-content:space-between">';
-    html+='<span style="color:'+pal.txt+';font-weight:700;font-size:13px">'+theme+'</span>';
-    html+='<span style="background:rgba(255,255,255,.25);color:'+pal.txt+';font-size:10px;padding:2px 7px;border-radius:9px">'+pal.name+'</span>';
-    html+='</div>';
-    // 컨트롤
-    html+='<div style="padding:10px 12px;background:var(--card)">';
-    html+='<div style="font-size:10px;color:var(--text2);margin-bottom:6px">색상 변경:</div>';
-    html+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">';
-    MK_PALETTE.forEach(function(p,i){
-      var isSel=(colorIdx===i);
-      html+='<div onclick="setThemeColor(\''+theme.replace(/'/g,"\\'")+'\',' +i+')" ';
-      html+='style="width:22px;height:22px;border-radius:5px;background:'+p.hex+';cursor:pointer;';
-      html+=(isSel?'outline:3px solid #fff;box-shadow:0 0 0 4px '+p.hex+';':'border:2px solid transparent;');
-      html+='" title="'+p.name+'"></div>';
-    });
-    html+='</div>';
-    html+='<div style="display:flex;gap:5px">';
-    if(isCustom){
-      html+='<button class="btn btn-danger btn-sm" onclick="mkDeleteTheme(\''+theme.replace(/'/g,"\\'")+'\')" style="font-size:10px">🗑️ 삭제</button>';
-      html+='<button class="btn btn-outline btn-sm" onclick="mkRenameTheme(\''+theme.replace(/'/g,"\\'")+'\')" style="font-size:10px">✏️ 이름</button>';
-    }
-    html+='</div>';
-    html+='</div>';
-    html+='</div>';
-  });
-  html+='</div>';
-
-  el.innerHTML=html;
-}
-
-function getThemeColorIdx(theme){
-  // 1) state.themeStocks에 color 속성
-  if(state.themeStocks&&state.themeStocks[theme]&&state.themeStocks[theme].color!==undefined)
-    return state.themeStocks[theme].color;
-  // 2) 커스텀 색상 저장소
-  if(state.mkThemeColors&&state.mkThemeColors[theme]!==undefined)
-    return state.mkThemeColors[theme];
-  // 3) MK_DEF
-  if(MK_DEF[theme]!==undefined)return MK_DEF[theme];
-  // 4) 부분 매칭
-  var defKeys=Object.keys(MK_DEF);
-  for(var i=0;i<defKeys.length;i++){
-    if(theme.indexOf(defKeys[i])>=0||defKeys[i].indexOf(theme)>=0)
-      return MK_DEF[defKeys[i]];
-  }
-  return 8; // 기본: 다크레드
-}
-
-function setThemeColor(theme,colorIdx){
-  if(!state.mkThemeColors)state.mkThemeColors={};
-  state.mkThemeColors[theme]=colorIdx;
-  // themeStocks에도 반영
-  if(state.themeStocks&&state.themeStocks[theme]){
-    state.themeStocks[theme].color=colorIdx;
-  }
-  save();
-  renderMkThemePanel();
-}
-
-function mkAddTheme(){
-  var name=prompt('새 테마 이름을 입력하세요:\n예: 반도체·AI, 신재생에너지, 로봇 등');
-  if(!name||!name.trim())return;
-  var trimmed=name.trim();
-  if(!state.themeStocks)state.themeStocks={};
-  if(state.themeStocks[trimmed]){alert('이미 있는 테마예요!');return;}
-  state.themeStocks[trimmed]={subs:[],color:8};
-  save();
-  renderMkThemePanel();
-}
-
-function mkDeleteTheme(theme){
-  if(!confirm('"'+theme+'" 테마를 삭제할까요?\n(달력에서 이 테마 색상이 사라집니다)'))return;
-  if(state.themeStocks&&state.themeStocks[theme])delete state.themeStocks[theme];
-  if(state.mkThemeColors&&state.mkThemeColors[theme]!==undefined)delete state.mkThemeColors[theme];
-  save();
-  renderMkThemePanel();
-}
-
-function mkRenameTheme(oldName){
-  var newName=prompt('테마 이름 수정:',oldName);
-  if(!newName||!newName.trim()||newName.trim()===oldName)return;
-  var trimmed=newName.trim();
-  if(state.themeStocks){
-    if(state.themeStocks[trimmed]){alert('이미 있는 이름이에요!');return;}
-    if(state.themeStocks[oldName]){
-      state.themeStocks[trimmed]=state.themeStocks[oldName];
-      delete state.themeStocks[oldName];
-    }
-  }
-  if(state.mkThemeColors&&state.mkThemeColors[oldName]!==undefined){
-    state.mkThemeColors[trimmed]=state.mkThemeColors[oldName];
-    delete state.mkThemeColors[oldName];
-  }
-  save();
-  renderMkThemePanel();
-}
-
 function mkThemeColor(theme){
   if(!theme)return{hex:'#888780',txt:'#fff'};
-  // 0) 사용자 커스텀 색상 저장소 우선
-  if(state.mkThemeColors&&state.mkThemeColors[theme]!==undefined)
-    return MK_PALETTE[state.mkThemeColors[theme]]||MK_PALETTE[0];
   // 1) state.themeStocks에 직접 color 속성 있으면 우선
   if(state.themeStocks&&state.themeStocks[theme]&&state.themeStocks[theme].color!==undefined)
     return MK_PALETTE[state.themeStocks[theme].color]||MK_PALETTE[0];
@@ -3452,14 +3287,9 @@ function mkGV(id){var e=document.getElementById(id);return e?e.value.trim():'';}
 
 function mkSwitchTab(tab,btn){
   _mkTab=tab;_mkSel=null;
-  document.querySelectorAll('#t-market-calendar .mkcal-tab').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.mkcal-tab').forEach(function(b){b.classList.remove('on');});
   if(btn)btn.classList.add('on');
-  var themePanel=document.getElementById('mkcal-theme-panel');
-  var mainPanel=document.getElementById('mkcal-main-panel');
-  if(themePanel)themePanel.style.display=(tab==='theme')?'block':'none';
-  if(mainPanel)mainPanel.style.display=(tab==='theme')?'none':'block';
-  if(tab!=='theme')renderMarketCal();
-  else renderMkThemePanel();
+  renderMarketCal();
 }
 function mkChangeMonth(d){
   _mkM+=d;if(_mkM>11){_mkM=0;_mkY++;}if(_mkM<0){_mkM=11;_mkY--;}
@@ -3620,7 +3450,7 @@ function mkRenderDetail(ds){
     html+=mkIdxCard('🇰🇷 코스닥',m.kosdaq,m.kosdaqC);
     html+=mkIdxCard('🇺🇸 나스닥100 선물',m.ndx,m.ndxC);
     html+='</div>';
-    html+='<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">💰 매매동향 (억원)</div>';
+    html+='<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">💰 매매동향 (백만원)</div>';
     html+='<table class="mkcal-sup-table"><thead><tr><th>시장</th><th>개인</th><th>외국인</th><th>기관</th></tr></thead><tbody>';
     html+=mkSupRow('코스피',m.supKpInd,m.supKpFor,m.supKpIns);
     html+=mkSupRow('코스닥',m.supKdInd,m.supKdFor,m.supKdIns);
@@ -3735,9 +3565,12 @@ function uhSwitchTab(tab, btn){
   if(btn) btn.classList.add('on');
   var calPanel = document.getElementById('uh-panel-cal');
   var statPanel = document.getElementById('uh-panel-stat');
+  var compPanel = document.getElementById('uh-panel-compare');
   if(calPanel) calPanel.style.display = tab==='cal' ? 'block' : 'none';
   if(statPanel) statPanel.style.display = tab==='stat' ? 'block' : 'none';
+  if(compPanel) compPanel.style.display = tab==='compare' ? 'block' : 'none';
   if(tab==='stat') renderUHStat();
+  if(tab==='compare') renderUHCompare();
 }
 
 // ===== 섹터 비교 달력 =====
@@ -3768,11 +3601,11 @@ function renderUHCompare(){
     var ds=uhDS(_uhCompY,_uhCompM,d);
     var isToday=ds===td, isFuture=ds>td;
 
-    // 거래대금 주도섹터 (시장달력)
+    // 왼쪽: 시장달력 주도섹터 (state.marketCalendar)
     var mkData=state.marketCalendar&&state.marketCalendar[ds];
     var mkSectors=(mkData&&mkData.sectors)||[];
 
-    // 상한가 주도섹터 (상한가달력 테마 자동집계)
+    // 오른쪽: 상한가달력 테마 자동 집계
     var uhData=state.uhCalendar&&state.uhCalendar[ds];
     var uhStocks=(uhData&&uhData.stocks)||[];
     var uhThemeMap={};
@@ -3782,58 +3615,56 @@ function renderUHCompare(){
       if(s.type==='상한가')uhThemeMap[s.theme].uh++;
       else uhThemeMap[s.theme].high++;
     });
+    // 합산 순으로 정렬
     var uhSectors=Object.keys(uhThemeMap).sort(function(a,b){
-      return (uhThemeMap[b].uh+uhThemeMap[b].high)-(uhThemeMap[a].uh+uhThemeMap[a].high);
+      var ta=uhThemeMap[a].uh+uhThemeMap[a].high;
+      var tb=uhThemeMap[b].uh+uhThemeMap[b].high;
+      return tb-ta;
     });
 
     var hasData=mkSectors.length||uhSectors.length;
+    var cellBg=hasData?'#fff':'#fafaf7';
     var dayColor=isToday?'var(--accent)':'var(--text2)';
-    var cellBg=hasData?(isToday?'#fffdf8':'#fff'):'#fafaf7';
 
-    html+='<div class="mkcal-cell'+(isFuture?' mkcal-future':'')+(isToday?' mkcal-today':'')+'" style="background:'+cellBg+';min-height:140px;padding:4px;cursor:'+(isFuture?'default':'pointer')+'" onclick="'+(isFuture?'':'uhCompCellClick(\''+ds+'\')')+'">';
+    html+='<div class="mkcal-cell'+(isFuture?' mkcal-future':'')+(isToday?' mkcal-today':'')+'" style="background:'+cellBg+';min-height:120px;padding:5px 4px;cursor:'+(isFuture?'default':'pointer')+'" onclick="'+(isFuture?'':'uhCompCellClick(\''+ds+'\')')+'">';
+    html+='<div class="mkcal-daynum" style="color:'+dayColor+';margin-bottom:4px">'+d+'</div>';
 
-    // 날짜
-    html+='<div class="mkcal-daynum" style="color:'+dayColor+';margin-bottom:4px;text-align:center;border-bottom:1px solid #e8dcc8;padding-bottom:3px">'+d+'</div>';
-
-    // 2컬럼 분할: 왼쪽=거래대금, 오른쪽=상한가
-    html+='<div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:0;flex:1">';
+    // 2컬럼 레이아웃
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;flex:1">';
 
     // 왼쪽: 거래대금 주도섹터
-    html+='<div style="padding:2px 3px 2px 1px">';
+    html+='<div style="border-right:1px solid #e8dcc8;padding-right:3px">';
     if(mkSectors.length){
-      mkSectors.slice(0,6).forEach(function(s){
+      mkSectors.slice(0,4).forEach(function(s){
         var c=mkThemeColor(s);
-        html+='<div style="background:'+c.hex+';color:'+c.txt+';border-radius:3px;padding:2px 4px;font-size:8px;font-weight:700;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+s+'</div>';
+        html+='<div style="background:'+c.hex+';color:'+c.txt+';border-radius:3px;padding:1px 4px;font-size:8px;font-weight:700;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+s+'</div>';
       });
-      if(mkSectors.length>6)html+='<div style="font-size:7px;color:var(--text2);text-align:center">+'+(mkSectors.length-6)+'</div>';
+      if(mkSectors.length>4)html+='<div style="font-size:8px;color:var(--text2)">+' +(mkSectors.length-4)+'</div>';
     } else if(!isFuture){
-      html+='<div style="font-size:8px;color:#ccc;text-align:center;padding-top:8px">-</div>';
+      html+='<div style="font-size:8px;color:#ddd;text-align:center;margin-top:4px">-</div>';
     }
     html+='</div>';
 
-    // 구분선
-    html+='<div style="background:#e8dcc8"></div>';
-
     // 오른쪽: 상한가 주도섹터
-    html+='<div style="padding:2px 1px 2px 3px">';
+    html+='<div style="padding-left:3px">';
     if(uhSectors.length){
-      uhSectors.slice(0,6).forEach(function(s){
+      uhSectors.slice(0,4).forEach(function(s){
         var th=uhThemeMap[s];
         var isUHDom=th.uh>=th.high;
         var bg=isUHDom?'#dc2626':'#2563eb';
-        var countStr=(th.uh?'🔴'+th.uh:'')+(th.high?' 🔵'+th.high:'');
-        html+='<div style="background:'+bg+';color:#fff;border-radius:3px;padding:2px 4px;font-size:8px;font-weight:700;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center;overflow:hidden">';
-        html+='<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:7.5px">'+s+'</span>';
-        html+='<span style="flex-shrink:0;font-size:7px;opacity:.9;margin-left:2px">'+countStr+'</span>';
+        var badge=th.uh?'<span style="color:#fca5a5;font-size:7px">🔴'+th.uh+'</span>':'';
+        var badge2=th.high?'<span style="color:#93c5fd;font-size:7px">🔵'+th.high+'</span>':'';
+        html+='<div style="background:'+bg+';color:#fff;border-radius:3px;padding:1px 4px;font-size:8px;font-weight:700;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;justify-content:space-between;align-items:center;gap:2px">';
+        html+='<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">'+s+'</span>';
+        html+='<span style="flex-shrink:0;display:flex;gap:2px">'+badge+badge2+'</span>';
         html+='</div>';
       });
-      if(uhSectors.length>6)html+='<div style="font-size:7px;color:var(--text2);text-align:center">+'+(uhSectors.length-6)+'</div>';
+      if(uhSectors.length>4)html+='<div style="font-size:8px;color:var(--text2)">+'+(uhSectors.length-4)+'</div>';
     } else if(!isFuture){
-      html+='<div style="font-size:8px;color:#ccc;text-align:center;padding-top:8px">-</div>';
+      html+='<div style="font-size:8px;color:#ddd;text-align:center;margin-top:4px">-</div>';
     }
     html+='</div>';
-
-    html+='</div>'; // 2컬럼 grid
+    html+='</div>'; // grid
     html+='</div>'; // cell
   });
 
@@ -4074,7 +3905,7 @@ function mkMigrateVolToMillion(){
     });
   });
   state._volMigrated=true;
-  // save() 제거 - initApp 시점에 저장하면 Firebase 로드 전 빈 데이터로 덮어쓸 위험
+  save();
 }
 
 function uhInitData(){
@@ -4576,7 +4407,7 @@ window.tsAddTheme=function(){
 function initApp(){
   tsInit();
   tmInit();
-  // mkMigrateVolToMillion은 시장달력 탭 진입시 실행 (Firebase 로드 완료 후)
+  mkMigrateVolToMillion();
   const n=new Date();
   document.getElementById('sb-day').textContent=n.getDate();
   document.getElementById('sb-datestr').textContent=n.toLocaleDateString('ko-KR',{year:'numeric',month:'long',weekday:'long'});
@@ -4815,7 +4646,7 @@ function nav(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
   document.getElementById('page-'+id)?.classList.add('active');
-  const map={dash:0,planner:1,todo:2,schedule:3,book:4,stocks:5,journal:6,'sd-invest':7,'sd-blog':8,'sd-youtube':9,'sd-sidejob':10,'sd-language':11,'sd-computer':12,diary:13,food:14,exercise:15,massage:16,meditation:17,budget:18};
+  const map={dash:0,planner:1,todo:2,schedule:3,pil:4,book:5,stocks:6,journal:7,'sd-invest':8,'sd-blog':9,'sd-youtube':10,'sd-sidejob':11,'sd-language':12,'sd-computer':13,diary:14,food:15,exercise:16,massage:17,meditation:18,budget:19};
   document.querySelectorAll('.sb-item')[map[id]]?.classList.add('active');
   if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();}
   if(id==='schedule')renderSchedCal();
@@ -4840,7 +4671,7 @@ function tradeNav(id){
   document.querySelectorAll('.trade-page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs=document.querySelectorAll('.trade-nav-tab');
-  const map={'t-dash':0,'t-trades':1,'t-method':2,'t-pattern':3,'t-balance':4,'t-diary':5,'t-scenario':6,'t-trade-diary':7,'t-goal':8,'t-stock-study':9,'t-theme-stocks':10,'t-market-calendar':11,'t-uh-calendar':12,'t-sector-compare':13};
+  const map={'t-dash':0,'t-trades':1,'t-method':2,'t-pattern':3,'t-balance':4,'t-diary':5,'t-scenario':6,'t-trade-diary':7,'t-goal':8,'t-stock-study':9,'t-theme-stocks':10,'t-market-calendar':11,'t-uh-calendar':12};
   tabs[map[id]]?.classList.add('active');
   if(id==='t-dash')renderTDash();
   if(id==='t-trades')renderTrades();
@@ -4851,9 +4682,8 @@ function tradeNav(id){
   if(id==='t-goal'){renderTradeGoals();renderWolcheonTable();}
   if(id==='t-stock-study')renderStockStudy();
   if(id==='t-theme-stocks')renderThemeStocks();
-  if(id==='t-market-calendar'){mkMigrateVolToMillion();mkInitData();renderMarketCal();}
+  if(id==='t-market-calendar'){mkInitData();renderMarketCal();}
   if(id==='t-uh-calendar')renderUHCal();
-  if(id==='t-sector-compare'){_uhCompY=new Date().getFullYear();_uhCompM=new Date().getMonth();renderUHCompare();}
   if(id==='t-balance')renderTBalance();
   if(id==='t-diary')renderTDiaries();
 }
