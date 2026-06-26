@@ -2150,7 +2150,9 @@ try{
       }
     });
   }
-}catch(e){}
+}catch(e){
+  console.error('Firebase 로드 오류:', e);
+}
 
 document.getElementById('loading-screen').style.display='none';
 initApp();
@@ -4072,7 +4074,7 @@ function mkMigrateVolToMillion(){
     });
   });
   state._volMigrated=true;
-  save();
+  // save() 제거 - initApp 시점에 저장하면 Firebase 로드 전 빈 데이터로 덮어쓸 위험
 }
 
 function uhInitData(){
@@ -4574,7 +4576,7 @@ window.tsAddTheme=function(){
 function initApp(){
   tsInit();
   tmInit();
-  mkMigrateVolToMillion();
+  // mkMigrateVolToMillion은 시장달력 탭 진입시 실행 (Firebase 로드 완료 후)
   const n=new Date();
   document.getElementById('sb-day').textContent=n.getDate();
   document.getElementById('sb-datestr').textContent=n.toLocaleDateString('ko-KR',{year:'numeric',month:'long',weekday:'long'});
@@ -4849,7 +4851,7 @@ function tradeNav(id){
   if(id==='t-goal'){renderTradeGoals();renderWolcheonTable();}
   if(id==='t-stock-study')renderStockStudy();
   if(id==='t-theme-stocks')renderThemeStocks();
-  if(id==='t-market-calendar'){mkInitData();renderMarketCal();}
+  if(id==='t-market-calendar'){mkMigrateVolToMillion();mkInitData();renderMarketCal();}
   if(id==='t-uh-calendar')renderUHCal();
   if(id==='t-sector-compare'){_uhCompY=new Date().getFullYear();_uhCompM=new Date().getMonth();renderUHCompare();}
   if(id==='t-balance')renderTBalance();
