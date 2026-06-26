@@ -3250,6 +3250,22 @@ var MK_PALETTE=[
   {hex:'#78350f',txt:'#fff',name:'갈색'},
   {hex:'#166534',txt:'#fff',name:'다크그린'},
   {hex:'#4c1d95',txt:'#fff',name:'딥퍼플'},
+  {hex:'#111827',txt:'#fff',name:'블랙'},
+  {hex:'#374151',txt:'#fff',name:'다크그레이'},
+  {hex:'#0f766e',txt:'#fff',name:'틸'},
+  {hex:'#0369a1',txt:'#fff',name:'스카이블루'},
+  {hex:'#b45309',txt:'#fff',name:'오렌지'},
+  {hex:'#dc2626',txt:'#fff',name:'레드'},
+  {hex:'#16a34a',txt:'#fff',name:'초록'},
+  {hex:'#2563eb',txt:'#fff',name:'파랑'},
+  {hex:'#9333ea',txt:'#fff',name:'보라'},
+  {hex:'#db2777',txt:'#fff',name:'핑크'},
+  {hex:'#ca8a04',txt:'#fff',name:'노랑'},
+  {hex:'#ea580c',txt:'#fff',name:'주황'},
+  {hex:'#0891b2',txt:'#fff',name:'시안'},
+  {hex:'#be123c',txt:'#fff',name:'로즈'},
+  {hex:'#4d7c0f',txt:'#fff',name:'라임그린'},
+  {hex:'#6366f1',txt:'#fff',name:'인디고'},
 ];
 var MK_DEF={
   '반도체':0,'2차전지':1,'방산·우주항공':2,'조선·해운':3,'건설·인프라':4,
@@ -3280,7 +3296,7 @@ function renderMkThemePanel(){
   var themes=Object.keys(state.themeStocks);
   var defThemes=Object.keys(MK_DEF);
   var allThemeSet=new Set([].concat(themes,defThemes));
-  var allThemes=[].concat([...allThemeSet]).sort();
+  var allThemes=[...allThemeSet].sort();
 
   var html='';
   html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">';
@@ -3290,37 +3306,35 @@ function renderMkThemePanel(){
   html+='</div>';
 
   // 팔레트 범례
-  html+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding:10px 12px;background:var(--bg);border-radius:9px">';
-  html+='<div style="font-size:11px;font-weight:700;color:var(--text2);width:100%;margin-bottom:5px">사용 가능한 색상</div>';
+  html+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px;padding:10px 12px;background:var(--bg);border-radius:9px">';
+  html+='<div style="font-size:11px;font-weight:700;color:var(--text2);width:100%;margin-bottom:5px">사용 가능한 색상 ('+MK_PALETTE.length+'가지)</div>';
   MK_PALETTE.forEach(function(p,i){
-    html+='<div style="display:flex;align-items:center;gap:4px;font-size:10px">';
-    html+='<div style="width:16px;height:16px;border-radius:3px;background:'+p.hex+'"></div>';
+    html+='<div style="display:flex;align-items:center;gap:3px;font-size:10px;background:#fff;border-radius:5px;padding:2px 6px;border:1px solid var(--border)">';
+    html+='<div style="width:14px;height:14px;border-radius:3px;background:'+p.hex+';flex-shrink:0"></div>';
     html+='<span style="color:var(--text2)">'+p.name+'</span></div>';
   });
   html+='</div>';
 
   // 테마 카드 목록
-  html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">';
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">';
   allThemes.forEach(function(theme){
     var colorIdx=getThemeColorIdx(theme);
     var pal=MK_PALETTE[colorIdx]||MK_PALETTE[0];
     var isCustom=!!(state.themeStocks&&state.themeStocks[theme]);
 
     html+='<div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">';
-    // 색상 미리보기
-    html+='<div style="background:'+pal.hex+';padding:10px 12px;display:flex;align-items:center;justify-content:space-between">';
+    html+='<div style="background:'+pal.hex+';padding:9px 12px;display:flex;align-items:center;justify-content:space-between">';
     html+='<span style="color:'+pal.txt+';font-weight:700;font-size:13px">'+theme+'</span>';
-    html+='<span style="background:rgba(255,255,255,.25);color:'+pal.txt+';font-size:10px;padding:2px 7px;border-radius:9px">'+pal.name+'</span>';
+    html+='<span style="background:rgba(255,255,255,.2);color:'+pal.txt+';font-size:9px;padding:1px 6px;border-radius:7px">'+pal.name+'</span>';
     html+='</div>';
-    // 색상 선택
-    html+='<div style="padding:10px 12px;background:var(--card)">';
-    html+='<div style="font-size:10px;color:var(--text2);margin-bottom:6px">색상 선택:</div>';
-    html+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">';
+    html+='<div style="padding:9px 12px;background:var(--card)">';
+    html+='<div style="font-size:10px;color:var(--text2);margin-bottom:5px">색상 선택:</div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px">';
     MK_PALETTE.forEach(function(p,i){
       var isSel=(colorIdx===i);
       html+='<div class="mk-color-swatch" data-theme="'+theme+'" data-idx="'+i+'" ';
-      html+='style="width:22px;height:22px;border-radius:5px;background:'+p.hex+';cursor:pointer;';
-      html+=(isSel?'outline:3px solid #fff;box-shadow:0 0 0 4px '+p.hex+';':'border:2px solid #ddd;');
+      html+='style="width:20px;height:20px;border-radius:4px;background:'+p.hex+';cursor:pointer;box-sizing:border-box;';
+      html+=(isSel?'border:3px solid #fff;outline:2px solid '+p.hex+';':'border:2px solid transparent;');
       html+='" title="'+p.name+'"></div>';
     });
     html+='</div>';
@@ -3333,30 +3347,18 @@ function renderMkThemePanel(){
     html+='</div></div>';
   });
   html+='</div>';
-
   el.innerHTML=html;
 
-  // 이벤트 위임으로 클릭 처리
-  el.addEventListener('click', function(e){
-    // 색상 스와치 클릭
+  // 이벤트 위임
+  el.onclick=function(e){
     var swatch=e.target.closest('.mk-color-swatch');
-    if(swatch){
-      var theme=swatch.dataset.theme;
-      var idx=parseInt(swatch.dataset.idx);
-      setThemeColor(theme, idx);
-      return;
-    }
-    // 테마 추가
-    if(e.target.id==='mk-add-theme-btn'||e.target.closest('#mk-add-theme-btn')){
-      mkAddTheme(); return;
-    }
-    // 테마 삭제
+    if(swatch){setThemeColor(swatch.dataset.theme,parseInt(swatch.dataset.idx));return;}
+    if(e.target.id==='mk-add-theme-btn'){mkAddTheme();return;}
     var delBtn=e.target.closest('.mk-del-theme-btn');
-    if(delBtn){ mkDeleteTheme(delBtn.dataset.theme); return; }
-    // 테마 이름 수정
+    if(delBtn){mkDeleteTheme(delBtn.dataset.theme);return;}
     var renBtn=e.target.closest('.mk-rename-theme-btn');
-    if(renBtn){ mkRenameTheme(renBtn.dataset.theme); return; }
-  });
+    if(renBtn){mkRenameTheme(renBtn.dataset.theme);return;}
+  };
 }
 
 function getThemeColorIdx(theme){
@@ -3652,7 +3654,15 @@ function mkIdxCard(label,val,chg){
   return '<div class="mkcal-idx-card"><div class="mkcal-idx-label">'+label+'</div><div class="mkcal-idx-val">'+(val||'-')+'</div>'+(chg?'<div class="mkcal-idx-chg" style="color:'+(up?'var(--red)':'var(--blue)')+'">'+chg+'</div>':'')+'</div>';
 }
 function mkSupRow(label,ind,fr,inst){
-  return '<tr><td>'+label+'</td><td style="color:'+mkSupColor(ind)+'">'+(ind||'-')+'</td><td style="color:'+mkSupColor(fr)+'">'+(fr||'-')+'</td><td style="color:'+mkSupColor(inst)+'">'+(inst||'-')+'</td></tr>';
+  function fmtSup(v){
+    if(!v||v==='-')return '-';
+    // 숫자만 추출해서 천단위 콤마 적용
+    var sign=v.startsWith('-')?'-':v.startsWith('+')?'+':'';
+    var num=parseInt(v.replace(/[^0-9]/g,''));
+    if(isNaN(num))return v;
+    return sign+num.toLocaleString('ko-KR');
+  }
+  return '<tr><td>'+label+'</td><td style="color:'+mkSupColor(ind)+'">'+(fmtSup(ind))+'</td><td style="color:'+mkSupColor(fr)+'">'+(fmtSup(fr))+'</td><td style="color:'+mkSupColor(inst)+'">'+(fmtSup(inst))+'</td></tr>';
 }
 
 function mkOpenInputModal(ds){
