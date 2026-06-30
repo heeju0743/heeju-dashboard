@@ -601,7 +601,8 @@ textarea{resize:vertical;min-height:80px}
     <div class="tab active" onclick="switchTab(this,'stock-concepts')">📚 핵심 개념</div>
     <div class="tab" onclick="switchTab(this,'stock-patterns')">📈 패턴 노트</div>
     <div class="tab" onclick="switchTab(this,'stock-rules')">📌 매매 원칙</div>
-    <div class="tab" onclick="switchTab(this,'stock-goals')">🎯 목표</div>
+    <div class="tab" onclick="switchTab(this,'t-method')">🧩 매매법</div>
+    <div class="tab" onclick="switchTab(this,'t-goal')">🎯 목표/계획</div>
     <div class="tab" onclick="switchTab(this,'stock-words')">💬 한마디</div>
     <div class="tab" onclick="switchTab(this,'stock-profile')">🧠 나의 성향</div>
     <div class="tab" onclick="switchTab(this,'stock-homework')">📝 오늘의 숙제</div>
@@ -653,25 +654,46 @@ textarea{resize:vertical;min-height:80px}
     </div>
   </div>
 
-  <!-- 목표 -->
-  <div id="stock-goals" class="tab-content">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--accent)">🎯 단기 목표 (1~3개월)</div>
-        <div id="goal-short-list"></div>
-        <div style="display:flex;gap:6px;margin-top:10px"><input id="goal-short-in" placeholder="단기 목표 입력..."><button class="btn btn-primary btn-sm" onclick="addGoal('short')">+</button></div>
+  <!-- 매매법 -->
+  <div id="t-method" class="tab-content">
+    <div id="tm-top-bar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:15px;font-weight:700">🧩 매매법</div>
+    </div>
+    <div id="tm-cat-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"></div>
+    <div id="tm-content"></div>
+  </div>
+
+  <!-- 목표/계획 -->
+  <div id="t-goal" class="tab-content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:15px;font-weight:700">🎯 투자 목표 / 계획</div>
+      <button class="btn btn-primary btn-sm" onclick="openTradeGoalModal()">+ 목표 추가</button>
+    </div>
+
+    <!-- 월천 프로젝트 고정 표 -->
+    <div id="wolcheon-section" class="card" style="margin-bottom:16px;padding:0;overflow:hidden">
+      <div style="background:#1a2744;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:15px;font-weight:700">⭐ 월천 프로젝트 5개년 계획</span>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button onclick="toggleWolcheon()" id="wolcheon-toggle-btn" class="btn btn-outline btn-sm" style="font-size:11px;color:#fff;border-color:rgba(255,255,255,.4);background:transparent">🔼 접기</button>
+          <button onclick="openWolcheonModal()" class="btn btn-primary btn-sm" style="font-size:11px">✏️ 수정</button>
+        </div>
       </div>
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--blue)">🏆 중기 목표 (3~12개월)</div>
-        <div id="goal-mid-list"></div>
-        <div style="display:flex;gap:6px;margin-top:10px"><input id="goal-mid-in" placeholder="중기 목표 입력..."><button class="btn btn-primary btn-sm" onclick="addGoal('mid')">+</button></div>
-      </div>
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:11px;font-size:13px;color:var(--purple)">🌟 장기 목표 (1년+)</div>
-        <div id="goal-long-list"></div>
-        <div style="display:flex;gap:6px;margin-top:10px"><input id="goal-long-in" placeholder="장기 목표 입력..."><button class="btn btn-primary btn-sm" onclick="addGoal('long')">+</button></div>
+      <div id="wolcheon-body" style="overflow-x:auto">
+        <div id="wolcheon-table-wrap" style="min-width:600px"></div>
       </div>
     </div>
+
+    <!-- 기간별 탭 -->
+    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap" id="goal-period-tabs">
+      <button class="filter-btn on" onclick="setGoalPeriodFilter('전체',this)">전체</button>
+      <button class="filter-btn" onclick="setGoalPeriodFilter('단기',this)">📅 단기 (1개월)</button>
+      <button class="filter-btn" onclick="setGoalPeriodFilter('중기',this)">📆 중기 (3~6개월)</button>
+      <button class="filter-btn" onclick="setGoalPeriodFilter('장기',this)">🗓️ 장기 (1년+)</button>
+    </div>
+    <div id="t-goal-list"></div>
   </div>
 
   <!-- 한마디 -->
@@ -852,14 +874,13 @@ textarea{resize:vertical;min-height:80px}
   <div class="trade-nav">
     <div class="trade-nav-tab active" onclick="tradeNav('t-dash')">📊 대시보드</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-trades')">📝 매매기록</div>
-    <div class="trade-nav-tab" onclick="tradeNav('t-method')">🧩 매매법</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-pattern')">📈 패턴분석</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-balance')">📉 잔고추이</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-diary')">🔄 매매 복기</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-scenario')">🎯 시나리오</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-trade-diary')">📔 매매일기</div>
-    <div class="trade-nav-tab" onclick="tradeNav('t-goal')">🎯 목표/계획</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-stock-study')">📚 종목공부</div>
+    <div class="trade-nav-tab" onclick="tradeNav('t-textbook')">📘 교과서 종목 공부</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-theme-stocks')">📋 테마별 종목</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-market-calendar')">📅 시장달력</div>
     <div class="trade-nav-tab" onclick="tradeNav('t-uh-calendar')">🔴 상한가달력</div>
@@ -905,15 +926,6 @@ textarea{resize:vertical;min-height:80px}
       </div>
       <div class="add-row-btn" onclick="openTradeModal()">+ 새 매매 추가</div>
     </div>
-  </div>
-
-  <!-- 매매법 -->
-  <div id="t-method" class="trade-page">
-    <div id="tm-top-bar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-      <div style="font-size:15px;font-weight:700">🧩 매매법</div>
-    </div>
-    <div id="tm-cat-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"></div>
-    <div id="tm-content"></div>
   </div>
 
   <!-- 패턴분석 -->
@@ -982,6 +994,18 @@ textarea{resize:vertical;min-height:80px}
       <input id="ss-search" placeholder="종목명 검색..." style="flex:1;padding:7px 12px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit" oninput="renderStockStudy()">
     </div>
     <div id="t-stock-study-list"></div>
+  </div>
+
+  <!-- 교과서 종목 공부 -->
+  <div id="t-textbook" class="trade-page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div>
+        <div style="font-size:15px;font-weight:700">📘 교과서 종목 공부</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px">내가 사지 않았지만 교과서처럼 움직인 종목을 차트와 함께 공부해요</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openTextbookModal()">+ 종목 추가</button>
+    </div>
+    <div id="t-textbook-list"></div>
   </div>
 
   <!-- 테마별 종목 -->
@@ -1113,39 +1137,6 @@ textarea{resize:vertical;min-height:80px}
       <button class="btn btn-primary btn-sm" onclick="openScenarioModal()">+ 시나리오 추가</button>
     </div>
     <div id="t-scenario-list"></div>
-  </div>
-
-  <!-- 목표/계획 -->
-  <div id="t-goal" class="trade-page">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-size:15px;font-weight:700">🎯 투자 목표 / 계획</div>
-      <button class="btn btn-primary btn-sm" onclick="openTradeGoalModal()">+ 목표 추가</button>
-    </div>
-
-    <!-- 월천 프로젝트 고정 표 -->
-    <div id="wolcheon-section" class="card" style="margin-bottom:16px;padding:0;overflow:hidden">
-      <div style="background:#1a2744;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center">
-        <div style="display:flex;align-items:center;gap:10px">
-          <span style="font-size:15px;font-weight:700">⭐ 월천 프로젝트 5개년 계획</span>
-        </div>
-        <div style="display:flex;gap:7px">
-          <button onclick="toggleWolcheon()" id="wolcheon-toggle-btn" class="btn btn-outline btn-sm" style="font-size:11px;color:#fff;border-color:rgba(255,255,255,.4);background:transparent">🔼 접기</button>
-          <button onclick="openWolcheonModal()" class="btn btn-primary btn-sm" style="font-size:11px">✏️ 수정</button>
-        </div>
-      </div>
-      <div id="wolcheon-body" style="overflow-x:auto">
-        <div id="wolcheon-table-wrap" style="min-width:600px"></div>
-      </div>
-    </div>
-
-    <!-- 기간별 탭 -->
-    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap" id="goal-period-tabs">
-      <button class="filter-btn on" onclick="setGoalPeriodFilter('전체',this)">전체</button>
-      <button class="filter-btn" onclick="setGoalPeriodFilter('단기',this)">📅 단기 (1개월)</button>
-      <button class="filter-btn" onclick="setGoalPeriodFilter('중기',this)">📆 중기 (3~6개월)</button>
-      <button class="filter-btn" onclick="setGoalPeriodFilter('장기',this)">🗓️ 장기 (1년+)</button>
-    </div>
-    <div id="t-goal-list"></div>
   </div>
 
   <!-- 매매일기(하루마무리) -->
@@ -1443,7 +1434,7 @@ textarea{resize:vertical;min-height:80px}
 
 <!-- 매매 추가 모달 -->
 <div id="modal-trade" class="modal-overlay">
-  <div class="modal" style="width:640px">
+  <div class="modal" style="width:680px">
     <div class="modal-title" id="trade-modal-title">📝 매매 추가</div>
     <div class="mg2">
       <div class="modal-row"><label>날짜</label><input id="t-date" type="date"></div>
@@ -1453,14 +1444,49 @@ textarea{resize:vertical;min-height:80px}
       <div class="modal-row"><label>시장</label><select id="t-market"><option>국내장</option><option>미국장</option><option>선물</option><option>코인</option></select></div>
       <div class="modal-row"><label>거래량</label><select id="t-vol"><option>증가</option><option>감소</option><option>보통</option></select></div>
     </div>
-    <div class="mg3">
-      <div class="modal-row"><label>매수가(1주)</label><input id="t-buy" type="number" placeholder="0" oninput="calcPnl()"></div>
-      <div class="modal-row"><label>매수 총액</label><input id="t-buyTotal" type="number" placeholder="0" oninput="calcPnl()"></div>
-      <div class="modal-row"><label>수량(자동)</label><input id="t-qty" type="number" readonly style="background:#f5f0e8"></div>
-      <div class="modal-row"><label>매도가(1주)</label><input id="t-sell" type="number" placeholder="0" oninput="calcPnl()"></div>
-      <div class="modal-row"><label>매도 총액</label><input id="t-sellTotal" type="number" placeholder="0" oninput="calcPnl()"></div>
-      <div class="modal-row"><label>승패</label><select id="t-result"><option value="">-- 선택 --</option><option>승</option><option>패</option><option>본전</option></select></div>
+
+    <!-- 매수 -->
+    <div style="background:#f0fdf4;border:1px solid #b8dfc8;border-radius:9px;padding:12px;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">🟢 매수</div>
+      <div class="mg3">
+        <div class="modal-row" style="margin-bottom:0"><label>매수가(1주)</label><input id="t-buy" type="number" placeholder="0" oninput="calcPnl()"></div>
+        <div class="modal-row" style="margin-bottom:0"><label>수량</label><input id="t-buyQty" type="number" placeholder="0" oninput="calcPnl()"></div>
+        <div class="modal-row" style="margin-bottom:0"><label>매수총액(자동)</label><input id="t-buyTotal" type="number" readonly style="background:#f5f0e8"></div>
+      </div>
+      <div class="modal-row" style="margin-top:9px;margin-bottom:0"><label>매수 시간</label><input id="t-buyTime" type="time"></div>
     </div>
+
+    <!-- 매도 1차 -->
+    <div style="background:#fff1f2;border:1px solid #fbc8c8;border-radius:9px;padding:12px;margin-bottom:8px">
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px">🔴 매도 1차 (분할매도시 사용)</div>
+      <div class="mg3">
+        <div class="modal-row" style="margin-bottom:0"><label>매도가(1주)</label><input id="t-sell1" type="number" placeholder="0" oninput="calcPnl()"></div>
+        <div class="modal-row" style="margin-bottom:0"><label>수량</label><input id="t-sellQty1" type="number" placeholder="0" oninput="calcPnl()"></div>
+        <div class="modal-row" style="margin-bottom:0"><label>매도총액(자동)</label><input id="t-sellTotal1" type="number" readonly style="background:#f5f0e8"></div>
+      </div>
+      <div class="modal-row" style="margin-top:9px;margin-bottom:0"><label>매도 시간</label><input id="t-sellTime1" type="time"></div>
+    </div>
+
+    <!-- 매도 2차 -->
+    <div style="background:#fff1f2;border:1px solid #fbc8c8;border-radius:9px;padding:12px;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px">🔴 매도 2차 (분할매도시 사용)</div>
+      <div class="mg3">
+        <div class="modal-row" style="margin-bottom:0"><label>매도가(1주)</label><input id="t-sell2" type="number" placeholder="0" oninput="calcPnl()"></div>
+        <div class="modal-row" style="margin-bottom:0"><label>수량</label><input id="t-sellQty2" type="number" placeholder="0" oninput="calcPnl()"></div>
+        <div class="modal-row" style="margin-bottom:0"><label>매도총액(자동)</label><input id="t-sellTotal2" type="number" readonly style="background:#f5f0e8"></div>
+      </div>
+      <div class="modal-row" style="margin-top:9px;margin-bottom:0"><label>매도 시간</label><input id="t-sellTime2" type="time"></div>
+    </div>
+
+    <!-- 합산 결과 -->
+    <div style="background:#1a2744;border-radius:9px;padding:12px;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:8px">📊 합산 결과 (매도1차+2차 자동 합산)</div>
+      <div class="mg2">
+        <div style="text-align:center"><div style="font-size:10px;color:rgba(255,255,255,.6)">총 매도가(평균,자동)</div><div id="t-sellAvg" style="font-weight:700;font-size:14px;color:#fff">-</div></div>
+        <div style="text-align:center"><div style="font-size:10px;color:rgba(255,255,255,.6)">총 매도총액(자동)</div><div id="t-sellTotalSum" style="font-weight:700;font-size:14px;color:#fff">-</div></div>
+      </div>
+    </div>
+
     <div class="mg3">
       <div class="modal-row"><label>목표 익절가</label><input id="t-target" type="number" placeholder="0" oninput="calcPnl()"></div>
       <div class="modal-row"><label>손절가</label><input id="t-stop" type="number" placeholder="0" oninput="calcPnl()"></div>
@@ -1469,7 +1495,7 @@ textarea{resize:vertical;min-height:80px}
     <div style="background:#f5f0e8;border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
       <div><div style="font-size:10px;color:var(--text2)">수익률</div><div id="calc-pct" style="font-weight:700;font-size:14px">-</div></div>
       <div><div style="font-size:10px;color:var(--text2)">손익(원)</div><div id="calc-pnl" style="font-weight:700;font-size:14px">-</div></div>
-      <div><div style="font-size:10px;color:var(--text2)">수량</div><div id="calc-qty" style="font-weight:700;font-size:14px">-</div></div>
+      <div><div style="font-size:10px;color:var(--text2)">매수수량</div><div id="calc-qty" style="font-weight:700;font-size:14px">-</div></div>
     </div>
     <div class="mg2">
       <div class="modal-row"><label>①종목선정</label><select id="t-c1"><option>O</option><option>X</option><option>△</option></select></div>
@@ -1481,68 +1507,83 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="modal-row"><label>비고</label><textarea id="t-note" placeholder="기타 메모..." style="min-height:55px"></textarea></div>
 
-    <!-- 나만의 매매 체크리스트 -->
+    <!-- 매매 전 체크리스트 -->
     <div style="margin-bottom:4px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div style="font-size:13px;font-weight:700;color:var(--text)">✨ 나만의 매매 체크리스트</div>
-        <div id="trade-cl-score" style="font-size:11px;color:var(--text2)"></div>
+        <div style="font-size:13px;font-weight:700;color:var(--text)">✅ 매매 전 체크리스트 (진입 전)</div>
+        <div id="trade-cl-score" style="font-size:12px;font-weight:700;color:var(--accent)"></div>
       </div>
 
-      <!-- 1. 시장 상태 -->
+      <!-- 1. 시장 체크 -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#c9856a">📊 1. 시장 상태</div>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-1-1"> 지금 상승장인가? (여름 호입 노림)</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-1-2"> 대장주 살아있나?</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-1-3"> 수급 들어오고 있나?</label>
-        <div class="trade-cl-tip">⭐ 하나라도 아니면 오늘은 관찰 모드</div>
+        <div class="trade-cl-header" style="background:#c9856a">1️⃣ 시장 체크 (가장 먼저)</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-market" id="cl-m-1"> 코스피 / 코스닥 흐름은 상승인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-market" id="cl-m-2"> 외국인 수급은 순매수인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-market" id="cl-m-3"> 오늘 시장 분위기는 좋은가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-market" id="cl-m-4"> 오늘 테마가 살아있는가?</label>
+        <div class="trade-cl-tip" style="color:var(--red);font-weight:700">➡ 시장이 안 좋으면 승률이 떨어진다는 걸 항상 기억하자.</div>
       </div>
 
-      <!-- 2. 종목 조건 -->
+      <!-- 2. 종목 체크 -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#8a7c6e">🔍 2. 종목 조건</div>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-2-1"> 거래대금 상위인가? (TOP 20)</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-2-2"> 오늘 시장에서 강한 종목인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-2-3"> 테마 / 이유 있는 상승인가?</label>
-        <div class="trade-cl-tip">⭐ 아니면 그냥 패스</div>
+        <div class="trade-cl-header" style="background:#8a7c6e">2️⃣ 종목 체크</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-1"> 거래대금 상위 종목인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-2"> 오늘 시장에서 주도 테마인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-3"> 대장주 또는 대장주급인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-4"> 거래량이 충분한가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-5"> 오전에 강했던 종목인가?</label>
       </div>
 
-      <!-- 3. 자리 -->
+      <!-- 3. 차트 체크 (일봉) -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#7a8c6e">📈 3. 자리 (눌림)</div>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-3-1"> 1차 상승 후 눌림인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-3-2"> 이평선 (5일/20일) 지지 확인했나?</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-3-3"> 거래량 줄었다가 다시 붙나?</label>
-        <div class="trade-cl-tip">⭐ 이거 아니면 절대 안 들어감</div>
+        <div class="trade-cl-header" style="background:#7a8c6e">3️⃣ 차트 체크 (일봉)</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-1"> 상승 추세인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-2"> 전고점을 향하는 흐름인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-3"> 중요한 이동평균선(예: 224일선 등) 위에 있는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-4"> 장대음봉이 바로 전날 나온 건 아닌가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-5"> 거래량이 감소하며 눌림이 나오는가?</label>
       </div>
 
-      <!-- 4. 트리거 -->
+      <!-- 4. 분봉 체크 -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#8a6e7c">🎯 4. 트리거 (진입 타이밍)</div>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-4-1"> 지지 2번 확인했나?</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-4-2"> 거래량 살아났나?</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-4-3"> 고점 돌파 시도 나오나?</label>
-        <div class="trade-cl-tip">⭐ 3개 중 2개 이상 OK → 진입 가능</div>
+        <div class="trade-cl-header" style="background:#8a6e7c">4️⃣ 분봉 체크</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-6"> 눌림이 확인되었는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-7"> 저점을 높이고 있는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-8"> 거래량이 줄면서 눌리는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-9"> 매수세가 다시 들어오는 모습이 보이는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-10"> 급락빔이 나온 건 아닌가?</label>
       </div>
 
-      <!-- 5. 손절 기준 -->
+      <!-- 5. 리스크 체크 -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#6e7c8a">🛡️ 5. 손절 기준</div>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-5-1"> 손절 라인 정했나?</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-5-2"> 깨지면 바로 나갈 준비 됐나?</label>
-        <div class="trade-cl-tip">⭐ 이거 없으면 진입 자체 금지</div>
+        <div class="trade-cl-header" style="background:#6e7c8a">5️⃣ 리스크 체크</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stop" id="cl-r-1"> 손절가는 정했는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stop" id="cl-r-2"> 목표가는 정했는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stop" id="cl-r-3"> 손익비가 최소 1:2 이상인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stop" id="cl-r-4"> 손절 시 계좌 손실이 감당 가능한가?</label>
+        <div class="trade-cl-tip" style="color:var(--red);font-weight:700">➡ 손절을 못 정하면 매수하지 않는다.</div>
       </div>
 
-      <!-- 6. 멘탈 체크 -->
+      <!-- 6. 내 심리 체크 -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#7a6e8a">🧠 6. 멘탈 체크</div>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-6-1"> 지금 조급함 없음?</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-6-2"> 따라가는 거 아님?</label>
-        <label class="trade-cl-item"><input type="checkbox" id="cl-6-3"> 복수 매매 아님?</label>
-        <div class="trade-cl-tip">⭐ 하나라도 YES면 오늘 쉬는 게 맞다</div>
+        <div class="trade-cl-header" style="background:#7a6e8a">6️⃣ 내 심리 체크</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-1"> FOMO(놓칠까 봐) 때문에 들어가는 건 아닌가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-2"> 빨리 수익 내고 싶어서 조급한가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-3"> 원래 계획했던 종목인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-4"> 내가 기다린 자리인가?</label>
+      </div>
+
+      <!-- 점수 요약 -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px;background:#f5f0e8;border-radius:9px;padding:10px">
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">시장 체크</div><div id="cl-score-market" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">종목 선택</div><div id="cl-score-stock" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">진입 위치</div><div id="cl-score-entry" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">손절 준수</div><div id="cl-score-stop" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">심리 관리</div><div id="cl-score-mind" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
       </div>
 
       <!-- 하루 제한 룰 -->
-      <div style="background:#fff8f0;border:1px solid var(--accent2);border-radius:11px;padding:10px 14px;margin-top:4px">
+      <div style="background:#fff8f0;border:1px solid var(--accent2);border-radius:11px;padding:10px 14px;margin-top:8px">
         <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:6px">🌸 하루 제한 룰</div>
         <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text2)">
           <span>✋ 2번 손절 → 그날 종료</span>
@@ -1633,27 +1674,53 @@ textarea{resize:vertical;min-height:80px}
 
 <!-- 매매 복기 모달 -->
 <div id="modal-trade-diary" class="modal-overlay">
-  <div class="modal" style="width:600px">
+  <div class="modal" style="width:680px">
     <div class="modal-title" id="td-modal-title">🔄 매매 복기 작성</div>
     <div class="mg2">
       <div class="modal-row"><label>📅 날짜</label><input id="td-date" type="date"></div>
       <div class="modal-row"><label>📌 종목명</label><input id="td-title" placeholder="종목명 입력..."></div>
     </div>
     <div class="modal-row">
-      <label>✅ 잘한 점</label>
-      <textarea id="td-good" placeholder="이번 매매에서 잘한 점은?..." style="min-height:70px;border-color:#b8dfc8"></textarea>
+      <label>🎯 종목 선정 이유</label>
+      <textarea id="td-reason-select" placeholder="이 종목을 선택한 이유는?..." style="min-height:55px"></textarea>
+    </div>
+    <div class="modal-row">
+      <label>💡 진입 이유</label>
+      <textarea id="td-reason-entry" placeholder="이 자리에서 진입한 이유는?..." style="min-height:55px"></textarea>
+    </div>
+    <div class="mg2">
+      <div class="modal-row">
+        <label>📝 시나리오 작성 여부</label>
+        <select id="td-scenario">
+          <option value="">-- 선택 --</option>
+          <option value="계획대로진입">✅ 계획대로 진입</option>
+          <option value="계획대로손절">✅ 계획대로 손절</option>
+          <option value="계획대로익절">✅ 계획대로 익절</option>
+          <option value="계획없이진입">⚠️ 계획 없이 진입</option>
+          <option value="계획어김">❌ 계획을 어김</option>
+        </select>
+      </div>
+      <div class="modal-row">
+        <label>🔁 같은 자리 시 재진입 여부</label>
+        <select id="td-reentry">
+          <option value="">-- 선택 --</option>
+          <option value="재진입O">✅ 다시 진입하겠다</option>
+          <option value="재진입X">❌ 다시는 안 한다</option>
+          <option value="조건부재진입">🔶 조건부 재진입</option>
+        </select>
+      </div>
     </div>
     <div class="modal-row">
       <label>❌ 잘못한 점</label>
-      <textarea id="td-bad" placeholder="반성할 점, 실수한 것은?..." style="min-height:70px;border-color:#fbc8c8"></textarea>
+      <textarea id="td-bad" placeholder="반성할 점, 실수한 것은?..." style="min-height:60px;border-color:#fbc8c8"></textarea>
     </div>
     <div class="modal-row">
       <label>💡 개선해야 할 점</label>
-      <textarea id="td-improve" placeholder="다음엔 어떻게 할 것인가?..." style="min-height:70px;border-color:#e8d5a3"></textarea>
+      <textarea id="td-improve" placeholder="다음엔 어떻게 할 것인가?..." style="min-height:60px;border-color:#e8d5a3"></textarea>
     </div>
     <div class="modal-row">
       <label>📝 전체 내용</label>
-      <textarea id="td-content" placeholder="매매 전반에 대한 기록..." style="min-height:90px"></textarea>
+      <textarea id="td-content" placeholder="매매 전반에 대한 기록..." style="min-height:80px"></textarea>
     </div>
     <div class="modal-row">
       <label>📸 차트 이미지 첨부</label>
@@ -1663,6 +1730,61 @@ textarea{resize:vertical;min-height:80px}
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px" id="td-img-preview"></div>
     </div>
+
+    <!-- 매매 복기 체크리스트 -->
+    <div style="margin-bottom:4px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">✅ 매매 복기 체크리스트</div>
+        <div id="td-cl-score" style="font-size:12px;font-weight:700;color:var(--accent)"></div>
+      </div>
+
+      <div class="trade-cl-section">
+        <div class="trade-cl-header" style="background:#5c9e6e">A. 진입은 잘했는가?</div>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-a" id="td-cl-a-1"> 계획했던 자리에서 샀다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-a" id="td-cl-a-2"> 눌림 확인 후 들어갔다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-a" id="td-cl-a-3"> 추격매수는 아니었다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-a" id="td-cl-a-4"> 거래량을 확인했다.</label>
+      </div>
+
+      <div class="trade-cl-section">
+        <div class="trade-cl-header" style="background:#e05c5c">B. 손절은 어땠는가?</div>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-1"> 미리 정한 손절을 지켰다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-2"> 감정으로 버티지 않았다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-3"> 손절 후 다시 원칙 없이 재진입하지 않았다.</label>
+      </div>
+
+      <div class="trade-cl-section">
+        <div class="trade-cl-header" style="background:#5c7ae0">C. 익절은 어땠는가?</div>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-1"> 목표가까지 기다렸다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-2"> 너무 빨리 팔지 않았다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-3"> 욕심 때문에 못 팔지도 않았다.</label>
+      </div>
+
+      <div class="trade-cl-section">
+        <div class="trade-cl-header" style="background:#8c5ce0">D. 시장 판단</div>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-d" id="td-cl-d-1"> 시장과 같은 방향으로 매매했다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-d" id="td-cl-d-2"> 역행매매를 하지 않았다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-d" id="td-cl-d-3"> 시장이 안 좋으면 쉬었다.</label>
+      </div>
+
+      <div class="trade-cl-section">
+        <div class="trade-cl-header" style="background:#c9856a">E. 심리</div>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-e" id="td-cl-e-1"> 조급하지 않았다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-e" id="td-cl-e-2"> 복수매매 안 했다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-e" id="td-cl-e-3"> FOMO 없었다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-e" id="td-cl-e-4"> 규칙을 지켰다.</label>
+      </div>
+
+      <!-- 점수 요약 -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px;background:#f5f0e8;border-radius:9px;padding:10px">
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">A.진입</div><div id="td-score-a" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">B.손절</div><div id="td-score-b" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">C.익절</div><div id="td-score-c" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">D.시장판단</div><div id="td-score-d" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">E.심리</div><div id="td-score-e" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+      </div>
+    </div>
+
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-trade-diary')">취소</button>
       <button class="btn btn-primary" id="td-save-btn" onclick="saveTradeDiary()">저장</button>
@@ -1964,7 +2086,8 @@ window.state={
   uhCalendar:{},
   mkThemeColors:{},
   tradeMethodCats:[],
-  tradeMethodNotes:{}
+  tradeMethodNotes:{},
+  textbookStudies:[]
 };
 
 let saveTimer=null;
@@ -4915,7 +5038,7 @@ function nav(id){
   document.getElementById('page-'+id)?.classList.add('active');
   const map={dash:0,planner:1,todo:2,schedule:3,book:4,stocks:5,journal:6,'sd-invest':7,'sd-blog':8,'sd-youtube':9,'sd-sidejob':10,'sd-language':11,'sd-computer':12,diary:13,food:14,exercise:15,massage:16,meditation:17,budget:18};
   document.querySelectorAll('.sb-item')[map[id]]?.classList.add('active');
-  if(id==='stocks'){renderSC();renderSP();renderRules();renderGoals();renderWords();renderHW();loadProfile();}
+  if(id==='stocks'){renderSC();renderSP();renderRules();renderWords();renderHW();loadProfile();renderTradeMethod();renderTradeGoals();renderWolcheonTable();}
   if(id==='schedule')renderSchedCal();
   if(id==='food')renderFoodCal();
   if(id==='book')renderBooks();
@@ -4938,16 +5061,15 @@ function tradeNav(id){
   document.querySelectorAll('.trade-page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const tabs=document.querySelectorAll('.trade-nav-tab');
-  const map={'t-dash':0,'t-trades':1,'t-method':2,'t-pattern':3,'t-balance':4,'t-diary':5,'t-scenario':6,'t-trade-diary':7,'t-goal':8,'t-stock-study':9,'t-theme-stocks':10,'t-market-calendar':11,'t-uh-calendar':12,'t-sector-compare':13};
+  const map={'t-dash':0,'t-trades':1,'t-pattern':2,'t-balance':3,'t-diary':4,'t-scenario':5,'t-trade-diary':6,'t-stock-study':7,'t-textbook':8,'t-theme-stocks':9,'t-market-calendar':10,'t-uh-calendar':11,'t-sector-compare':12};
   tabs[map[id]]?.classList.add('active');
   if(id==='t-dash')renderTDash();
   if(id==='t-trades')renderTrades();
-  if(id==='t-method')renderTradeMethod();
   if(id==='t-pattern')renderTPattern();
   if(id==='t-scenario')renderScenarios();
   if(id==='t-trade-diary')renderTradeDailyDiaries();
-  if(id==='t-goal'){renderTradeGoals();renderWolcheonTable();}
   if(id==='t-stock-study')renderStockStudy();
+  if(id==='t-textbook')renderTextbook();
   if(id==='t-theme-stocks')renderThemeStocks();
   if(id==='t-market-calendar'){mkMigrateVolToMillion();mkInitData();renderMarketCal();}
   if(id==='t-uh-calendar')renderUHCal();
@@ -5039,45 +5161,101 @@ function calcPnl(){
   const type=document.getElementById('t-type').value;
   const swing=isSwingTypeFn(type);
   const buy=parseFloat(document.getElementById('t-buy').value)||0;
-  const buyTotal=parseFloat(document.getElementById('t-buyTotal').value)||0;
-  const sell=parseFloat(document.getElementById('t-sell').value)||0;
-  const sellTotal=parseFloat(document.getElementById('t-sellTotal').value)||0;
-  const qty=buy?Math.round(buyTotal/buy):0;
-  document.getElementById('t-qty').value=qty||'';
-  document.getElementById('calc-qty').textContent=qty?qty+'주':'-';
-  if(swing&&!sellTotal){
+  const buyQty=parseFloat(document.getElementById('t-buyQty').value)||0;
+  const buyTotal=Math.round(buy*buyQty);
+  document.getElementById('t-buyTotal').value=buyTotal||'';
+
+  const sell1=parseFloat(document.getElementById('t-sell1').value)||0;
+  const sellQty1=parseFloat(document.getElementById('t-sellQty1').value)||0;
+  const sellTotal1=Math.round(sell1*sellQty1);
+  document.getElementById('t-sellTotal1').value=sellTotal1||'';
+
+  const sell2=parseFloat(document.getElementById('t-sell2').value)||0;
+  const sellQty2=parseFloat(document.getElementById('t-sellQty2').value)||0;
+  const sellTotal2=Math.round(sell2*sellQty2);
+  document.getElementById('t-sellTotal2').value=sellTotal2||'';
+
+  // 합산
+  const totalSellQty=sellQty1+sellQty2;
+  const totalSellAmt=sellTotal1+sellTotal2;
+  const sellAvg=totalSellQty?Math.round(totalSellAmt/totalSellQty):0;
+
+  document.getElementById('t-sellAvg').textContent=sellAvg?sellAvg.toLocaleString()+'원':'-';
+  document.getElementById('t-sellTotalSum').textContent=totalSellAmt?totalSellAmt.toLocaleString()+'원':'-';
+
+  document.getElementById('calc-qty').textContent=buyQty?buyQty+'주':'-';
+
+  if(swing&&!totalSellAmt){
     document.getElementById('calc-pnl').textContent='보유중';
     document.getElementById('calc-pnl').style.color='var(--accent)';
     document.getElementById('calc-pct').textContent='-';
-    return;
-  }
-  if(sellTotal&&buyTotal){
-    const pnl=sellTotal-buyTotal;
-    const pct=Math.round(pnl/buyTotal*10000)/100;
+  } else if(totalSellAmt&&buyTotal){
+    // 매도수량 기준 매수원가 비례 계산 (분할매도 고려)
+    const buyCostForSold=buy*totalSellQty;
+    const pnl=Math.round(totalSellAmt-buyCostForSold);
+    const pct=buyCostForSold?Math.round(pnl/buyCostForSold*10000)/100:0;
     document.getElementById('calc-pnl').textContent=(pnl>=0?'+':'')+pnl.toLocaleString()+'원';
     document.getElementById('calc-pnl').style.color=pnl>=0?'var(--green)':'var(--red)';
     document.getElementById('calc-pct').textContent=(pct>=0?'+':'')+pct+'%';
     document.getElementById('calc-pct').style.color=pct>=0?'var(--green)':'var(--red)';
+  } else {
+    document.getElementById('calc-pnl').textContent='-';
+    document.getElementById('calc-pct').textContent='-';
   }
+
   const target=parseFloat(document.getElementById('t-target').value)||0;
   const stop=parseFloat(document.getElementById('t-stop').value)||0;
   if(buy&&target&&stop&&(buy-stop)>0){document.getElementById('t-rr').value=((target-buy)/(buy-stop)).toFixed(1)+'x';}
+
+  updateCLScore();
 }
+
+// ===== 매매 전 체크리스트 점수 자동 계산 =====
+function updateCLScore(){
+  function calcGroup(cls, max){
+    var els=document.querySelectorAll('.'+cls);
+    if(!els.length)return 0;
+    var checked=0;
+    els.forEach(function(el){if(el.checked)checked++;});
+    return Math.round(checked/els.length*max);
+  }
+  var sMarket=calcGroup('cl-market',20);
+  var sStock=calcGroup('cl-stock',20);
+  var sEntry=calcGroup('cl-entry',20);
+  var sStop=calcGroup('cl-stop',20);
+  var sMind=calcGroup('cl-mind',20);
+
+  var elM=document.getElementById('cl-score-market');if(elM)elM.textContent=sMarket+'/20';
+  var elS=document.getElementById('cl-score-stock');if(elS)elS.textContent=sStock+'/20';
+  var elE=document.getElementById('cl-score-entry');if(elE)elE.textContent=sEntry+'/20';
+  var elSt=document.getElementById('cl-score-stop');if(elSt)elSt.textContent=sStop+'/20';
+  var elMi=document.getElementById('cl-score-mind');if(elMi)elMi.textContent=sMind+'/20';
+
+  var total=sMarket+sStock+sEntry+sStop+sMind;
+  var scoreEl=document.getElementById('trade-cl-score');
+  if(scoreEl)scoreEl.textContent='총점: '+total+'/100';
+}
+
+// 체크박스 변경시 점수 갱신 (이벤트 위임)
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.matches('.cl-market,.cl-stock,.cl-entry,.cl-stop,.cl-mind')){
+    updateCLScore();
+  }
+});
 function openTradeModal(){
   tEditId=null;
   const mt=document.getElementById('trade-modal-title');if(mt)mt.textContent='📝 매매 추가';
   document.getElementById('t-date').value=new Date().toISOString().split('T')[0];
-  ['t-name','t-buy','t-buyTotal','t-sell','t-sellTotal','t-target','t-stop','t-note','t-emotion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['t-name','t-buy','t-buyQty','t-buyTotal','t-buyTime','t-sell1','t-sellQty1','t-sellTotal1','t-sellTime1','t-sell2','t-sellQty2','t-sellTotal2','t-sellTime2','t-target','t-stop','t-note','t-emotion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('t-rr').value='';
-  // select 필드 기본값 설정
+  document.getElementById('t-sellAvg').textContent='-';
+  document.getElementById('t-sellTotalSum').textContent='-';
   const defaults={'t-type':'단타','t-pattern':'눌림','t-vol':'증가','t-result':'','t-market':'국내장','t-c1':'','t-c3':''};
   Object.entries(defaults).forEach(function(e){const el=document.getElementById(e[0]);if(el)el.value=e[1];});
   const psychEl=document.getElementById('t-psych');if(psychEl)psychEl.value='보통';
   document.getElementById('calc-pnl').textContent='-';document.getElementById('calc-pct').textContent='-';document.getElementById('calc-qty').textContent='-';
-  // 체크리스트 초기화
-  ['cl-1-1','cl-1-2','cl-1-3','cl-2-1','cl-2-2','cl-2-3','cl-3-1','cl-3-2','cl-3-3','cl-4-1','cl-4-2','cl-4-3','cl-5-1','cl-5-2','cl-6-1','cl-6-2','cl-6-3'].forEach(function(id){
-    const el=document.getElementById(id);if(el)el.checked=false;
-  });
+  document.querySelectorAll('.cl-market,.cl-stock,.cl-entry,.cl-stop,.cl-mind').forEach(function(el){el.checked=false;});
+  updateCLScore();
   document.getElementById('modal-trade').classList.add('open');
 }
 function openEditTrade(id){
@@ -5092,9 +5270,17 @@ function openEditTrade(id){
   document.getElementById('t-vol').value=t.vol||'증가';
   document.getElementById('t-market').value=t.market||'국내장';
   document.getElementById('t-buy').value=t.buy||'';
+  document.getElementById('t-buyQty').value=t.buyQty||'';
   document.getElementById('t-buyTotal').value=t.buyTotal||'';
-  document.getElementById('t-sell').value=t.sell||'';
-  document.getElementById('t-sellTotal').value=t.sellTotal||'';
+  document.getElementById('t-buyTime').value=t.buyTime||'';
+  document.getElementById('t-sell1').value=t.sell1||'';
+  document.getElementById('t-sellQty1').value=t.sellQty1||'';
+  document.getElementById('t-sellTotal1').value=t.sellTotal1||'';
+  document.getElementById('t-sellTime1').value=t.sellTime1||'';
+  document.getElementById('t-sell2').value=t.sell2||'';
+  document.getElementById('t-sellQty2').value=t.sellQty2||'';
+  document.getElementById('t-sellTotal2').value=t.sellTotal2||'';
+  document.getElementById('t-sellTime2').value=t.sellTime2||'';
   document.getElementById('t-target').value=t.target||'';
   document.getElementById('t-stop').value=t.stop||'';
   document.getElementById('t-rr').value=t.rr||'';
@@ -5104,13 +5290,11 @@ function openEditTrade(id){
   const psychEl=document.getElementById('t-psych');if(psychEl)psychEl.value=t.psych||'안정';
   const emotionEl=document.getElementById('t-emotion');if(emotionEl)emotionEl.value=t.emotion||'';
   document.getElementById('t-note').value=t.note||'';
-  calcPnl();
-  // 체크리스트 복원
   const cl=t.checklist||{};
-  ['cl-1-1','cl-1-2','cl-1-3','cl-2-1','cl-2-2','cl-2-3','cl-3-1','cl-3-2','cl-3-3','cl-4-1','cl-4-2','cl-4-3','cl-5-1','cl-5-2','cl-6-1','cl-6-2','cl-6-3'].forEach(function(id){
-    const el=document.getElementById(id);
-    if(el)el.checked=!!(cl[id.replace(/-/g,'_')]);
+  document.querySelectorAll('.cl-market,.cl-stock,.cl-entry,.cl-stop,.cl-mind').forEach(function(el){
+    el.checked=!!(cl[el.id]);
   });
+  calcPnl();
   document.getElementById('modal-trade').classList.add('open');
 }
 function saveTrade(){
@@ -5118,15 +5302,47 @@ function saveTrade(){
   if(!name)return alert('종목명을 입력해주세요');
   const type=document.getElementById('t-type').value;
   const buy=parseFloat(document.getElementById('t-buy').value)||0;
+  const buyQty=parseFloat(document.getElementById('t-buyQty').value)||0;
   const buyTotal=parseFloat(document.getElementById('t-buyTotal').value)||0;
-  const sell=parseFloat(document.getElementById('t-sell').value)||0;
-  const sellTotal=parseFloat(document.getElementById('t-sellTotal').value)||0;
+  const sell1=parseFloat(document.getElementById('t-sell1').value)||0;
+  const sellQty1=parseFloat(document.getElementById('t-sellQty1').value)||0;
+  const sellTotal1=parseFloat(document.getElementById('t-sellTotal1').value)||0;
+  const sell2=parseFloat(document.getElementById('t-sell2').value)||0;
+  const sellQty2=parseFloat(document.getElementById('t-sellQty2').value)||0;
+  const sellTotal2=parseFloat(document.getElementById('t-sellTotal2').value)||0;
+
+  const sellQty=sellQty1+sellQty2;
+  const sellTotal=sellTotal1+sellTotal2;
+  const sell=sellQty?Math.round(sellTotal/sellQty):0; // 평균 매도가
   const closed=sellTotal>0;
-  const pnl=closed?sellTotal-buyTotal:0;
-  const pct=closed&&buyTotal?Math.round(pnl/buyTotal*10000)/100:0;
+  const buyCostForSold=buy*sellQty;
+  const pnl=closed?Math.round(sellTotal-buyCostForSold):0;
+  const pct=closed&&buyCostForSold?Math.round(pnl/buyCostForSold*10000)/100:0;
+
   const entryEl=document.getElementById('t-entry');
   const psychEl=document.getElementById('t-psych');
   const emotionEl=document.getElementById('t-emotion');
+
+  const cl={};
+  document.querySelectorAll('.cl-market,.cl-stock,.cl-entry,.cl-stop,.cl-mind').forEach(function(el){
+    cl[el.id]=el.checked;
+  });
+  function calcScore(cls){
+    var els=document.querySelectorAll('.'+cls);
+    if(!els.length)return 0;
+    var checked=0;
+    els.forEach(function(el){if(el.checked)checked++;});
+    return Math.round(checked/els.length*20);
+  }
+  const clScore={
+    market:calcScore('cl-market'),
+    stock:calcScore('cl-stock'),
+    entry:calcScore('cl-entry'),
+    stop:calcScore('cl-stop'),
+    mind:calcScore('cl-mind')
+  };
+  clScore.total=clScore.market+clScore.stock+clScore.entry+clScore.stop+clScore.mind;
+
   const obj={
     id:tEditId||Date.now(),date:document.getElementById('t-date').value,name,type,
     pattern:document.getElementById('t-pattern').value,
@@ -5135,13 +5351,18 @@ function saveTrade(){
     target:parseFloat(document.getElementById('t-target').value)||0,
     stop:parseFloat(document.getElementById('t-stop').value)||0,
     rr:document.getElementById('t-rr').value||'-',
-    buy,buyTotal,sell,sellTotal,pct,pnl,
+    buy,buyQty,buyTotal,buyTime:document.getElementById('t-buyTime').value,
+    sell1,sellQty1,sellTotal1,sellTime1:document.getElementById('t-sellTime1').value,
+    sell2,sellQty2,sellTotal2,sellTime2:document.getElementById('t-sellTime2').value,
+    sell,sellTotal,pct,pnl,
     result:document.getElementById('t-result').value,
     market:document.getElementById('t-market').value,
     c1:document.getElementById('t-c1').value,c3t:'',c3:document.getElementById('t-c3').value,c3v:'',
     psych:psychEl?psychEl.value:'',
     emotion:emotionEl?emotionEl.value:'',
-    note:document.getElementById('t-note').value
+    note:document.getElementById('t-note').value,
+    checklist:cl,
+    clScore:clScore
   };
   if(tEditId){const idx=state.trades.findIndex(x=>x.id===tEditId);if(idx>=0)state.trades[idx]=obj;}
   else{state.trades.push(obj);}
@@ -5326,6 +5547,7 @@ function openTradeDiaryModal(editId){
   window._tdEditId=editId||null;
   var titleEl=document.getElementById('td-modal-title');
   var btnEl=document.getElementById('td-save-btn');
+  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-d-1','td-cl-d-2','td-cl-d-3','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
   if(editId){
     var d=(state.tradeDiaries||[]).find(function(x){return x.id===editId;});
     if(!d)return;
@@ -5333,14 +5555,19 @@ function openTradeDiaryModal(editId){
     if(btnEl)btnEl.textContent='저장';
     document.getElementById('td-date').value=d.date||'';
     document.getElementById('td-title').value=d.title||'';
-    ['td-good','td-bad','td-improve','td-content'].forEach(function(id){
+    document.getElementById('td-scenario').value=d.scenario||'';
+    document.getElementById('td-reentry').value=d.reentry||'';
+    ['td-reason-select','td-reason-entry','td-bad','td-improve','td-content'].forEach(function(id){
       resetModalRichEditor('modal-trade-diary',id);
     });
+    var cl=d.checklist||{};
+    clIds.forEach(function(id){var el=document.getElementById(id);if(el)el.checked=!!cl[id];});
+    updateTDScore();
     state.tempTradeDiaryImgs=d.images?[...d.images]:[];
     renderTDiaryPrev();
     document.getElementById('modal-trade-diary').classList.add('open');
     setTimeout(function(){
-      var fields={good:d.good,bad:d.bad,improve:d.improve,content:d.content};
+      var fields={'reason-select':d.reasonSelect,'reason-entry':d.reasonEntry,bad:d.bad,improve:d.improve,content:d.content};
       Object.entries(fields).forEach(function(e){
         var rid='td-'+e[0];
         if(window._richEditors&&window._richEditors[rid])window._richEditors[rid].setHTML(e[1]||'');
@@ -5353,9 +5580,13 @@ function openTradeDiaryModal(editId){
     if(btnEl)btnEl.textContent='저장';
     document.getElementById('td-date').value=new Date().toISOString().split('T')[0];
     document.getElementById('td-title').value='';
-    ['td-good','td-bad','td-improve','td-content'].forEach(function(id){
+    document.getElementById('td-scenario').value='';
+    document.getElementById('td-reentry').value='';
+    ['td-reason-select','td-reason-entry','td-bad','td-improve','td-content'].forEach(function(id){
       resetModalRichEditor('modal-trade-diary',id);
     });
+    clIds.forEach(function(id){var el=document.getElementById(id);if(el)el.checked=false;});
+    updateTDScore();
     document.getElementById('td-img-preview').innerHTML='';
   }
   document.getElementById('modal-trade-diary').classList.add('open');
@@ -5378,24 +5609,67 @@ function renderTDiaryPrev(){
     `<div class="img-preview-item"><img src="${img}" alt=""><button class="rm" onclick="state.tempTradeDiaryImgs.splice(${i},1);renderTDiaryPrev()">✕</button></div>`
   ).join('');
 }
+// ===== 매매 복기 체크리스트 점수 계산 =====
+function updateTDScore(){
+  function calcGroup(cls){
+    var els=document.querySelectorAll('.'+cls);
+    if(!els.length)return 0;
+    var checked=0;
+    els.forEach(function(el){if(el.checked)checked++;});
+    return Math.round(checked/els.length*20);
+  }
+  var sA=calcGroup('td-cl-a'),sB=calcGroup('td-cl-b'),sC=calcGroup('td-cl-c'),sD=calcGroup('td-cl-d'),sE=calcGroup('td-cl-e');
+  var elA=document.getElementById('td-score-a');if(elA)elA.textContent=sA+'/20';
+  var elB=document.getElementById('td-score-b');if(elB)elB.textContent=sB+'/20';
+  var elC=document.getElementById('td-score-c');if(elC)elC.textContent=sC+'/20';
+  var elD=document.getElementById('td-score-d');if(elD)elD.textContent=sD+'/20';
+  var elE=document.getElementById('td-score-e');if(elE)elE.textContent=sE+'/20';
+  var total=sA+sB+sC+sD+sE;
+  var scoreEl=document.getElementById('td-cl-score');
+  if(scoreEl)scoreEl.textContent='총점: '+total+'/100';
+}
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.matches('.td-cl-a,.td-cl-b,.td-cl-c,.td-cl-d,.td-cl-e')){
+    updateTDScore();
+  }
+});
 function saveTradeDiary(){
   var title=document.getElementById('td-title').value.trim();
-  var good=getRichValue('td-good');
+  var reasonSelect=getRichValue('td-reason-select');
+  var reasonEntry=getRichValue('td-reason-entry');
   var bad=getRichValue('td-bad');
   var improve=getRichValue('td-improve');
   var content=getRichValue('td-content');
-  var goodTxt=(good||'').replace(/<[^>]*>/g,'').trim();
   var badTxt=(bad||'').replace(/<[^>]*>/g,'').trim();
-  var improveTxt=(improve||'').replace(/<[^>]*>/g,'').trim();
   var contentTxt=(content||'').replace(/<[^>]*>/g,'').trim();
-  if(!title&&!goodTxt&&!badTxt&&!contentTxt&&!state.tempTradeDiaryImgs.length){alert('종목명 또는 내용을 입력해주세요');return;}
+  if(!title&&!badTxt&&!contentTxt&&!state.tempTradeDiaryImgs.length){alert('종목명 또는 내용을 입력해주세요');return;}
   if(!state.tradeDiaries)state.tradeDiaries=[];
+
+  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-d-1','td-cl-d-2','td-cl-d-3','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
+  var cl={};
+  clIds.forEach(function(id){var el=document.getElementById(id);if(el)cl[id]=el.checked;});
+  function calcScore(cls){
+    var els=document.querySelectorAll('.'+cls);
+    if(!els.length)return 0;
+    var checked=0;
+    els.forEach(function(el){if(el.checked)checked++;});
+    return Math.round(checked/els.length*20);
+  }
+  var clScore={a:calcScore('td-cl-a'),b:calcScore('td-cl-b'),c:calcScore('td-cl-c'),d:calcScore('td-cl-d'),e:calcScore('td-cl-e')};
+  clScore.total=clScore.a+clScore.b+clScore.c+clScore.d+clScore.e;
+
   var obj={
     id:window._tdEditId||Date.now(),
     date:document.getElementById('td-date').value,
     title:title||'매매 복기',
-    good:good,bad:bad,improve:improve,content:content,
-    images:[...state.tempTradeDiaryImgs]
+    reasonSelect:reasonSelect,
+    reasonEntry:reasonEntry,
+    scenario:document.getElementById('td-scenario').value,
+    reentry:document.getElementById('td-reentry').value,
+    bad:bad,improve:improve,content:content,
+    images:[...state.tempTradeDiaryImgs],
+    checklist:cl,
+    clScore:clScore
   };
   if(window._tdEditId){
     var idx=state.tradeDiaries.findIndex(function(x){return x.id===window._tdEditId;});
@@ -5419,12 +5693,31 @@ function renderTDiaries(){
     el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">매매 복기를 작성해보세요 🔄</div>';
     return;
   }
+  var scenarioLabel={계획대로진입:'✅ 계획대로 진입',계획대로손절:'✅ 계획대로 손절',계획대로익절:'✅ 계획대로 익절',계획없이진입:'⚠️ 계획 없이 진입',계획어김:'❌ 계획을 어김'};
+  var reentryLabel={재진입O:'✅ 다시 진입',재진입X:'❌ 다시는 안함',조건부재진입:'🔶 조건부 재진입'};
   el.innerHTML=state.tradeDiaries.map(d=>{
-    var goodHtml=d.good?`<div style="margin-bottom:8px;padding:9px 12px;background:#f0fdf4;border-radius:9px;border-left:3px solid var(--green)"><div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:3px">✅ 잘한 점</div><div style="font-size:12px;line-height:1.7">${d.good}</div></div>`:'';
+    var reasonSelectHtml=d.reasonSelect?`<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg);border-radius:9px;border-left:3px solid var(--blue)"><div style="font-size:10px;font-weight:700;color:var(--blue);margin-bottom:3px">🎯 종목 선정 이유</div><div style="font-size:12px;line-height:1.7">${d.reasonSelect}</div></div>`:'';
+    var reasonEntryHtml=d.reasonEntry?`<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg);border-radius:9px;border-left:3px solid var(--purple)"><div style="font-size:10px;font-weight:700;color:var(--purple);margin-bottom:3px">💡 진입 이유</div><div style="font-size:12px;line-height:1.7">${d.reasonEntry}</div></div>`:'';
+    var badgeHtml='';
+    if(d.scenario||d.reentry){
+      badgeHtml='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">';
+      if(d.scenario)badgeHtml+='<span style="background:#fff3dc;color:var(--accent);font-size:11px;font-weight:600;padding:3px 9px;border-radius:8px">'+(scenarioLabel[d.scenario]||d.scenario)+'</span>';
+      if(d.reentry)badgeHtml+='<span style="background:#e8ecfd;color:var(--blue);font-size:11px;font-weight:600;padding:3px 9px;border-radius:8px">'+(reentryLabel[d.reentry]||d.reentry)+'</span>';
+      badgeHtml+='</div>';
+    }
     var badHtml=d.bad?`<div style="margin-bottom:8px;padding:9px 12px;background:#fff1f2;border-radius:9px;border-left:3px solid var(--red)"><div style="font-size:10px;font-weight:700;color:var(--red);margin-bottom:3px">❌ 잘못한 점</div><div style="font-size:12px;line-height:1.7">${d.bad}</div></div>`:'';
     var improveHtml=d.improve?`<div style="margin-bottom:8px;padding:9px 12px;background:#fffbeb;border-radius:9px;border-left:3px solid var(--accent)"><div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:3px">💡 개선해야 할 점</div><div style="font-size:12px;line-height:1.7">${d.improve}</div></div>`:'';
     var contentHtml=d.content?`<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg);border-radius:9px"><div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:3px">📝 전체 내용</div><div style="font-size:12px;line-height:1.7">${d.content}</div></div>`:'';
     var imgHtml=d.images&&d.images.length?`<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:9px">${d.images.map(img=>`<img class="diary-img-thumb" src="${img}" onclick="document.getElementById('img-fullview-src').src='${img}';document.getElementById('img-fullview').classList.add('open')" alt="차트">`).join('')}</div>`:'';
+    var scoreHtml='';
+    if(d.clScore&&d.clScore.total!==undefined){
+      var sc=d.clScore;
+      var scColor=sc.total>=80?'var(--green)':sc.total>=50?'var(--accent)':'var(--red)';
+      scoreHtml='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;padding:8px 10px;background:#f5f0e8;border-radius:9px">';
+      scoreHtml+='<span style="font-size:11px;font-weight:700;color:'+scColor+'">📊 복기점수 '+sc.total+'/100</span>';
+      scoreHtml+='<span style="font-size:10px;color:var(--text2)">(A진입'+sc.a+' B손절'+sc.b+' C익절'+sc.c+' D시장'+sc.d+' E심리'+sc.e+')</span>';
+      scoreHtml+='</div>';
+    }
     return `<div class="j-card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="display:flex;align-items:center;gap:9px">
@@ -5436,7 +5729,7 @@ function renderTDiaries(){
           <button class="btn btn-danger btn-sm" onclick="delTradeDiary(${d.id})">삭제</button>
         </div>
       </div>
-      ${goodHtml}${badHtml}${improveHtml}${contentHtml}${imgHtml}
+      ${badgeHtml}${reasonSelectHtml}${reasonEntryHtml}${badHtml}${improveHtml}${contentHtml}${imgHtml}${scoreHtml}
     </div>`;
   }).join('');
 }
@@ -5923,6 +6216,116 @@ function renderStockStudy(){
       '</div>'+
       (sectionTitles.length?'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">'+sectionTitles.map(function(t){return '<span style="background:var(--active);color:var(--accent);font-size:10px;padding:1px 8px;border-radius:7px;font-weight:600">'+t+'</span>';}).join('')+'</div>':'')+
       (preview?'<div style="font-size:12px;color:var(--text2);line-height:1.7">'+preview+(preview.length>=100?'...':'')+'</div>':'')+
+    '</div>';
+  }).join('');
+}
+
+
+// ===================================================================
+// 교과서 종목 공부
+// ===================================================================
+let tbEditId=null, tbTempImgs=[];
+
+function openTextbookModal(editId){
+  tbEditId=editId||null;
+  tbTempImgs=[];
+  var titleEl=document.getElementById('textbook-modal-title');
+  var btnEl=document.getElementById('tb-save-btn');
+  document.getElementById('tb-img-preview').innerHTML='';
+  if(editId){
+    var t=(state.textbookStudies||[]).find(function(x){return x.id===editId;});
+    if(!t)return;
+    if(titleEl)titleEl.textContent='✏️ 교과서 종목 공부 수정';
+    if(btnEl)btnEl.textContent='저장';
+    document.getElementById('tb-date').value=t.date||'';
+    document.getElementById('tb-name').value=t.name||'';
+    document.getElementById('tb-content').value=t.content||'';
+    document.getElementById('tb-ai').value=t.ai||'';
+    tbTempImgs=t.images?[...t.images]:[];
+    renderTextbookImgPrev();
+  } else {
+    if(titleEl)titleEl.textContent='📘 교과서 종목 공부 추가';
+    if(btnEl)btnEl.textContent='저장';
+    document.getElementById('tb-date').value=new Date().toISOString().split('T')[0];
+    document.getElementById('tb-name').value='';
+    document.getElementById('tb-content').value='';
+    document.getElementById('tb-ai').value='';
+  }
+  openModal('modal-textbook');
+}
+
+function handleTextbookImg(input){
+  Array.from(input.files).forEach(function(f){
+    var r=new FileReader();
+    r.onload=function(e){
+      processImg(e.target.result).then(function(url){
+        tbTempImgs.push(url);
+        renderTextbookImgPrev();
+      });
+    };
+    r.readAsDataURL(f);
+  });
+  input.value='';
+}
+
+function renderTextbookImgPrev(){
+  var el=document.getElementById('tb-img-preview');if(!el)return;
+  el.innerHTML=tbTempImgs.map(function(img,i){
+    return '<div class="img-preview-item"><img src="'+img+'" onclick="showFullImg(this.src)"><button class="rm" onclick="tbTempImgs.splice('+i+',1);renderTextbookImgPrev()">✕</button></div>';
+  }).join('');
+}
+
+function saveTextbook(){
+  var name=document.getElementById('tb-name').value.trim();
+  if(!name){alert('종목명을 입력해주세요');return;}
+  if(!state.textbookStudies)state.textbookStudies=[];
+  var obj={
+    id:tbEditId||Date.now(),
+    date:document.getElementById('tb-date').value,
+    name:name,
+    content:document.getElementById('tb-content').value,
+    ai:document.getElementById('tb-ai').value,
+    images:[...tbTempImgs]
+  };
+  if(tbEditId){
+    var idx=state.textbookStudies.findIndex(function(x){return x.id===tbEditId;});
+    if(idx>=0)state.textbookStudies[idx]=obj;
+    tbEditId=null;
+  } else {
+    state.textbookStudies.unshift(obj);
+  }
+  closeModal('modal-textbook');save();renderTextbook();
+}
+
+function delTextbook(id){
+  if(!confirm('삭제할까요?'))return;
+  state.textbookStudies=(state.textbookStudies||[]).filter(function(x){return x.id!==id;});
+  save();renderTextbook();
+}
+
+function renderTextbook(){
+  if(!state.textbookStudies)state.textbookStudies=[];
+  var el=document.getElementById('t-textbook-list');if(!el)return;
+  if(!state.textbookStudies.length){
+    el.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:30px;font-size:13px">교과서처럼 움직인 종목을 공부해보세요 📘<br><span style="font-size:11px;display:block;margin-top:5px">내가 사지 않았지만 배울 점이 많은 종목들을 기록하세요</span></div>';
+    return;
+  }
+  el.innerHTML=state.textbookStudies.map(function(t){
+    var contentHtml=t.content?'<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg);border-radius:9px"><div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:3px">📝 내용</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">'+t.content+'</div></div>':'';
+    var aiHtml=t.ai?'<div style="margin-bottom:8px;padding:9px 12px;background:#f5f0fb;border-radius:9px;border-left:3px solid #7c3aed"><div style="font-size:10px;font-weight:700;color:#7c3aed;margin-bottom:3px">🤖 AI 답변</div><div style="font-size:12px;line-height:1.7;white-space:pre-wrap">'+t.ai+'</div></div>':'';
+    var imgHtml=t.images&&t.images.length?'<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:9px">'+t.images.map(function(img){return '<img class="diary-img-thumb" src="'+img+'" onclick="showFullImg(this.src)" alt="차트">';}).join('')+'</div>':'';
+    return '<div class="j-card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
+        '<div style="display:flex;align-items:center;gap:9px">'+
+          '<span class="j-date">'+t.date+'</span>'+
+          '<strong style="font-size:14px">'+t.name+'</strong>'+
+        '</div>'+
+        '<div style="display:flex;gap:5px">'+
+          '<button class="btn btn-outline btn-sm" onclick="openTextbookModal('+t.id+')" style="font-size:11px">✏️ 수정</button>'+
+          '<button class="btn btn-danger btn-sm" onclick="delTextbook('+t.id+')">삭제</button>'+
+        '</div>'+
+      '</div>'+
+      contentHtml+aiHtml+imgHtml+
     '</div>';
   }).join('');
 }
@@ -8741,6 +9144,38 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
       <button style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2)" onclick="closeModal('modal-theme-pick')">✕</button>
     </div>
     <div id="theme-pick-list" style="max-height:50vh;overflow-y:auto"></div>
+  </div>
+</div>
+
+
+<!-- 교과서 종목 공부 모달 -->
+<div id="modal-textbook" class="modal-overlay">
+  <div class="modal" style="width:640px">
+    <div class="modal-title" id="textbook-modal-title">📘 교과서 종목 공부 추가</div>
+    <div class="mg2">
+      <div class="modal-row"><label>📅 날짜</label><input id="tb-date" type="date"></div>
+      <div class="modal-row"><label>📌 종목명</label><input id="tb-name" placeholder="예: 한미반도체"></div>
+    </div>
+    <div class="modal-row">
+      <label>📝 내용 (어떤 점이 교과서적이었나)</label>
+      <textarea id="tb-content" placeholder="진입 자리, 패턴, 거래량 변화 등 어떤 점이 교과서적으로 움직였는지 기록해보세요..." style="min-height:120px"></textarea>
+    </div>
+    <div class="modal-row">
+      <label>🤖 AI 답변 <span style="font-size:10px;color:var(--text2)">(Claude.ai 등에서 분석받은 내용을 붙여넣으세요)</span></label>
+      <textarea id="tb-ai" placeholder="AI에게 물어본 분석/답변 내용..." style="min-height:100px"></textarea>
+    </div>
+    <div class="modal-row">
+      <label>📸 차트 이미지 첨부</label>
+      <div class="img-upload-area" onclick="document.getElementById('tb-img-in').click()">
+        <input type="file" id="tb-img-in" accept="image/*" multiple style="display:none" onchange="handleTextbookImg(this)">
+        📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px" id="tb-img-preview"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-textbook')">취소</button>
+      <button class="btn btn-primary" id="tb-save-btn" onclick="saveTextbook()">저장</button>
+    </div>
   </div>
 </div>
 
