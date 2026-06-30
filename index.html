@@ -2085,6 +2085,7 @@ window.state={
   marketCalendar:{},
   uhCalendar:{},
   mkThemeColors:{},
+  mkHiddenDefThemes:[],
   tradeMethodCats:[],
   tradeMethodNotes:{},
   textbookStudies:[]
@@ -3357,57 +3358,63 @@ window.tsAddStock=function(){
 // 시장달력 전체 기능 (희주 대시보드)
 // ===================================================================
 var MK_PALETTE=[
+  {hex:'#dc2626',txt:'#fff',name:'빨강'},
+  {hex:'#ea580c',txt:'#fff',name:'주황'},
+  {hex:'#f59e0b',txt:'#1a1a1a',name:'호박색'},
+  {hex:'#eab308',txt:'#1a1a1a',name:'노랑'},
+  {hex:'#ca8a04',txt:'#fff',name:'머스타드'},
+  {hex:'#84cc16',txt:'#1a1a1a',name:'연두'},
+  {hex:'#65a30d',txt:'#fff',name:'올리브그린'},
+  {hex:'#16a34a',txt:'#fff',name:'초록'},
+  {hex:'#15803d',txt:'#fff',name:'에메랄드'},
+  {hex:'#059669',txt:'#fff',name:'그린틸'},
+  {hex:'#0d9488',txt:'#fff',name:'틸'},
+  {hex:'#0891b2',txt:'#fff',name:'시안'},
+  {hex:'#0ea5e9',txt:'#fff',name:'하늘색'},
+  {hex:'#0284c7',txt:'#fff',name:'스카이블루'},
+  {hex:'#2563eb',txt:'#fff',name:'파랑'},
+  {hex:'#1d4ed8',txt:'#fff',name:'로열블루'},
   {hex:'#1e40af',txt:'#fff',name:'진파랑'},
-  {hex:'#6b21a8',txt:'#fff',name:'진보라'},
-  {hex:'#065f46',txt:'#fff',name:'진초록'},
-  {hex:'#9a3412',txt:'#fff',name:'진주황'},
-  {hex:'#831843',txt:'#fff',name:'진핑크'},
-  {hex:'#1e3a5f',txt:'#fff',name:'네이비'},
-  {hex:'#3b1f6b',txt:'#fff',name:'다크보라'},
-  {hex:'#134e4a',txt:'#fff',name:'청록'},
-  {hex:'#7f1d1d',txt:'#fff',name:'다크레드'},
-  {hex:'#365314',txt:'#fff',name:'올리브'},
-  {hex:'#1a2744',txt:'#fff',name:'다크네이비'},
-  {hex:'#4a1942',txt:'#fff',name:'자주'},
-  {hex:'#0c4a6e',txt:'#fff',name:'스틸블루'},
+  {hex:'#4f46e5',txt:'#fff',name:'인디고'},
+  {hex:'#6366f1',txt:'#fff',name:'연인디고'},
+  {hex:'#7c3aed',txt:'#fff',name:'보라'},
+  {hex:'#9333ea',txt:'#fff',name:'진보라'},
+  {hex:'#a855f7',txt:'#fff',name:'연보라'},
+  {hex:'#c026d3',txt:'#fff',name:'마젠타'},
+  {hex:'#d946ef',txt:'#fff',name:'퍼플핑크'},
+  {hex:'#db2777',txt:'#fff',name:'핑크'},
+  {hex:'#ec4899',txt:'#fff',name:'연핑크'},
+  {hex:'#f43f5e',txt:'#fff',name:'로즈'},
+  {hex:'#e11d48',txt:'#fff',name:'크림슨'},
+  {hex:'#be123c',txt:'#fff',name:'와인레드'},
+  {hex:'#991b1b',txt:'#fff',name:'다크레드'},
+  {hex:'#7f1d1d',txt:'#fff',name:'벽돌색'},
   {hex:'#78350f',txt:'#fff',name:'갈색'},
+  {hex:'#92400e',txt:'#fff',name:'카라멜'},
+  {hex:'#b45309',txt:'#fff',name:'번트오렌지'},
+  {hex:'#a16207',txt:'#fff',name:'황토색'},
+  {hex:'#4d7c0f',txt:'#fff',name:'라임그린'},
   {hex:'#166534',txt:'#fff',name:'다크그린'},
-  {hex:'#4c1d95',txt:'#fff',name:'딥퍼플'},
+  {hex:'#134e4a',txt:'#fff',name:'다크틸'},
+  {hex:'#155e75',txt:'#fff',name:'다크시안'},
+  {hex:'#075985',txt:'#fff',name:'딥블루'},
+  {hex:'#1e3a8a',txt:'#fff',name:'네이비'},
+  {hex:'#3730a3',txt:'#fff',name:'인디고퍼플'},
+  {hex:'#581c87',txt:'#fff',name:'딥퍼플'},
+  {hex:'#6b21a8',txt:'#fff',name:'자주'},
+  {hex:'#86198f',txt:'#fff',name:'다크마젠타'},
+  {hex:'#9d174d',txt:'#fff',name:'버건디'},
+  {hex:'#831843',txt:'#fff',name:'진핑크'},
   {hex:'#111827',txt:'#fff',name:'블랙'},
   {hex:'#374151',txt:'#fff',name:'다크그레이'},
-  {hex:'#0f766e',txt:'#fff',name:'틸'},
-  {hex:'#0369a1',txt:'#fff',name:'스카이블루'},
-  {hex:'#b45309',txt:'#fff',name:'오렌지'},
-  {hex:'#dc2626',txt:'#fff',name:'레드'},
-  {hex:'#16a34a',txt:'#fff',name:'초록'},
-  {hex:'#2563eb',txt:'#fff',name:'파랑'},
-  {hex:'#9333ea',txt:'#fff',name:'보라'},
-  {hex:'#db2777',txt:'#fff',name:'핑크'},
-  {hex:'#ca8a04',txt:'#fff',name:'노랑'},
-  {hex:'#ea580c',txt:'#fff',name:'주황'},
-  {hex:'#0891b2',txt:'#fff',name:'시안'},
-  {hex:'#be123c',txt:'#fff',name:'로즈'},
-  {hex:'#4d7c0f',txt:'#fff',name:'라임그린'},
-  {hex:'#6366f1',txt:'#fff',name:'인디고'},
-  {hex:'#475569',txt:'#fff',name:'슬레이트'},
-  {hex:'#a16207',txt:'#fff',name:'머스타드'},
-  {hex:'#15803d',txt:'#fff',name:'에메랄드'},
-  {hex:'#7c2d12',txt:'#fff',name:'브릭'},
-  {hex:'#0e7490',txt:'#fff',name:'다크시안'},
-  {hex:'#86198f',txt:'#fff',name:'마젠타'},
-  {hex:'#1d4ed8',txt:'#fff',name:'로열블루'},
-  {hex:'#a21caf',txt:'#fff',name:'퍼플핑크'},
-  {hex:'#b91c1c',txt:'#fff',name:'크림슨'},
-  {hex:'#0d9488',txt:'#fff',name:'그린틸'},
-  {hex:'#7e22ce',txt:'#fff',name:'바이올렛'},
-  {hex:'#92400e',txt:'#fff',name:'카라멜'},
-  {hex:'#5b21b6',txt:'#fff',name:'인디고퍼플'},
-  {hex:'#047857',txt:'#fff',name:'포레스트'},
-  {hex:'#c2410c',txt:'#fff',name:'번트오렌지'},
-  {hex:'#1e293b',txt:'#fff',name:'다크슬레이트'},
-  {hex:'#581c87',txt:'#fff',name:'딥바이올렛'},
-  {hex:'#155e75',txt:'#fff',name:'다크틸'},
-  {hex:'#991b1b',txt:'#fff',name:'와인레드'},
+  {hex:'#57534e',txt:'#fff',name:'웜그레이'},
+  {hex:'#facc15',txt:'#1a1a1a',name:'레몬'},
+  {hex:'#fb923c',txt:'#1a1a1a',name:'밝은오렌지'},
+  {hex:'#22d3ee',txt:'#1a1a1a',name:'밝은시안'},
+  {hex:'#4ade80',txt:'#1a1a1a',name:'밝은초록'},
+  {hex:'#a3e635',txt:'#1a1a1a',name:'밝은연두'},
+  {hex:'#f472b6',txt:'#1a1a1a',name:'밝은핑크'},
+  {hex:'#fbbf24',txt:'#1a1a1a',name:'골드'},
 ];
 var MK_DEF={
   '반도체':0,'2차전지':1,'방산·우주항공':2,'조선·해운':3,'건설·인프라':4,
@@ -3436,8 +3443,9 @@ function renderMkThemePanel(){
   if(!state.themeStocks)state.themeStocks={};
   if(!state.mkThemeColors)state.mkThemeColors={};
 
+  var hidden=state.mkHiddenDefThemes||[];
   var themes=Object.keys(state.themeStocks);
-  var defThemes=Object.keys(MK_DEF);
+  var defThemes=Object.keys(MK_DEF).filter(function(t){return !hidden.includes(t);});
   var allThemeSet=new Set([].concat(themes,defThemes));
   var allThemes=[...allThemeSet].sort();
 
@@ -3548,6 +3556,11 @@ function mkDeleteTheme(theme){
   if(!confirm('"'+theme+'" 테마를 삭제할까요?\n(달력에서 이 테마 색상이 사라집니다)'))return;
   if(state.themeStocks&&state.themeStocks[theme])delete state.themeStocks[theme];
   if(state.mkThemeColors&&state.mkThemeColors[theme]!==undefined)delete state.mkThemeColors[theme];
+  // MK_DEF 기본 테마였다면 다시 나타나지 않도록 숨김 처리
+  if(MK_DEF[theme]!==undefined){
+    if(!state.mkHiddenDefThemes)state.mkHiddenDefThemes=[];
+    if(!state.mkHiddenDefThemes.includes(theme))state.mkHiddenDefThemes.push(theme);
+  }
   save();
   renderMkThemePanel();
 }
@@ -3556,17 +3569,32 @@ function mkRenameTheme(oldName){
   var newName=prompt('테마 이름 수정:',oldName);
   if(!newName||!newName.trim()||newName.trim()===oldName)return;
   var trimmed=newName.trim();
-  if(state.themeStocks){
-    if(state.themeStocks[trimmed]){alert('이미 있는 이름이에요!');return;}
-    if(state.themeStocks[oldName]){
-      state.themeStocks[trimmed]=state.themeStocks[oldName];
-      delete state.themeStocks[oldName];
-    }
+  // 이름 충돌 체크 (이미 사용중인 테마명인지)
+  if(state.themeStocks&&state.themeStocks[trimmed]){alert('이미 있는 이름이에요!');return;}
+
+  var oldColorIdx=getThemeColorIdx(oldName);
+
+  // themeStocks 데이터 이전 (없으면 빈 데이터로 새로 생성)
+  if(!state.themeStocks)state.themeStocks={};
+  if(state.themeStocks[oldName]){
+    state.themeStocks[trimmed]=state.themeStocks[oldName];
+    delete state.themeStocks[oldName];
+  } else {
+    // MK_DEF 기본 테마였던 경우: 종목 데이터 없이 이름+색상만 새로 등록
+    state.themeStocks[trimmed]={subs:[],color:oldColorIdx};
   }
-  if(state.mkThemeColors&&state.mkThemeColors[oldName]!==undefined){
-    state.mkThemeColors[trimmed]=state.mkThemeColors[oldName];
-    delete state.mkThemeColors[oldName];
+
+  // 색상 정보도 새 이름으로 이전
+  if(!state.mkThemeColors)state.mkThemeColors={};
+  state.mkThemeColors[trimmed]=oldColorIdx;
+  if(state.mkThemeColors[oldName]!==undefined)delete state.mkThemeColors[oldName];
+
+  // MK_DEF 기본 테마였다면, 더 이상 화면에 옛 이름이 보이지 않도록 숨김 처리
+  if(MK_DEF[oldName]!==undefined){
+    if(!state.mkHiddenDefThemes)state.mkHiddenDefThemes=[];
+    if(!state.mkHiddenDefThemes.includes(oldName))state.mkHiddenDefThemes.push(oldName);
   }
+
   save();
   renderMkThemePanel();
 }
