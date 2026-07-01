@@ -1910,6 +1910,16 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal" style="width:760px">
       <div class="modal-title">📊 대금상위 종목 입력</div>
       <div class="modal-row"><label>날짜</label><span id="mkcal-stk-date" style="font-size:13px;color:var(--text2)"></span></div>
+      <!-- 엑셀 업로드 -->
+      <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:10px;padding:11px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="font-size:12px;font-weight:700;color:#1e40af">📂 엑셀 업로드</span>
+        <span style="font-size:11px;color:var(--text2)">거래대금.xlsx 업로드하면 자동으로 채워져요 (순위/종목명/현재가/등락률/거래대금/테마 컬럼)</span>
+        <label style="cursor:pointer;background:#1e40af;color:#fff;padding:5px 13px;border-radius:8px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:5px">
+          📁 파일 선택
+          <input type="file" accept=".xlsx,.xls" style="display:none" onchange="mkImportExcel(this)">
+        </label>
+        <span id="mk-excel-status" style="font-size:11px;color:var(--green)"></span>
+      </div>
       <div style="overflow-x:auto;margin-bottom:10px">
         <div style="display:grid;grid-template-columns:2fr 1.3fr 1.3fr 1fr 1.3fr 80px 28px;gap:4px;margin-bottom:6px;min-width:600px;padding:0 4px">
           <div style="font-size:10px;font-weight:700;color:var(--text2)">종목명</div>
@@ -1989,6 +1999,7 @@ textarea{resize:vertical;min-height:80px}
 
 <div id="img-fullview" class="img-fullview" onclick="this.classList.remove('open')"><img id="img-fullview-src" src="" alt=""></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getFirestore,doc,setDoc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -3944,6 +3955,68 @@ function mkRenderStkRows(){
 }
 function mkAddStkRow(){_mkEditStocks.push({name:'',theme:'',price:'',change:'',vol:'',time:''});mkRenderStkRows();}
 
+// ===== 거래대금 엑셀 업로드 파싱 =====
+function mkImportExcel(input){
+  var file=input.files[0];if(!file)return;
+  var statusEl=document.getElementById('mk-excel-status');
+  if(statusEl)statusEl.textContent='⏳ 파일 읽는 중...';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=new Uint8Array(e.target.result);
+      var wb=XLSX.read(data,{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      // 헤더 찾기 (순위, 종목명, 현재가, 등락률, 거래대금, 테마)
+      var headerRow=-1;
+      var colMap={name:-1,price:-1,change:-1,vol:-1,theme:-1};
+      for(var r=0;r<Math.min(5,rows.length);r++){
+        var row=rows[r];
+        for(var c=0;c<row.length;c++){
+          var v=String(row[c]).trim();
+          if(v==='종목명')colMap.name=c;
+          else if(v==='현재가')colMap.price=c;
+          else if(v==='등락률')colMap.change=c;
+          else if(v.includes('거래대금'))colMap.vol=c;
+          else if(v==='테마')colMap.theme=c;
+        }
+        if(colMap.name>=0&&colMap.change>=0){headerRow=r;break;}
+      }
+      if(headerRow<0){
+        if(statusEl)statusEl.textContent='❌ 헤더를 찾을 수 없어요 (종목명/등락률 컬럼 필요)';
+        input.value='';return;
+      }
+      var imported=[];
+      for(var i=headerRow+1;i<rows.length;i++){
+        var row=rows[i];
+        var name=colMap.name>=0?String(row[colMap.name]||'').trim():'';
+        if(!name)continue;
+        var changeRaw=colMap.change>=0?row[colMap.change]:'';
+        var changeNum=parseFloat(changeRaw)||0;
+        var changeStr=changeNum>0?'+'+changeNum.toFixed(2)+'%':changeNum.toFixed(2)+'%';
+        var price=colMap.price>=0?String(row[colMap.price]||'').trim():'';
+        if(price&&!isNaN(price))price=Number(price).toLocaleString('ko-KR');
+        var vol=colMap.vol>=0?String(row[colMap.vol]||'').trim():'';
+        if(vol&&!isNaN(vol))vol=Number(vol).toLocaleString('ko-KR');
+        var theme=colMap.theme>=0?String(row[colMap.theme]||'').trim():'';
+        imported.push({name:name,theme:theme,price:price,change:changeStr,vol:vol,time:''});
+      }
+      if(!imported.length){
+        if(statusEl)statusEl.textContent='❌ 데이터를 찾을 수 없어요';
+        input.value='';return;
+      }
+      _mkEditStocks=imported;
+      mkRenderStkRows();
+      if(statusEl)statusEl.textContent='✅ '+imported.length+'개 종목 불러오기 완료!';
+      input.value='';
+    }catch(err){
+      if(statusEl)statusEl.textContent='❌ 오류: '+err.message;
+      input.value='';
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
 function mkSaveSector(){
   var raw=mkGV('mkcal-sec-inp');
   var sectors=raw.split(',').map(function(s){return s.trim();}).filter(Boolean);
@@ -4557,6 +4630,71 @@ function uhAddStockRow(){
   _uhEditStocks.push({name:'',type:'상한가',theme:'',change:'',vol:'',time:''});
   uhSaveDraft();
   uhRenderStockRows();
+}
+
+// ===== 상한가 엑셀 업로드 파싱 =====
+function uhImportExcel(input){
+  var file=input.files[0];if(!file)return;
+  var statusEl=document.getElementById('uh-excel-status');
+  if(statusEl)statusEl.textContent='⏳ 파일 읽는 중...';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=new Uint8Array(e.target.result);
+      var wb=XLSX.read(data,{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      // 헤더 찾기 (순위, 종목명, 현재가, 등락률, 테마)
+      var headerRow=-1;
+      var colMap={name:-1,price:-1,change:-1,vol:-1,theme:-1};
+      for(var r=0;r<Math.min(5,rows.length);r++){
+        var row=rows[r];
+        for(var c=0;c<row.length;c++){
+          var v=String(row[c]).trim();
+          if(v==='종목명')colMap.name=c;
+          else if(v==='현재가')colMap.price=c;
+          else if(v==='등락률')colMap.change=c;
+          else if(v.includes('거래대금'))colMap.vol=c;
+          else if(v==='테마')colMap.theme=c;
+        }
+        if(colMap.name>=0&&colMap.change>=0){headerRow=r;break;}
+      }
+      if(headerRow<0){
+        if(statusEl)statusEl.textContent='❌ 헤더를 찾을 수 없어요 (종목명/등락률 컬럼 필요)';
+        input.value='';return;
+      }
+      var imported=[];
+      for(var i=headerRow+1;i<rows.length;i++){
+        var row=rows[i];
+        var name=colMap.name>=0?String(row[colMap.name]||'').trim():'';
+        if(!name)continue;
+        var changeRaw=colMap.change>=0?row[colMap.change]:'';
+        var changeNum=parseFloat(changeRaw)||0;
+        // 상한가(29%이상) vs 20%이상 자동 구분
+        var type=changeNum>=29?'상한가':'20%이상';
+        var changeStr=changeNum>0?'+'+changeNum.toFixed(2)+'%':changeNum.toFixed(2)+'%';
+        var price=colMap.price>=0?String(row[colMap.price]||'').trim():'';
+        if(price&&!isNaN(price))price=Number(price).toLocaleString('ko-KR');
+        var vol=colMap.vol>=0?String(row[colMap.vol]||'').trim():'';
+        if(vol&&!isNaN(vol))vol=Number(vol).toLocaleString('ko-KR');
+        var theme=colMap.theme>=0?String(row[colMap.theme]||'').trim():'';
+        imported.push({name:name,type:type,theme:theme,change:changeStr,vol:vol,time:''});
+      }
+      if(!imported.length){
+        if(statusEl)statusEl.textContent='❌ 데이터를 찾을 수 없어요';
+        input.value='';return;
+      }
+      _uhEditStocks=imported;
+      uhSaveDraft();
+      uhRenderStockRows();
+      if(statusEl)statusEl.textContent='✅ '+imported.length+'개 종목 불러오기 완료!';
+      input.value='';
+    }catch(err){
+      if(statusEl)statusEl.textContent='❌ 오류: '+err.message;
+      input.value='';
+    }
+  };
+  reader.readAsArrayBuffer(file);
 }
 
 function uhSaveStocks(){
@@ -9140,6 +9278,16 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
       <button onclick="uhDiscardDraft()" style="background:none;border:1px solid #f59e0b;border-radius:6px;padding:3px 9px;font-size:11px;color:#92400e;cursor:pointer;font-family:inherit">처음부터 입력</button>
     </div>
     <div class="modal-row"><label>날짜</label><span id="uhcal-inp-date" style="font-size:13px;color:var(--text2)"></span></div>
+    <!-- 엑셀 업로드 -->
+    <div style="background:#fff0f0;border:1px solid #fecaca;border-radius:10px;padding:11px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:12px;font-weight:700;color:#dc2626">📂 엑셀 업로드</span>
+      <span style="font-size:11px;color:var(--text2)">상한가.xlsx 업로드하면 자동으로 채워져요 (순위/종목명/현재가/등락률/테마 컬럼)</span>
+      <label style="cursor:pointer;background:#dc2626;color:#fff;padding:5px 13px;border-radius:8px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:5px">
+        📁 파일 선택
+        <input type="file" accept=".xlsx,.xls" style="display:none" onchange="uhImportExcel(this)">
+      </label>
+      <span id="uh-excel-status" style="font-size:11px;color:var(--green)"></span>
+    </div>
     <div style="overflow-x:auto;margin-bottom:10px">
       <div style="display:grid;grid-template-columns:2fr 1fr 1.5fr 1fr 1fr 80px 28px;gap:4px;margin-bottom:6px;min-width:640px;padding:0 4px">
         <div style="font-size:10px;font-weight:700;color:var(--text2)">종목명</div>
