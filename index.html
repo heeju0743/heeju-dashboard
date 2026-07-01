@@ -1582,6 +1582,9 @@ textarea{resize:vertical;min-height:80px}
         <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-8"> 거래량이 줄면서 눌리는가?</label>
         <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-9"> 매수세가 다시 들어오는 모습이 보이는가?</label>
         <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-10"> 급락빔이 나온 건 아닌가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-11"> 첫 눌림인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-12"> 두 번째 눌림인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-13"> 직전 양봉을 음봉이 다 먹지 않았는가?</label>
       </div>
 
       <!-- 5. 리스크 체크 -->
@@ -1601,6 +1604,8 @@ textarea{resize:vertical;min-height:80px}
         <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-2"> 빨리 수익 내고 싶어서 조급한가?</label>
         <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-3"> 원래 계획했던 종목인가?</label>
         <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-4"> 내가 기다린 자리인가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-5"> 놓쳐도 괜찮다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-6"> 자동매매 걸어놓자.</label>
       </div>
 
       <!-- 점수 요약 -->
@@ -1619,6 +1624,8 @@ textarea{resize:vertical;min-height:80px}
           <span>✋ 2번 손절 → 그날 종료</span>
           <span>🚩 목표 수익 달성 → 종료</span>
           <span>💨 흔들리면 → 종료</span>
+          <span>⭐ 90점 이상 → 진입</span>
+          <span>👀 80점 이하 → 관찰</span>
         </div>
       </div>
     </div>
@@ -1781,6 +1788,7 @@ textarea{resize:vertical;min-height:80px}
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-1"> 미리 정한 손절을 지켰다.</label>
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-2"> 감정으로 버티지 않았다.</label>
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-3"> 손절 후 다시 원칙 없이 재진입하지 않았다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-4"> 손절 자리가 원래 계획했던 자리였는가?</label>
       </div>
 
       <div class="trade-cl-section">
@@ -1788,6 +1796,7 @@ textarea{resize:vertical;min-height:80px}
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-1"> 목표가까지 기다렸다.</label>
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-2"> 너무 빨리 팔지 않았다.</label>
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-3"> 욕심 때문에 못 팔지도 않았다.</label>
+        <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-4"> 분할매도를 원칙대로 했는가?</label>
       </div>
 
       <div class="trade-cl-section">
@@ -5806,7 +5815,7 @@ function openTradeDiaryModal(editId){
   window._tdEditId=editId||null;
   var titleEl=document.getElementById('td-modal-title');
   var btnEl=document.getElementById('td-save-btn');
-  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-d-1','td-cl-d-2','td-cl-d-3','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
+  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-b-4','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-c-4','td-cl-d-1','td-cl-d-2','td-cl-d-3','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
   if(editId){
     var d=(state.tradeDiaries||[]).find(function(x){return x.id===editId;});
     if(!d)return;
@@ -5904,7 +5913,7 @@ function saveTradeDiary(){
   if(!title&&!badTxt&&!contentTxt&&!state.tempTradeDiaryImgs.length){alert('종목명 또는 내용을 입력해주세요');return;}
   if(!state.tradeDiaries)state.tradeDiaries=[];
 
-  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-d-1','td-cl-d-2','td-cl-d-3','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
+  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-b-4','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-c-4','td-cl-d-1','td-cl-d-2','td-cl-d-3','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
   var cl={};
   clIds.forEach(function(id){var el=document.getElementById(id);if(el)cl[id]=el.checked;});
   function calcScore(cls){
