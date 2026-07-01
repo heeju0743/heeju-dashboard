@@ -5416,7 +5416,7 @@ function openTradeModal(){
   document.getElementById('t-rr').value='';
   document.getElementById('t-sellAvg').textContent='-';
   document.getElementById('t-sellTotalSum').textContent='-';
-  const defaults={'t-type':'단타','t-pattern':'눌림','t-vol':'증가','t-result':'','t-market':'국내장','t-c1':'','t-c3':''};
+  const defaults={'t-type':'단타','t-pattern':'눌림','t-vol':'증가','t-market':'국내장','t-c1':'','t-c3':''};
   Object.entries(defaults).forEach(function(e){const el=document.getElementById(e[0]);if(el)el.value=e[1];});
   const psychEl=document.getElementById('t-psych');if(psychEl)psychEl.value='보통';
   document.getElementById('calc-pnl').textContent='-';document.getElementById('calc-pct').textContent='-';document.getElementById('calc-qty').textContent='-';
@@ -5450,7 +5450,7 @@ function openEditTrade(id){
   document.getElementById('t-target').value=t.target||'';
   document.getElementById('t-stop').value=t.stop||'';
   document.getElementById('t-rr').value=t.rr||'';
-  document.getElementById('t-result').value=t.result||'';
+  const tResultEl=document.getElementById('t-result');if(tResultEl)tResultEl.value=t.result||'';
   document.getElementById('t-c1').value=t.c1||'';
   document.getElementById('t-c3').value=t.c3||'';
   const psychEl=document.getElementById('t-psych');if(psychEl)psychEl.value=t.psych||'안정';
@@ -5521,7 +5521,7 @@ function saveTrade(){
     sell1,sellQty1,sellTotal1,sellTime1:document.getElementById('t-sellTime1').value,
     sell2,sellQty2,sellTotal2,sellTime2:document.getElementById('t-sellTime2').value,
     sell,sellTotal,pct,pnl,
-    result:document.getElementById('t-result').value,
+    result:(document.getElementById('t-result')?document.getElementById('t-result').value:(pnl>0?'승':pnl<0?'패':'')||''),
     market:document.getElementById('t-market').value,
     c1:document.getElementById('t-c1').value,c3t:'',c3:document.getElementById('t-c3').value,c3v:'',
     psych:psychEl?psychEl.value:'',
