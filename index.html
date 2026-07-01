@@ -6918,18 +6918,18 @@ function renderTradeGoals(){
 // ===== DASH =====
 function updateDashStats(){
   const done=state.todos.filter(t=>t.done).length;
-  document.getElementById('d-todo').textContent=`${done}/${state.todos.length}`;
+  const elTodo=document.getElementById('d-todo');if(elTodo)elTodo.textContent=`${done}/${state.todos.length}`;
   const n=new Date(),yr=n.getFullYear(),mo=n.getMonth();
-  document.getElementById('d-sched').textContent=state.events.filter(e=>{const d=new Date(e.date);return d.getFullYear()===yr&&d.getMonth()===mo;}).length;
-  document.getElementById('d-book').textContent=state.books.filter(b=>b.status==='reading'||(b.status===undefined&&b.prog<100)).length;
+  const elSched=document.getElementById('d-sched');if(elSched)elSched.textContent=state.events.filter(e=>{const d=new Date(e.date);return d.getFullYear()===yr&&d.getMonth()===mo;}).length;
+  const elBook=document.getElementById('d-book');if(elBook)elBook.textContent=state.books.filter(b=>b.status==='reading'||(b.status===undefined&&b.prog<100)).length;
   const ym=`${yr}-${String(mo+1).padStart(2,'0')}`;
   const exp=state.transactions.filter(t=>t.date.startsWith(ym)&&t.type==='지출').reduce((s,t)=>s+t.amount,0);
-  document.getElementById('d-budget').textContent=exp.toLocaleString()+'원';
+  const elBudget=document.getElementById('d-budget');if(elBudget)elBudget.textContent=exp.toLocaleString()+'원';
   const todayTodos=state.todos.filter(t=>!t.done).slice(0,5);
-  document.getElementById('dash-todos').innerHTML=todayTodos.length?todayTodos.map(t=>`<div class="todo-item ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTodo(${state.todos.indexOf(t)},this)"><span class="todo-text">${t.text}</span><button class="del-btn" onclick="delTodo(${state.todos.indexOf(t)})">✕</button></div>`).join(''):'<p style="color:var(--text2);font-size:13px;text-align:center;padding:10px">오늘 할 일이 없습니다 🎉</p>';
+  const elDashTodos=document.getElementById('dash-todos');if(elDashTodos)elDashTodos.innerHTML=todayTodos.length?todayTodos.map(t=>`<div class="todo-item ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTodo(${state.todos.indexOf(t)},this)"><span class="todo-text">${t.text}</span><button class="del-btn" onclick="delTodo(${state.todos.indexOf(t)})">✕</button></div>`).join(''):'<p style="color:var(--text2);font-size:13px;text-align:center;padding:10px">오늘 할 일이 없습니다 🎉</p>';
   const today=new Date().toISOString().split('T')[0];
   const todayEvs=state.events.filter(e=>e.date===today);
-  document.getElementById('dash-events').innerHTML=todayEvs.length?todayEvs.map(e=>`<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f5ede0">📌 ${e.time||''} ${e.title}</div>`).join(''):'<p style="color:var(--text2);font-size:13px;text-align:center;padding:10px">오늘 일정이 없습니다</p>';
+  const elDashEvents=document.getElementById('dash-events');if(elDashEvents)elDashEvents.innerHTML=todayEvs.length?todayEvs.map(e=>`<div style="font-size:13px;padding:4px 0;border-bottom:1px solid #f5ede0">📌 ${e.time||''} ${e.title}</div>`).join(''):'<p style="color:var(--text2);font-size:13px;text-align:center;padding:10px">오늘 일정이 없습니다</p>';
   renderDashHabits();
 }
 function dashAddTodo(){const inp=document.getElementById('dash-quick-todo');if(!inp.value.trim())return;state.todos.push({text:inp.value.trim(),done:false,cat:'기타',pri:'보통',due:''});inp.value='';save();updateDashStats();renderTodos();}
