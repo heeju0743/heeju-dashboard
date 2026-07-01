@@ -4056,8 +4056,27 @@ function mkSaveSector(){
 }
 function mkSaveStocks(){
   if(!state.marketCalendar[_mkEditDate])state.marketCalendar[_mkEditDate]={};
-  state.marketCalendar[_mkEditDate].stocks=_mkEditStocks.filter(function(s){return s.name.trim();});
-  _mkSel=_mkEditDate;closeModal('modal-mkcal-stocks');save();renderMarketCal();
+  var stocks=_mkEditStocks.filter(function(s){return s.name.trim();});
+  state.marketCalendar[_mkEditDate].stocks=stocks;
+
+  // ✅ 대금상위 → 주도섹터 자동 추출 (2개 이상 동일 테마)
+  var themeCount={};
+  stocks.forEach(function(s){
+    if(!s.theme||!s.theme.trim())return;
+    var t=s.theme.trim();
+    themeCount[t]=(themeCount[t]||0)+1;
+  });
+  var autoSectors=Object.keys(themeCount).filter(function(t){return themeCount[t]>=2;});
+
+  // 기존 수기 입력 섹터와 병합 (중복 제거)
+  var existing=state.marketCalendar[_mkEditDate].sectors||[];
+  var merged=[...new Set([...existing,...autoSectors])];
+  state.marketCalendar[_mkEditDate].sectors=merged;
+
+  _mkSel=_mkEditDate;
+  closeModal('modal-mkcal-stocks');
+  save();
+  renderMarketCal();
 }
 function mkSaveMarket(){
   if(!state.marketCalendar[_mkEditDate])state.marketCalendar[_mkEditDate]={};
