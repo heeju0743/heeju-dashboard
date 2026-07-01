@@ -1453,7 +1453,17 @@ textarea{resize:vertical;min-height:80px}
         <div class="modal-row" style="margin-bottom:0"><label>수량</label><input id="t-buyQty" type="number" placeholder="0" oninput="calcPnl()"></div>
         <div class="modal-row" style="margin-bottom:0"><label>매수총액(자동)</label><input id="t-buyTotal" type="number" readonly style="background:#f5f0e8"></div>
       </div>
-      <div class="modal-row" style="margin-top:9px;margin-bottom:0"><label>매수 시간</label><input id="t-buyTime" type="time"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px">
+        <div class="modal-row" style="margin-bottom:0"><label>매수 날짜</label><input id="t-buyDate" type="date"></div>
+        <div class="modal-row" style="margin-bottom:0"><label>매수 시간 <span style="font-size:10px;color:var(--text2)">(예: 09:32)</span></label>
+          <div style="display:flex;gap:5px;align-items:center">
+            <select id="t-buyAmPm" style="width:70px;padding:9px 6px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit" onchange="syncBuyTime()">
+              <option value="AM">오전</option><option value="PM">오후</option>
+            </select>
+            <input id="t-buyTime" placeholder="09:32" maxlength="5" style="flex:1" oninput="fmtTimeInput(this);syncBuyTime()">
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 매도 1차 -->
@@ -1464,7 +1474,17 @@ textarea{resize:vertical;min-height:80px}
         <div class="modal-row" style="margin-bottom:0"><label>수량</label><input id="t-sellQty1" type="number" placeholder="0" oninput="calcPnl()"></div>
         <div class="modal-row" style="margin-bottom:0"><label>매도총액(자동)</label><input id="t-sellTotal1" type="number" readonly style="background:#f5f0e8"></div>
       </div>
-      <div class="modal-row" style="margin-top:9px;margin-bottom:0"><label>매도 시간</label><input id="t-sellTime1" type="time"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px">
+        <div class="modal-row" style="margin-bottom:0"><label>매도 날짜</label><input id="t-sellDate1" type="date"></div>
+        <div class="modal-row" style="margin-bottom:0"><label>매도 시간 <span style="font-size:10px;color:var(--text2)">(예: 10:15)</span></label>
+          <div style="display:flex;gap:5px;align-items:center">
+            <select id="t-sellAmPm1" style="width:70px;padding:9px 6px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit" onchange="syncSellTime1()">
+              <option value="AM">오전</option><option value="PM">오후</option>
+            </select>
+            <input id="t-sellTime1" placeholder="10:15" maxlength="5" style="flex:1" oninput="fmtTimeInput(this);syncSellTime1()">
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 매도 2차 -->
@@ -1475,7 +1495,17 @@ textarea{resize:vertical;min-height:80px}
         <div class="modal-row" style="margin-bottom:0"><label>수량</label><input id="t-sellQty2" type="number" placeholder="0" oninput="calcPnl()"></div>
         <div class="modal-row" style="margin-bottom:0"><label>매도총액(자동)</label><input id="t-sellTotal2" type="number" readonly style="background:#f5f0e8"></div>
       </div>
-      <div class="modal-row" style="margin-top:9px;margin-bottom:0"><label>매도 시간</label><input id="t-sellTime2" type="time"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px">
+        <div class="modal-row" style="margin-bottom:0"><label>매도 날짜</label><input id="t-sellDate2" type="date"></div>
+        <div class="modal-row" style="margin-bottom:0"><label>매도 시간 <span style="font-size:10px;color:var(--text2)">(예: 13:30)</span></label>
+          <div style="display:flex;gap:5px;align-items:center">
+            <select id="t-sellAmPm2" style="width:70px;padding:9px 6px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit" onchange="syncSellTime2()">
+              <option value="AM">오전</option><option value="PM">오후</option>
+            </select>
+            <input id="t-sellTime2" placeholder="13:30" maxlength="5" style="flex:1" oninput="fmtTimeInput(this);syncSellTime2()">
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 합산 결과 -->
@@ -5323,6 +5353,50 @@ function renderTrades(){
     </tr>`;
   }).join('');
 }
+// ===== 매매 시간 입력 헬퍼 =====
+function fmtTimeInput(el){
+  // 숫자만 추출해서 HH:MM 형식으로
+  var v=el.value.replace(/[^0-9]/g,'');
+  if(v.length>=3) v=v.slice(0,2)+':'+v.slice(2,4);
+  el.value=v;
+}
+function syncBuyTime(){
+  // 오전/오후 + 시간 → 표시용 문자열 (저장은 그대로)
+}
+function syncSellTime1(){}
+function syncSellTime2(){}
+
+// 시간 전체 문자열 반환 (날짜+오전오후+시간 조합)
+function getTradeDateTime(dateId, ampmId, timeId){
+  var date=document.getElementById(dateId)?document.getElementById(dateId).value:'';
+  var ampm=document.getElementById(ampmId)?document.getElementById(ampmId).value:'AM';
+  var time=document.getElementById(timeId)?document.getElementById(timeId).value:'';
+  if(!time) return date||'';
+  return (date?date+' ':'')+(ampm==='AM'?'오전':'오후')+' '+time;
+}
+
+// 저장된 날짜+시간 문자열 → 각 필드에 복원
+// 저장형식: "2026-07-01 오전 09:32" 또는 "오전 09:32" 또는 "09:32" 또는 "2026-07-01"
+function restoreTradeDateTime(dateId, ampmId, timeId, val){
+  if(!val){return;}
+  var dateEl=document.getElementById(dateId);
+  var ampmEl=document.getElementById(ampmId);
+  var timeEl=document.getElementById(timeId);
+  // 날짜 파싱 (YYYY-MM-DD 형식)
+  var dateMatch=val.match(/(\d{4}-\d{2}-\d{2})/);
+  if(dateEl&&dateMatch) dateEl.value=dateMatch[1];
+  // 오전/오후 파싱
+  if(ampmEl){
+    if(val.includes('오후')) ampmEl.value='PM';
+    else ampmEl.value='AM';
+  }
+  // 시간 파싱 (HH:MM 형식)
+  var timeMatch=val.match(/(\d{1,2}:\d{2})/);
+  if(timeEl&&timeMatch) timeEl.value=timeMatch[1];
+  // 구형 저장값(HH:MM만 있는 경우)도 처리
+  else if(timeEl&&!dateMatch&&!val.includes('오')) timeEl.value=val;
+}
+
 function calcPnl(){
   const type=document.getElementById('t-type').value;
   const swing=isSwingTypeFn(type);
@@ -5412,7 +5486,7 @@ function openTradeModal(){
   tEditId=null;
   const mt=document.getElementById('trade-modal-title');if(mt)mt.textContent='📝 매매 추가';
   document.getElementById('t-date').value=new Date().toISOString().split('T')[0];
-  ['t-name','t-buy','t-buyQty','t-buyTotal','t-buyTime','t-sell1','t-sellQty1','t-sellTotal1','t-sellTime1','t-sell2','t-sellQty2','t-sellTotal2','t-sellTime2','t-target','t-stop','t-note','t-emotion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['t-name','t-buy','t-buyQty','t-buyTotal','t-buyTime','t-buyDate','t-sell1','t-sellQty1','t-sellTotal1','t-sellTime1','t-sellDate1','t-sell2','t-sellQty2','t-sellTotal2','t-sellTime2','t-sellDate2','t-target','t-stop','t-note','t-emotion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('t-rr').value='';
   document.getElementById('t-sellAvg').textContent='-';
   document.getElementById('t-sellTotalSum').textContent='-';
@@ -5438,15 +5512,15 @@ function openEditTrade(id){
   document.getElementById('t-buy').value=t.buy||'';
   document.getElementById('t-buyQty').value=t.buyQty||'';
   document.getElementById('t-buyTotal').value=t.buyTotal||'';
-  document.getElementById('t-buyTime').value=t.buyTime||'';
+  restoreTradeDateTime('t-buyDate','t-buyAmPm','t-buyTime',t.buyTime||'');
   document.getElementById('t-sell1').value=t.sell1||'';
   document.getElementById('t-sellQty1').value=t.sellQty1||'';
   document.getElementById('t-sellTotal1').value=t.sellTotal1||'';
-  document.getElementById('t-sellTime1').value=t.sellTime1||'';
+  restoreTradeDateTime('t-sellDate1','t-sellAmPm1','t-sellTime1',t.sellTime1||'');
   document.getElementById('t-sell2').value=t.sell2||'';
   document.getElementById('t-sellQty2').value=t.sellQty2||'';
   document.getElementById('t-sellTotal2').value=t.sellTotal2||'';
-  document.getElementById('t-sellTime2').value=t.sellTime2||'';
+  restoreTradeDateTime('t-sellDate2','t-sellAmPm2','t-sellTime2',t.sellTime2||'');
   document.getElementById('t-target').value=t.target||'';
   document.getElementById('t-stop').value=t.stop||'';
   document.getElementById('t-rr').value=t.rr||'';
@@ -5517,9 +5591,9 @@ function saveTrade(){
     target:parseFloat(document.getElementById('t-target').value)||0,
     stop:parseFloat(document.getElementById('t-stop').value)||0,
     rr:document.getElementById('t-rr').value||'-',
-    buy,buyQty,buyTotal,buyTime:document.getElementById('t-buyTime').value,
-    sell1,sellQty1,sellTotal1,sellTime1:document.getElementById('t-sellTime1').value,
-    sell2,sellQty2,sellTotal2,sellTime2:document.getElementById('t-sellTime2').value,
+    buy,buyQty,buyTotal,buyTime:getTradeDateTime('t-buyDate','t-buyAmPm','t-buyTime'),
+    sell1,sellQty1,sellTotal1,sellTime1:getTradeDateTime('t-sellDate1','t-sellAmPm1','t-sellTime1'),
+    sell2,sellQty2,sellTotal2,sellTime2:getTradeDateTime('t-sellDate2','t-sellAmPm2','t-sellTime2'),
     sell,sellTotal,pct,pnl,
     result:(document.getElementById('t-result')?document.getElementById('t-result').value:(pnl>0?'승':pnl<0?'패':'')||''),
     market:document.getElementById('t-market').value,
