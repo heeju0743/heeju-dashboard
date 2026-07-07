@@ -767,8 +767,8 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-row">
       <label>📸 이미지 첨부 (차트, 캡처 등)</label>
       <div class="img-upload-area" onclick="document.getElementById('hw-img-in').click()">
-        <input type="file" id="hw-img-in" accept="image/*" multiple style="display:none" onchange="handleNoteImg('hw',this)">
-        📁 클릭하여 이미지 첨부 (여러 장 가능)
+        <input type="file" id="hw-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleNoteImg('hw',this)">
+        📁 클릭하여 이미지/파일 첨부 (여러 개 가능)
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="hw-img-prev"></div>
     </div>
@@ -790,8 +790,8 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-row">
       <label>📸 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('sc-img-in').click()">
-        <input type="file" id="sc-img-in" accept="image/*" multiple style="display:none" onchange="handleNoteImg('sc',this)">
-        📁 클릭하여 이미지 첨부 (여러 장 가능)
+        <input type="file" id="sc-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleNoteImg('sc',this)">
+        📁 클릭하여 이미지/파일 첨부 (여러 개 가능)
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="sc-img-prev"></div>
     </div>
@@ -817,8 +817,8 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-row">
       <label>📸 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('sp-img-in').click()">
-        <input type="file" id="sp-img-in" accept="image/*" multiple style="display:none" onchange="handleNoteImg('sp',this)">
-        📁 클릭하여 이미지 첨부 (여러 장 가능)
+        <input type="file" id="sp-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleNoteImg('sp',this)">
+        📁 클릭하여 이미지/파일 첨부 (여러 개 가능)
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="sp-img-prev"></div>
     </div>
@@ -1206,13 +1206,13 @@ textarea{resize:vertical;min-height:80px}
       <div id="food-cal-grid" class="cal-food-grid"></div>
     </div>
   </div>
-  <div id="food-main" class="tab-content"><div id="r-main"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-main"></div><div class="modal-row"><label>재료</label><input id="ri-main"></div><div class="modal-row"><label>조리법</label><textarea id="rm-main" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-main"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-main').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-main" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'main')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-main"></div></div><button class="btn btn-primary" onclick="addRecipe('main')">저장</button></div></div>
-  <div id="food-veg" class="tab-content"><div id="r-veg"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-veg"></div><div class="modal-row"><label>재료</label><input id="ri-veg"></div><div class="modal-row"><label>조리법</label><textarea id="rm-veg" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-veg"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-veg').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-veg" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'veg')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-veg"></div></div><button class="btn btn-primary" onclick="addRecipe('veg')">저장</button></div></div>
-  <div id="food-soup" class="tab-content"><div id="r-soup"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-soup"></div><div class="modal-row"><label>재료</label><input id="ri-soup"></div><div class="modal-row"><label>조리법</label><textarea id="rm-soup" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-soup"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-soup').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-soup" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'soup')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-soup"></div></div><button class="btn btn-primary" onclick="addRecipe('soup')">저장</button></div></div>
-  <div id="food-other" class="tab-content"><div id="r-other"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-other"></div><div class="modal-row"><label>재료</label><input id="ri-other"></div><div class="modal-row"><label>조리법</label><textarea id="rm-other" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-other"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-other').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-other" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'other')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-other"></div></div><button class="btn btn-primary" onclick="addRecipe('other')">저장</button></div></div>
-  <div id="food-diet" class="tab-content"><div id="r-diet"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-diet"></div><div class="modal-row"><label>재료</label><input id="ri-diet"></div><div class="modal-row"><label>조리법</label><textarea id="rm-diet" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-diet"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-diet').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-diet" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'diet')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-diet"></div></div><button class="btn btn-primary" onclick="addRecipe('diet')">저장</button></div></div>
-  <div id="food-snack" class="tab-content"><div id="r-snack"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-snack"></div><div class="modal-row"><label>재료</label><input id="ri-snack"></div><div class="modal-row"><label>조리법</label><textarea id="rm-snack" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-snack"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-snack').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-snack" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'snack')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-snack"></div></div><button class="btn btn-primary" onclick="addRecipe('snack')">저장</button></div></div>
-  <div id="food-breakfast" class="tab-content"><div id="r-breakfast"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-breakfast"></div><div class="modal-row"><label>재료</label><input id="ri-breakfast"></div><div class="modal-row"><label>조리법</label><textarea id="rm-breakfast" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-breakfast"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-breakfast').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-breakfast" accept="image/*" multiple style="display:none" onchange="handleRecipeImg(this,'breakfast')">📁 클릭하여 이미지 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-breakfast"></div></div><button class="btn btn-primary" onclick="addRecipe('breakfast')">저장</button></div></div>
+  <div id="food-main" class="tab-content"><div id="r-main"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-main"></div><div class="modal-row"><label>재료</label><input id="ri-main"></div><div class="modal-row"><label>조리법</label><textarea id="rm-main" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-main"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-main').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-main" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleRecipeImg(this,'main')">📁 클릭하여 이미지/파일 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-main"></div></div><button class="btn btn-primary" onclick="addRecipe('main')">저장</button></div></div>
+  <div id="food-veg" class="tab-content"><div id="r-veg"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-veg"></div><div class="modal-row"><label>재료</label><input id="ri-veg"></div><div class="modal-row"><label>조리법</label><textarea id="rm-veg" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-veg"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-veg').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-veg" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleRecipeImg(this,'veg')">📁 클릭하여 이미지/파일 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-veg"></div></div><button class="btn btn-primary" onclick="addRecipe('veg')">저장</button></div></div>
+  <div id="food-soup" class="tab-content"><div id="r-soup"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-soup"></div><div class="modal-row"><label>재료</label><input id="ri-soup"></div><div class="modal-row"><label>조리법</label><textarea id="rm-soup" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-soup"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-soup').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-soup" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleRecipeImg(this,'soup')">📁 클릭하여 이미지/파일 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-soup"></div></div><button class="btn btn-primary" onclick="addRecipe('soup')">저장</button></div></div>
+  <div id="food-other" class="tab-content"><div id="r-other"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-other"></div><div class="modal-row"><label>재료</label><input id="ri-other"></div><div class="modal-row"><label>조리법</label><textarea id="rm-other" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-other"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-other').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-other" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleRecipeImg(this,'other')">📁 클릭하여 이미지/파일 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-other"></div></div><button class="btn btn-primary" onclick="addRecipe('other')">저장</button></div></div>
+  <div id="food-diet" class="tab-content"><div id="r-diet"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-diet"></div><div class="modal-row"><label>재료</label><input id="ri-diet"></div><div class="modal-row"><label>조리법</label><textarea id="rm-diet" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-diet"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-diet').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-diet" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleRecipeImg(this,'diet')">📁 클릭하여 이미지/파일 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-diet"></div></div><button class="btn btn-primary" onclick="addRecipe('diet')">저장</button></div></div>
+  <div id="food-snack" class="tab-content"><div id="r-snack"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-snack"></div><div class="modal-row"><label>재료</label><input id="ri-snack"></div><div class="modal-row"><label>조리법</label><textarea id="rm-snack" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-snack"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-snack').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-snack" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleRecipeImg(this,'snack')">📁 클릭하여 이미지/파일 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-snack"></div></div><button class="btn btn-primary" onclick="addRecipe('snack')">저장</button></div></div>
+  <div id="food-breakfast" class="tab-content"><div id="r-breakfast"></div><div class="card" style="border-style:dashed"><div style="font-weight:700;margin-bottom:9px;font-size:13px">+ 레시피 추가</div><div class="modal-row"><label>레시피명</label><input id="rn-breakfast"></div><div class="modal-row"><label>재료</label><input id="ri-breakfast"></div><div class="modal-row"><label>조리법</label><textarea id="rm-breakfast" style="min-height:75px"></textarea></div><div class="modal-row"><label>팁</label><input id="rt-breakfast"></div><div class="modal-row"><label>📸 이미지 첨부</label><div class="img-upload-area" onclick="document.getElementById('recipe-img-in-breakfast').click()" style="padding:12px;text-align:center;font-size:13px"><input type="file" id="recipe-img-in-breakfast" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleRecipeImg(this,'breakfast')">📁 클릭하여 이미지/파일 첨부</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-img-prev-breakfast"></div></div><button class="btn btn-primary" onclick="addRecipe('breakfast')">저장</button></div></div>
 </div>
 
 <!-- 운동 -->
@@ -1363,8 +1363,8 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-row">
       <label>📸 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('sdn-img-in').click()">
-        <input type="file" id="sdn-img-in" accept="image/*" multiple style="display:none" onchange="handleSdnImg(this)">
-        📁 클릭하여 이미지 첨부
+        <input type="file" id="sdn-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleSdnImg(this)">
+        📁 클릭하여 이미지/파일 첨부
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="sdn-img-prev"></div>
     </div>
@@ -1383,8 +1383,8 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-row"><label>🔗 URL</label><input id="med-url" placeholder="https://..."></div>
     <div class="modal-row">
       <div class="img-upload-area" onclick="document.getElementById('med-img-in').click()">
-        <input type="file" id="med-img-in" accept="image/*" multiple style="display:none" onchange="handleMedImg(this)">
-        📁 이미지 첨부
+        <input type="file" id="med-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleMedImg(this)">
+        📁 이미지/파일 첨부
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="med-img-prev"></div>
     </div>
@@ -1762,8 +1762,8 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-row">
       <label>📸 차트 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('td-img-in').click()">
-        <input type="file" id="td-img-in" accept="image/*" multiple style="display:none" onchange="handleTradeDiaryImg(this)">
-        📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
+        <input type="file" id="td-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleTradeDiaryImg(this)">
+        📁 클릭하여 이미지/파일 첨부 (여러 개 가능)
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px" id="td-img-preview"></div>
     </div>
@@ -1899,8 +1899,8 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-row">
       <label>📸 차트 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('sn-img-in').click()">
-        <input type="file" id="sn-img-in" accept="image/*" multiple style="display:none" onchange="handleScenarioImg(this)">
-        📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
+        <input type="file" id="sn-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleScenarioImg(this)">
+        📁 클릭하여 이미지/파일 첨부 (여러 개 가능)
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px" id="sn-img-preview"></div>
     </div>
@@ -4910,11 +4910,7 @@ function tmOpenNoteModal(editId){
 
 function tmHandleImg(input){
   Array.from(input.files).forEach(function(f){
-    const r=new FileReader();
-    r.onload=function(e){
-      processImg(e.target.result).then(function(url){tmImgs.push(url);tmRenderImgPrev();});
-    };
-    r.readAsDataURL(f);
+    processFile(f).then(function(result){tmImgs.push(result);tmRenderImgPrev();});
   });
   input.value='';
 }
@@ -5381,6 +5377,48 @@ function renderTrades(){
     </tr>`;
   }).join('');
 }
+
+// ===== 공통 파일 처리 (이미지 + 일반 파일) =====
+function isImageFile(file){
+  return file.type.startsWith('image/');
+}
+function processFile(file){
+  return new Promise(function(resolve){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      if(isImageFile(file)){
+        processImg(e.target.result).then(resolve);
+      } else {
+        // 일반 파일은 {type:'file', name, url, size} 형태로
+        resolve({type:'file', name:file.name, url:e.target.result, size:Math.round(file.size/1024)});
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+// 파일 미리보기 렌더링 (이미지 썸네일 or 파일 아이콘)
+function renderFileItem(item, onRemove){
+  if(!item) return '';
+  if(typeof item === 'string'){
+    // 구형 이미지 URL
+    return '<div class="img-preview-item"><img src="'+item+'" onclick="showFullImg(this.src)" style="width:65px;height:55px;object-fit:cover;border-radius:7px;cursor:pointer"><button class="rm" onclick="'+onRemove+'">✕</button></div>';
+  }
+  if(item.type==='file'){
+    var ext=(item.name||'').split('.').pop().toUpperCase();
+    var extColor={'PDF':'#e05c5c','DOC':'#5c7ae0','DOCX':'#5c7ae0','XLS':'#5c9e6e','XLSX':'#5c9e6e','PPT':'#c9a84c','PPTX':'#c9a84c','TXT':'#888','ZIP':'#8c5ce0'}[ext]||'#888';
+    return '<div style="display:flex;align-items:center;gap:6px;background:#f5f0e8;border-radius:8px;padding:5px 9px;font-size:11px;position:relative">'+
+      '<span style="background:'+extColor+';color:#fff;border-radius:4px;padding:2px 5px;font-size:9px;font-weight:700">'+ext+'</span>'+
+      '<span style="max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+item.name+'">'+item.name+'</span>'+
+      '<span style="color:var(--text2);font-size:9px">'+(item.size||0)+'KB</span>'+
+      '<button class="rm" style="position:relative;top:0;right:0" onclick="'+onRemove+'">✕</button>'+
+    '</div>';
+  }
+  // 이미지 객체 또는 URL
+  var src = typeof item === 'object' ? (item.url||'') : item;
+  return '<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(this.src)" style="width:65px;height:55px;object-fit:cover;border-radius:7px;cursor:pointer"><button class="rm" onclick="'+onRemove+'">✕</button></div>';
+}
+
+
 // ===== 매매 시간 입력 헬퍼 =====
 function fmtTimeInput(el){
   // 숫자만 추출해서 HH:MM 형식으로
@@ -5861,21 +5899,18 @@ function openTradeDiaryModal(editId){
 }
 function handleTradeDiaryImg(input){
   Array.from(input.files).forEach(function(f){
-    const r=new FileReader();
-    r.onload=function(e){
-      processImg(e.target.result).then(function(url){
-        state.tempTradeDiaryImgs.push(url);
-        renderTDiaryPrev();
-      });
-    };
-    r.readAsDataURL(f);
+    processFile(f).then(function(result){
+      state.tempTradeDiaryImgs.push(result);
+      renderTDiaryPrev();
+    });
   });
   input.value='';
 }
 function renderTDiaryPrev(){
-  document.getElementById('td-img-preview').innerHTML=state.tempTradeDiaryImgs.map((img,i)=>
-    `<div class="img-preview-item"><img src="${img}" alt=""><button class="rm" onclick="state.tempTradeDiaryImgs.splice(${i},1);renderTDiaryPrev()">✕</button></div>`
-  ).join('');
+  var el=document.getElementById('td-img-preview');if(!el)return;
+  el.innerHTML=(state.tempTradeDiaryImgs||[]).map(function(item,i){
+    return renderFileItem(item,"state.tempTradeDiaryImgs.splice("+i+",1);renderTDiaryPrev()");
+  }).join('');
 }
 // ===== 매매 복기 체크리스트 점수 계산 =====
 function updateTDScore(){
@@ -6042,19 +6077,16 @@ function openScenarioModal(editId){
 }
 function handleScenarioImg(input){
   Array.from(input.files).forEach(function(f){
-    const r=new FileReader();
-    r.onload=function(e){
-      processImg(e.target.result).then(function(url){
-        state.tempScenarioImgs.push(url);renderScenarioImgPrev();
-      });
-    };
-    r.readAsDataURL(f);
+    processFile(f).then(function(result){
+      state.tempScenarioImgs.push(result);renderScenarioImgPrev();
+    });
   });
   input.value='';
 }
 function renderScenarioImgPrev(){
-  document.getElementById('sn-img-preview').innerHTML=(state.tempScenarioImgs||[]).map(function(img,i){
-    return '<div class="img-preview-item"><img src="'+img+'" alt=""><button class="rm" onclick="state.tempScenarioImgs.splice('+i+',1);renderScenarioImgPrev()">✕</button></div>';
+  var el=document.getElementById('sn-img-preview');if(!el)return;
+  el.innerHTML=(state.tempScenarioImgs||[]).map(function(item,i){
+    return renderFileItem(item,"state.tempScenarioImgs.splice("+i+",1);renderScenarioImgPrev()");
   }).join('');
 }
 function saveScenario(){
@@ -6317,7 +6349,7 @@ function renderSSSections(){
 
     const uploadArea = document.createElement('div');
     uploadArea.style.cssText = 'border:1px dashed var(--border);border-radius:8px;padding:8px 12px;text-align:center;font-size:12px;color:var(--text2);cursor:pointer;margin-bottom:6px';
-    uploadArea.textContent = '📁 클릭하여 이미지 첨부 (여러 장 가능)';
+    uploadArea.textContent = '📁 클릭하여 이미지/파일 첨부 (여러 개 가능)';
     const fileIn = document.createElement('input');
     fileIn.type = 'file'; fileIn.accept = 'image/*'; fileIn.multiple = true;
     fileIn.style.display = 'none';
@@ -6346,14 +6378,10 @@ function handleSSImg(input, secIdx){
   syncSSSections();
   if(!ssSections[secIdx]) return;
   Array.from(input.files).forEach(function(f){
-    const r = new FileReader();
-    r.onload = function(e){
-      processImg(e.target.result).then(function(url){
-        ssSections[secIdx].images.push(url);
-        renderSSSections();
-      });
-    };
-    r.readAsDataURL(f);
+    processFile(f).then(function(result){
+      ssSections[secIdx].images.push(result);
+      renderSSSections();
+    });
   });
   input.value = '';
 }
@@ -6524,22 +6552,17 @@ function openTextbookModal(editId){
 
 function handleTextbookImg(input){
   Array.from(input.files).forEach(function(f){
-    var r=new FileReader();
-    r.onload=function(e){
-      processImg(e.target.result).then(function(url){
-        tbTempImgs.push(url);
-        renderTextbookImgPrev();
-      });
-    };
-    r.readAsDataURL(f);
+    processFile(f).then(function(result){
+      tbTempImgs.push(result);renderTextbookImgPrev();
+    });
   });
   input.value='';
 }
 
 function renderTextbookImgPrev(){
   var el=document.getElementById('tb-img-preview');if(!el)return;
-  el.innerHTML=tbTempImgs.map(function(img,i){
-    return '<div class="img-preview-item"><img src="'+img+'" onclick="showFullImg(this.src)"><button class="rm" onclick="tbTempImgs.splice('+i+',1);renderTextbookImgPrev()">✕</button></div>';
+  el.innerHTML=tbTempImgs.map(function(item,i){
+    return renderFileItem(item,"tbTempImgs.splice("+i+",1);renderTextbookImgPrev()");
   }).join('');
 }
 
@@ -7330,11 +7353,7 @@ function handleRecipeImg(input,cat){
 
 function handleRecipeEditImg(input){
   Array.from(input.files).forEach(function(f){
-    const r=new FileReader();
-    r.onload=function(e){
-      processImg(e.target.result).then(function(url){recipeEditImgs.push(url);renderRecipeEditImgPrev();});
-    };
-    r.readAsDataURL(f);
+    processFile(f).then(function(result){recipeEditImgs.push(result);renderRecipeEditImgPrev();});
   });
   input.value='';
 }
@@ -7658,11 +7677,13 @@ function filterSP(f,el){spFilter=f;document.querySelectorAll('#sp-cat-filters .f
 function handleNoteImg(type,input){
   if(!state.tempNoteImgs)state.tempNoteImgs={sc:[],sp:[]};
   if(!state.tempNoteImgs[type])state.tempNoteImgs[type]=[];
-  Array.from(input.files).forEach(f=>{
-    const r=new FileReader();
-    r.onload=e=>{state.tempNoteImgs[type].push(e.target.result);renderNoteImgPrev(type);};
-    r.readAsDataURL(f);
+  Array.from(input.files).forEach(function(f){
+    processFile(f).then(function(result){
+      state.tempNoteImgs[type].push(result);
+      renderNoteImgPrev(type);
+    });
   });
+  input.value='';
 }
 function renderNoteImgPrev(type){
   const el=document.getElementById(type+'-img-prev');if(!el)return;
@@ -8315,7 +8336,7 @@ function renderAddForm(prefix,cat){
   fileInput.addEventListener('change',function(){handleAddFormImg(this,prefix,cat);});
   
   uploadArea.appendChild(fileInput);
-  uploadArea.appendChild(document.createTextNode('📁 클릭하여 이미지 첨부'));
+  uploadArea.appendChild(document.createTextNode('📁 클릭하여 이미지/파일 첨부'));
   uploadArea.addEventListener('click',function(){fileInput.click();});
   
   const prevDiv=document.createElement('div');
@@ -8892,7 +8913,7 @@ function openSdNoteViewModal(key,id){
   openModal('modal-note-view');
 }
 
-function handleSdnImg(input){Array.from(input.files).forEach(f=>{const r=new FileReader();r.onload=e=>{sdnImgs.push(e.target.result);renderSdnImgPrev();};r.readAsDataURL(f);});input.value='';}
+function handleSdnImg(input){Array.from(input.files).forEach(function(f){processFile(f).then(function(result){sdnImgs.push(result);renderSdnImgPrev();});});input.value='';}
 function renderSdnImgPrev(){const el=document.getElementById('sdn-img-prev');if(!el)return;el.innerHTML=sdnImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" style="cursor:pointer" onclick="showFullImg('${src}')"><button class="rm" onclick="sdnImgs.splice(${i},1);renderSdnImgPrev()">✕</button></div>`).join('');}
 function getSdnCat(){return document.getElementById('sdn-cat-sel').value||document.getElementById('sdn-cat-input').value.trim();}
 function saveSdNote(){
@@ -9013,8 +9034,8 @@ function openMeditationModal(editId){
   if(editId){const m=(state.meditations||[]).find(x=>x.id===editId);if(!m)return;document.getElementById('med-name').value=m.name||'';document.getElementById('med-content').value=m.content||'';document.getElementById('med-url').value=m.url||'';medImgs=m.images?[...m.images]:[];renderMedImgPrev();}
   openModal('modal-meditation');
 }
-function handleMedImg(input){Array.from(input.files).forEach(f=>{const r=new FileReader();r.onload=e=>{medImgs.push(e.target.result);renderMedImgPrev();};r.readAsDataURL(f);});input.value='';}
-function renderMedImgPrev(){const el=document.getElementById('med-img-prev');if(!el)return;el.innerHTML=medImgs.map((src,i)=>`<div class="img-preview-item"><img src="${src}" onclick="showFullImg('${src}')"><button class="rm" onclick="medImgs.splice(${i},1);renderMedImgPrev()">✕</button></div>`).join('');}
+function handleMedImg(input){Array.from(input.files).forEach(function(f){processFile(f).then(function(result){medImgs.push(result);renderMedImgPrev();});});input.value='';}
+function renderMedImgPrev(){var el=document.getElementById('med-img-prev');if(!el)return;el.innerHTML=medImgs.map(function(item,i){return renderFileItem(item,'medImgs.splice('+i+',1);renderMedImgPrev()');}).join('');}
 function saveMeditation(){
   const name=document.getElementById('med-name').value.trim();if(!name)return alert('이름을 입력해주세요');
   if(!state.meditations)state.meditations=[];
@@ -9119,18 +9140,14 @@ function openLifeEditModal(prefix,cat,idx){
   openModal('modal-life-edit');
 }
 function renderLifeEditImgPrev(){
-  const el=document.getElementById('life-edit-img-prev');if(!el)return;
-  el.innerHTML=lifeEditImgs.map(function(src,i){
-    return '<div class="img-preview-item"><img src="'+src+'" onclick="showFullImg(\''+src+'\')" style="width:65px;height:55px;object-fit:cover;border-radius:7px"><button class="rm" onclick="lifeEditImgs.splice('+i+',1);renderLifeEditImgPrev()">✕</button></div>';
+  var el=document.getElementById('life-edit-img-prev');if(!el)return;
+  el.innerHTML=lifeEditImgs.map(function(item,i){
+    return renderFileItem(item,'lifeEditImgs.splice('+i+',1);renderLifeEditImgPrev()');
   }).join('');
 }
 function handleLifeEditImg(input){
   Array.from(input.files).forEach(function(f){
-    const r=new FileReader();
-    r.onload=function(e){
-      processImg(e.target.result).then(function(url){lifeEditImgs.push(url);renderLifeEditImgPrev();});
-    };
-    r.readAsDataURL(f);
+    processFile(f).then(function(result){lifeEditImgs.push(result);renderLifeEditImgPrev();});
   });
   input.value='';
 }
@@ -9213,8 +9230,8 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     <div class="modal-row">
       <label>📸 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('life-edit-img-in').click()">
-        <input type="file" id="life-edit-img-in" accept="image/*" multiple style="display:none" onchange="handleLifeEditImg(this)">
-        📁 클릭하여 이미지 첨부
+        <input type="file" id="life-edit-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleLifeEditImg(this)">
+        📁 클릭하여 이미지/파일 첨부
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="life-edit-img-prev"></div>
     </div>
@@ -9236,8 +9253,8 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     <div class="modal-row">
       <label>📸 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('recipe-edit-img-in').click()">
-        <input type="file" id="recipe-edit-img-in" accept="image/*" multiple style="display:none" onchange="handleRecipeEditImg(this)">
-        📁 클릭하여 이미지 첨부
+        <input type="file" id="recipe-edit-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleRecipeEditImg(this)">
+        📁 클릭하여 이미지/파일 첨부
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="recipe-edit-img-prev"></div>
     </div>
@@ -9306,8 +9323,8 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     <div class="modal-row">
       <label>📸 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('tm-note-img-in').click()">
-        <input type="file" id="tm-note-img-in" accept="image/*" multiple style="display:none" onchange="tmHandleImg(this)">
-        📁 클릭하여 이미지 첨부 (여러 장 가능)
+        <input type="file" id="tm-note-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="tmHandleImg(this)">
+        📁 클릭하여 이미지/파일 첨부 (여러 개 가능)
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="tm-note-img-prev"></div>
     </div>
@@ -9445,8 +9462,8 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
     <div class="modal-row">
       <label>📸 차트 이미지 첨부</label>
       <div class="img-upload-area" onclick="document.getElementById('tb-img-in').click()">
-        <input type="file" id="tb-img-in" accept="image/*" multiple style="display:none" onchange="handleTextbookImg(this)">
-        📁 클릭하여 차트 이미지 첨부 (여러 장 가능)
+        <input type="file" id="tb-img-in" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple style="display:none" onchange="handleTextbookImg(this)">
+        📁 클릭하여 이미지/파일 첨부 (여러 개 가능)
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px" id="tb-img-preview"></div>
     </div>
