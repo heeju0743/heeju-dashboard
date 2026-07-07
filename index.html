@@ -4639,7 +4639,7 @@ function uhDiscardDraft(){
 function uhOpenInputModal(ds){
   _uhEditDate=ds;
   var data=state.uhCalendar[ds]||{};
-  var dateEl=document.getElementById('uhcal-inp-date');if(dateEl)dateEl.textContent=uhFmt(ds);
+  var dateEl=document.getElementById('uhcal-inp-date');if(dateEl)dateEl.value=ds;
   // 임시저장 데이터 우선 불러오기
   var draft=uhLoadDraft(ds);
   if(draft&&draft.length){
@@ -4757,9 +4757,17 @@ function uhImportExcel(input){
 
 function uhSaveStocks(){
   uhInitData();
-  if(!state.uhCalendar[_uhEditDate])state.uhCalendar[_uhEditDate]={};
-  state.uhCalendar[_uhEditDate].stocks=_uhEditStocks.filter(function(s){return s.name.trim();});
-  _uhSel=_uhEditDate;
+  var dateEl=document.getElementById('uhcal-inp-date');
+  var newDate=dateEl?dateEl.value:_uhEditDate;
+  if(!newDate){alert('날짜를 입력해 주세요.');return;}
+  // 날짜가 변경된 경우 기존 키 삭제
+  if(newDate!==_uhEditDate&&state.uhCalendar[_uhEditDate]){
+    delete state.uhCalendar[_uhEditDate];
+  }
+  if(!state.uhCalendar[newDate])state.uhCalendar[newDate]={};
+  state.uhCalendar[newDate].stocks=_uhEditStocks.filter(function(s){return s.name.trim();});
+  _uhSel=newDate;
+  _uhEditDate=newDate;
   uhClearDraft();
   closeModal('modal-uh-stocks');save();renderUHCal();
 }
@@ -9396,7 +9404,7 @@ function openFullModal(title,meta,body){document.getElementById('full-title').te
       <span>⚡ 이전에 입력하던 내용이 있어요! 자동으로 불러왔어요.</span>
       <button onclick="uhDiscardDraft()" style="background:none;border:1px solid #f59e0b;border-radius:6px;padding:3px 9px;font-size:11px;color:#92400e;cursor:pointer;font-family:inherit">처음부터 입력</button>
     </div>
-    <div class="modal-row"><label>날짜</label><span id="uhcal-inp-date" style="font-size:13px;color:var(--text2)"></span></div>
+    <div class="modal-row"><label>날짜</label><input type="date" id="uhcal-inp-date" style="font-size:13px;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-family:inherit;background:var(--card)"></div>
     <!-- 엑셀 업로드 -->
     <div style="background:#fff0f0;border:1px solid #fecaca;border-radius:10px;padding:11px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
       <span style="font-size:12px;font-weight:700;color:#dc2626">📂 엑셀 업로드</span>
