@@ -909,6 +909,7 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0;overflow:hidden">
+      <div class="add-row-btn" onclick="openTradeModal()" style="border-bottom:1px solid var(--border);border-radius:10px 10px 0 0">+ 새 매매 추가</div>
       <div class="trade-table-wrap">
         <table class="trade-table">
           <thead>
@@ -924,7 +925,6 @@ textarea{resize:vertical;min-height:80px}
           <tbody id="t-trade-tbody"></tbody>
         </table>
       </div>
-      <div class="add-row-btn" onclick="openTradeModal()">+ 새 매매 추가</div>
     </div>
   </div>
 
@@ -5347,7 +5347,7 @@ function isClosedFn(t){return t.sellTotal>0;}
 function tFilterTrades(f){tradeFilter=f;renderTrades();}
 function renderTrades(){
   const tbody=document.getElementById('t-trade-tbody');
-  let trades=[...state.trades].sort((a,b)=>a.date>b.date?1:-1);
+  let trades=[...state.trades].sort((a,b)=>a.date>b.date?-1:1);
   if(tradeFilter==='승')trades=trades.filter(t=>t.result==='승');
   else if(tradeFilter==='패')trades=trades.filter(t=>t.result==='패');
   const psychColor={안정:'var(--green)',보통:'var(--text2)',조급:'var(--accent)',흥분:'var(--red)',공포:'var(--blue)',탐욕:'var(--purple)'};
