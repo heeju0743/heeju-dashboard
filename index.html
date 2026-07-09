@@ -1544,52 +1544,73 @@ textarea{resize:vertical;min-height:80px}
         <div id="trade-cl-score" style="font-size:12px;font-weight:700;color:var(--accent)"></div>
       </div>
 
-      <!-- 1. 시장 체크 -->
+      <!-- 1. 종목 체크 -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#c9856a">1️⃣ 시장 체크 (가장 먼저)</div>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-market" id="cl-m-1"> 코스피 / 코스닥 흐름은 상승인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-market" id="cl-m-2"> 외국인 수급은 순매수인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-market" id="cl-m-3"> 오늘 시장 분위기는 좋은가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-market" id="cl-m-4"> 오늘 테마가 살아있는가?</label>
-        <div class="trade-cl-tip" style="color:var(--red);font-weight:700">➡ 시장이 안 좋으면 승률이 떨어진다는 걸 항상 기억하자.</div>
+        <div class="trade-cl-header" style="background:#8a7c6e">1️⃣ 종목 체크 (가장 먼저)</div>
+        <!-- OR 항목: 거래대금 상위 OR 주도 테마 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px">
+          <label class="trade-cl-item" style="margin-bottom:0;border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer" onclick="clOrSelect('cl-s-1a','cl-s-1b')">
+            <input type="checkbox" class="cl-stock" id="cl-s-1a" style="accent-color:var(--accent)"> 거래대금 상위 종목인가?
+          </label>
+          <label class="trade-cl-item" style="margin-bottom:0;border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;background:#fff8f0" onclick="clOrSelect('cl-s-1b','cl-s-1a')">
+            <input type="checkbox" class="cl-stock" id="cl-s-1b" style="accent-color:var(--accent)"> 오늘 시장 주도 테마인가?
+          </label>
+        </div>
+        <div style="text-align:center;font-size:10px;color:var(--text2);margin-bottom:6px">☝️ 위 둘 중 하나만 선택</div>
+        <!-- OR 항목: 대장주 OR 거래량 충분 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px">
+          <label class="trade-cl-item" style="margin-bottom:0;border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer" onclick="clOrSelect('cl-s-2a','cl-s-2b')">
+            <input type="checkbox" class="cl-stock" id="cl-s-2a" style="accent-color:var(--accent)"> 대장주 또는 대장주급인가?
+          </label>
+          <label class="trade-cl-item" style="margin-bottom:0;border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;background:#fff8f0" onclick="clOrSelect('cl-s-2b','cl-s-2a')">
+            <input type="checkbox" class="cl-stock" id="cl-s-2b" style="accent-color:var(--accent)"> 거래량이 충분한가?
+          </label>
+        </div>
+        <div style="text-align:center;font-size:10px;color:var(--text2);margin-bottom:6px">☝️ 위 둘 중 하나만 선택</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-3"> 지지는 잘 받고 있는가?</label>
       </div>
 
-      <!-- 2. 종목 체크 -->
+      <!-- 2. 차트 체크 (일봉) -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#8a7c6e">2️⃣ 종목 체크</div>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-1"> 거래대금 상위 종목인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-2"> 오늘 시장에서 주도 테마인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-3"> 대장주 또는 대장주급인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-4"> 거래량이 충분한가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-stock" id="cl-s-5"> 오전에 강했던 종목인가?</label>
+        <div class="trade-cl-header" style="background:#7a8c6e">2️⃣ 일봉 차트 체크</div>
+        <!-- OR 항목: 상승추세 OR 전고점 향하는 추세 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px">
+          <label class="trade-cl-item" style="margin-bottom:0;border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer" onclick="clOrSelect('cl-e-1a','cl-e-1b')">
+            <input type="checkbox" class="cl-entry" id="cl-e-1a" style="accent-color:var(--accent)"> 상승 추세인가?
+          </label>
+          <label class="trade-cl-item" style="margin-bottom:0;border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;background:#fff8f0" onclick="clOrSelect('cl-e-1b','cl-e-1a')">
+            <input type="checkbox" class="cl-entry" id="cl-e-1b" style="accent-color:var(--accent)"> 전고점을 향하는 추세인가?
+          </label>
+        </div>
+        <div style="text-align:center;font-size:10px;color:var(--text2);margin-bottom:6px">☝️ 위 둘 중 하나만 선택</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-2"> 중요한 이동평균선 위에 있는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-3"> 장대음봉이 바로 전날 나온 건 아닌가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-4"> 거래량이 감소하며 눌림이 나왔는가?</label>
       </div>
 
-      <!-- 3. 차트 체크 (일봉) -->
+      <!-- 3. 분봉 차트 체크 -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#7a8c6e">3️⃣ 차트 체크 (일봉)</div>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-1"> 상승 추세인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-2"> 전고점을 향하는 흐름인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-3"> 중요한 이동평균선(예: 224일선 등) 위에 있는가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-4"> 장대음봉이 바로 전날 나온 건 아닌가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-5"> 거래량이 감소하며 눌림이 나오는가?</label>
+        <div class="trade-cl-header" style="background:#8a6e7c">3️⃣ 분봉 차트 체크</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-5"> 눌림이 확인되었는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-6"> 저점을 높이고 있는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-7"> 거래량이 줄면서 눌리는가?</label>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-8"> 매수세가 다시 들어오는 모습이 보이는가?</label>
+        <!-- OR 항목: 첫 눌림 OR 두번째 눌림 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px">
+          <label class="trade-cl-item" style="margin-bottom:0;border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer" onclick="clOrSelect('cl-e-9a','cl-e-9b')">
+            <input type="checkbox" class="cl-entry" id="cl-e-9a" style="accent-color:var(--accent)"> 첫 번째 눌림인가?
+          </label>
+          <label class="trade-cl-item" style="margin-bottom:0;border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;background:#fff8f0" onclick="clOrSelect('cl-e-9b','cl-e-9a')">
+            <input type="checkbox" class="cl-entry" id="cl-e-9b" style="accent-color:var(--accent)"> 두 번째 눌림인가?
+          </label>
+        </div>
+        <div style="text-align:center;font-size:10px;color:var(--text2);margin-bottom:6px">☝️ 위 둘 중 하나만 선택</div>
+        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-10"> 직전 양봉을 음봉이 다 먹지 않았는가?</label>
       </div>
 
-      <!-- 4. 분봉 체크 -->
+      <!-- 4. 리스크 체크 -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#8a6e7c">4️⃣ 분봉 체크</div>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-6"> 눌림이 확인되었는가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-7"> 저점을 높이고 있는가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-8"> 거래량이 줄면서 눌리는가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-9"> 매수세가 다시 들어오는 모습이 보이는가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-10"> 급락빔이 나온 건 아닌가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-11"> 첫 눌림인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-12"> 두 번째 눌림인가?</label>
-        <label class="trade-cl-item"><input type="checkbox" class="cl-entry" id="cl-e-13"> 직전 양봉을 음봉이 다 먹지 않았는가?</label>
-      </div>
-
-      <!-- 5. 리스크 체크 -->
-      <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#6e7c8a">5️⃣ 리스크 체크</div>
+        <div class="trade-cl-header" style="background:#6e7c8a">4️⃣ 리스크 체크</div>
         <label class="trade-cl-item"><input type="checkbox" class="cl-stop" id="cl-r-1"> 손절가는 정했는가?</label>
         <label class="trade-cl-item"><input type="checkbox" class="cl-stop" id="cl-r-2"> 목표가는 정했는가?</label>
         <label class="trade-cl-item"><input type="checkbox" class="cl-stop" id="cl-r-3"> 손익비가 최소 1:2 이상인가?</label>
@@ -1597,9 +1618,9 @@ textarea{resize:vertical;min-height:80px}
         <div class="trade-cl-tip" style="color:var(--red);font-weight:700">➡ 손절을 못 정하면 매수하지 않는다.</div>
       </div>
 
-      <!-- 6. 내 심리 체크 -->
+      <!-- 5. 내 심리 체크 -->
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#7a6e8a">6️⃣ 내 심리 체크</div>
+        <div class="trade-cl-header" style="background:#7a6e8a">5️⃣ 내 심리 체크</div>
         <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-1"> FOMO(놓칠까 봐) 때문에 들어가는 건 아닌가?</label>
         <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-2"> 빨리 수익 내고 싶어서 조급한가?</label>
         <label class="trade-cl-item"><input type="checkbox" class="cl-mind" id="cl-p-3"> 원래 계획했던 종목인가?</label>
@@ -1609,12 +1630,11 @@ textarea{resize:vertical;min-height:80px}
       </div>
 
       <!-- 점수 요약 -->
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px;background:#f5f0e8;border-radius:9px;padding:10px">
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">시장 체크</div><div id="cl-score-market" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">종목 선택</div><div id="cl-score-stock" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">진입 위치</div><div id="cl-score-entry" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">손절 준수</div><div id="cl-score-stop" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">심리 관리</div><div id="cl-score-mind" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px;background:#f5f0e8;border-radius:9px;padding:10px">
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">종목 선택</div><div id="cl-score-stock" style="font-weight:700;font-size:13px;color:var(--accent)">0/25</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">진입 위치</div><div id="cl-score-entry" style="font-weight:700;font-size:13px;color:var(--accent)">0/25</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">손절 준수</div><div id="cl-score-stop" style="font-weight:700;font-size:13px;color:var(--accent)">0/25</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">심리 관리</div><div id="cl-score-mind" style="font-weight:700;font-size:13px;color:var(--accent)">0/25</div></div>
       </div>
 
       <!-- 하루 제한 룰 -->
@@ -1783,31 +1803,33 @@ textarea{resize:vertical;min-height:80px}
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-a" id="td-cl-a-4"> 거래량을 확인했다.</label>
       </div>
 
-      <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#e05c5c">B. 손절은 어땠는가?</div>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-1"> 미리 정한 손절을 지켰다.</label>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-2"> 감정으로 버티지 않았다.</label>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-3"> 손절 후 다시 원칙 없이 재진입하지 않았다.</label>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-4"> 손절 자리가 원래 계획했던 자리였는가?</label>
+      <!-- B / C 좌우 OR 선택 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <!-- B. 손절 -->
+        <div class="trade-cl-section" style="margin-bottom:0;border:2px solid transparent" id="td-bc-b-section">
+          <div class="trade-cl-header" style="background:#e05c5c;cursor:pointer;user-select:none" onclick="tdBCSelect('b')">
+            B. 손절 매매였다 <span id="td-bc-b-badge" style="font-size:10px;font-weight:400;opacity:.7">(선택)</span>
+          </div>
+          <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-1"> 미리 정한 손절을 지켰다.</label>
+          <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-2"> 감정으로 버티지 않았다.</label>
+          <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-3"> 손절 후 원칙 없이 재진입하지 않았다.</label>
+          <label class="trade-cl-item"><input type="checkbox" class="td-cl-b" id="td-cl-b-4"> 손절 자리가 계획했던 자리였는가?</label>
+        </div>
+        <!-- C. 익절 -->
+        <div class="trade-cl-section" style="margin-bottom:0;border:2px solid transparent" id="td-bc-c-section">
+          <div class="trade-cl-header" style="background:#5c7ae0;cursor:pointer;user-select:none" onclick="tdBCSelect('c')">
+            C. 익절 매매였다 <span id="td-bc-c-badge" style="font-size:10px;font-weight:400;opacity:.7">(선택)</span>
+          </div>
+          <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-1"> 목표가까지 기다렸다.</label>
+          <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-2"> 너무 빨리 팔지 않았다.</label>
+          <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-3"> 욕심 때문에 못 팔지도 않았다.</label>
+          <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-4"> 분할매도를 원칙대로 했는가?</label>
+        </div>
       </div>
+      <div style="text-align:center;font-size:10px;color:var(--text2);margin-bottom:8px">☝️ B(손절) 또는 C(익절) 중 해당하는 쪽 헤더를 클릭해서 선택하세요</div>
 
       <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#5c7ae0">C. 익절은 어땠는가?</div>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-1"> 목표가까지 기다렸다.</label>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-2"> 너무 빨리 팔지 않았다.</label>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-3"> 욕심 때문에 못 팔지도 않았다.</label>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-c" id="td-cl-c-4"> 분할매도를 원칙대로 했는가?</label>
-      </div>
-
-      <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#8c5ce0">D. 시장 판단</div>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-d" id="td-cl-d-1"> 시장과 같은 방향으로 매매했다.</label>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-d" id="td-cl-d-2"> 역행매매를 하지 않았다.</label>
-        <label class="trade-cl-item"><input type="checkbox" class="td-cl-d" id="td-cl-d-3"> 시장이 안 좋으면 쉬었다.</label>
-      </div>
-
-      <div class="trade-cl-section">
-        <div class="trade-cl-header" style="background:#c9856a">E. 심리</div>
+        <div class="trade-cl-header" style="background:#c9856a">D. 심리</div>
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-e" id="td-cl-e-1"> 조급하지 않았다.</label>
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-e" id="td-cl-e-2"> 복수매매 안 했다.</label>
         <label class="trade-cl-item"><input type="checkbox" class="td-cl-e" id="td-cl-e-3"> FOMO 없었다.</label>
@@ -1815,12 +1837,12 @@ textarea{resize:vertical;min-height:80px}
       </div>
 
       <!-- 점수 요약 -->
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px;background:#f5f0e8;border-radius:9px;padding:10px">
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">A.진입</div><div id="td-score-a" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">B.손절</div><div id="td-score-b" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">C.익절</div><div id="td-score-c" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">D.시장판단</div><div id="td-score-d" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
-        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">E.심리</div><div id="td-score-e" style="font-weight:700;font-size:13px;color:var(--accent)">0/20</div></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px;background:#f5f0e8;border-radius:9px;padding:10px">
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">A.진입</div><div id="td-score-a" style="font-weight:700;font-size:13px;color:var(--accent)">0/25</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">B.손절 / C.익절</div><div id="td-score-b" style="font-weight:700;font-size:13px;color:var(--accent)">0/25</div></div>
+        <div style="text-align:center" style="display:none"><div id="td-score-c"></div></div>
+        <div style="text-align:center" style="display:none"><div id="td-score-d"></div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:var(--text2)">D.심리</div><div id="td-score-e" style="font-weight:700;font-size:13px;color:var(--accent)">0/25</div></div>
       </div>
     </div>
 
@@ -5524,6 +5546,48 @@ function calcPnl(){
   updateCLScore();
 }
 
+// ===== OR 항목 선택 함수 (매매 전 체크리스트) =====
+function clOrSelect(selectId, clearId){
+  // 한쪽 선택 시 반대쪽 해제
+  var selectEl=document.getElementById(selectId);
+  var clearEl=document.getElementById(clearId);
+  if(selectEl&&clearEl){
+    // 클릭된 쪽이 이미 체크된 경우 그냥 유지, 아니면 반대 해제
+    if(!selectEl.checked){
+      // label onclick이 먼저 실행되므로, 체크는 label이 처리함
+      // 반대편만 해제
+    }
+    clearEl.checked=false;
+  }
+  updateCLScore();
+}
+
+// ===== 매매 복기 B/C 선택 함수 =====
+var _tdBCSelected=null;
+function tdBCSelect(type){
+  _tdBCSelected=type;
+  var bSection=document.getElementById('td-bc-b-section');
+  var cSection=document.getElementById('td-bc-c-section');
+  var bBadge=document.getElementById('td-bc-b-badge');
+  var cBadge=document.getElementById('td-bc-c-badge');
+  if(type==='b'){
+    if(bSection)bSection.style.border='2px solid #e05c5c';
+    if(cSection){cSection.style.border='2px solid transparent';cSection.style.opacity='0.45';}
+    if(bBadge)bBadge.textContent='✅ 선택됨';
+    if(cBadge)cBadge.textContent='(선택)';
+    // C 체크박스 모두 해제
+    document.querySelectorAll('.td-cl-c').forEach(function(el){el.checked=false;});
+  } else {
+    if(cSection)cSection.style.border='2px solid #5c7ae0';
+    if(bSection){bSection.style.border='2px solid transparent';bSection.style.opacity='0.45';}
+    if(cBadge)cBadge.textContent='✅ 선택됨';
+    if(bBadge)bBadge.textContent='(선택)';
+    // B 체크박스 모두 해제
+    document.querySelectorAll('.td-cl-b').forEach(function(el){el.checked=false;});
+  }
+  updateTDScore();
+}
+
 // ===== 매매 전 체크리스트 점수 자동 계산 =====
 function updateCLScore(){
   function calcGroup(cls, max){
@@ -5533,26 +5597,24 @@ function updateCLScore(){
     els.forEach(function(el){if(el.checked)checked++;});
     return Math.round(checked/els.length*max);
   }
-  var sMarket=calcGroup('cl-market',20);
-  var sStock=calcGroup('cl-stock',20);
-  var sEntry=calcGroup('cl-entry',20);
-  var sStop=calcGroup('cl-stop',20);
-  var sMind=calcGroup('cl-mind',20);
+  var sStock=calcGroup('cl-stock',25);
+  var sEntry=calcGroup('cl-entry',25);
+  var sStop=calcGroup('cl-stop',25);
+  var sMind=calcGroup('cl-mind',25);
 
-  var elM=document.getElementById('cl-score-market');if(elM)elM.textContent=sMarket+'/20';
-  var elS=document.getElementById('cl-score-stock');if(elS)elS.textContent=sStock+'/20';
-  var elE=document.getElementById('cl-score-entry');if(elE)elE.textContent=sEntry+'/20';
-  var elSt=document.getElementById('cl-score-stop');if(elSt)elSt.textContent=sStop+'/20';
-  var elMi=document.getElementById('cl-score-mind');if(elMi)elMi.textContent=sMind+'/20';
+  var elS=document.getElementById('cl-score-stock');if(elS)elS.textContent=sStock+'/25';
+  var elE=document.getElementById('cl-score-entry');if(elE)elE.textContent=sEntry+'/25';
+  var elSt=document.getElementById('cl-score-stop');if(elSt)elSt.textContent=sStop+'/25';
+  var elMi=document.getElementById('cl-score-mind');if(elMi)elMi.textContent=sMind+'/25';
 
-  var total=sMarket+sStock+sEntry+sStop+sMind;
+  var total=sStock+sEntry+sStop+sMind;
   var scoreEl=document.getElementById('trade-cl-score');
   if(scoreEl)scoreEl.textContent='총점: '+total+'/100';
 }
 
 // 체크박스 변경시 점수 갱신 (이벤트 위임)
 document.addEventListener('change',function(e){
-  if(e.target&&e.target.matches('.cl-market,.cl-stock,.cl-entry,.cl-stop,.cl-mind')){
+  if(e.target&&e.target.matches('.cl-stock,.cl-entry,.cl-stop,.cl-mind')){
     updateCLScore();
   }
 });
@@ -5568,7 +5630,7 @@ function openTradeModal(){
   Object.entries(defaults).forEach(function(e){const el=document.getElementById(e[0]);if(el)el.value=e[1];});
   const psychEl=document.getElementById('t-psych');if(psychEl)psychEl.value='보통';
   document.getElementById('calc-pnl').textContent='-';document.getElementById('calc-pct').textContent='-';document.getElementById('calc-qty').textContent='-';
-  document.querySelectorAll('.cl-market,.cl-stock,.cl-entry,.cl-stop,.cl-mind').forEach(function(el){el.checked=false;});
+  document.querySelectorAll('.cl-stock,.cl-entry,.cl-stop,.cl-mind').forEach(function(el){el.checked=false;});
   updateCLScore();
   document.getElementById('modal-trade').classList.add('open');
 }
@@ -5605,7 +5667,7 @@ function openEditTrade(id){
   const emotionEl=document.getElementById('t-emotion');if(emotionEl)emotionEl.value=t.emotion||'';
   document.getElementById('t-note').value=t.note||'';
   const cl=t.checklist||{};
-  document.querySelectorAll('.cl-market,.cl-stock,.cl-entry,.cl-stop,.cl-mind').forEach(function(el){
+  document.querySelectorAll('.cl-stock,.cl-entry,.cl-stop,.cl-mind').forEach(function(el){
     el.checked=!!(cl[el.id]);
   });
   calcPnl();
@@ -5861,7 +5923,18 @@ function openTradeDiaryModal(editId){
   window._tdEditId=editId||null;
   var titleEl=document.getElementById('td-modal-title');
   var btnEl=document.getElementById('td-save-btn');
-  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-b-4','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-c-4','td-cl-d-1','td-cl-d-2','td-cl-d-3','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
+  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-b-4','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-c-4','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
+  function resetBCUI(){
+    _tdBCSelected=null;
+    var bSection=document.getElementById('td-bc-b-section');
+    var cSection=document.getElementById('td-bc-c-section');
+    var bBadge=document.getElementById('td-bc-b-badge');
+    var cBadge=document.getElementById('td-bc-c-badge');
+    if(bSection){bSection.style.border='2px solid transparent';bSection.style.opacity='1';}
+    if(cSection){cSection.style.border='2px solid transparent';cSection.style.opacity='1';}
+    if(bBadge)bBadge.textContent='(선택)';
+    if(cBadge)cBadge.textContent='(선택)';
+  }
   if(editId){
     var d=(state.tradeDiaries||[]).find(function(x){return x.id===editId;});
     if(!d)return;
@@ -5875,6 +5948,8 @@ function openTradeDiaryModal(editId){
       resetModalRichEditor('modal-trade-diary',id);
     });
     var cl=d.checklist||{};
+    resetBCUI();
+    if(cl._bcSelected)tdBCSelect(cl._bcSelected);
     clIds.forEach(function(id){var el=document.getElementById(id);if(el)el.checked=!!cl[id];});
     updateTDScore();
     state.tempTradeDiaryImgs=d.images?[...d.images]:[];
@@ -5899,6 +5974,7 @@ function openTradeDiaryModal(editId){
     ['td-reason-select','td-reason-entry','td-bad','td-improve','td-content'].forEach(function(id){
       resetModalRichEditor('modal-trade-diary',id);
     });
+    resetBCUI();
     clIds.forEach(function(id){var el=document.getElementById(id);if(el)el.checked=false;});
     updateTDScore();
     document.getElementById('td-img-preview').innerHTML='';
@@ -5922,25 +5998,30 @@ function renderTDiaryPrev(){
 }
 // ===== 매매 복기 체크리스트 점수 계산 =====
 function updateTDScore(){
-  function calcGroup(cls){
+  function calcGroup(cls, max){
     var els=document.querySelectorAll('.'+cls);
     if(!els.length)return 0;
     var checked=0;
     els.forEach(function(el){if(el.checked)checked++;});
-    return Math.round(checked/els.length*20);
+    return Math.round(checked/els.length*max);
   }
-  var sA=calcGroup('td-cl-a'),sB=calcGroup('td-cl-b'),sC=calcGroup('td-cl-c'),sD=calcGroup('td-cl-d'),sE=calcGroup('td-cl-e');
-  var elA=document.getElementById('td-score-a');if(elA)elA.textContent=sA+'/20';
-  var elB=document.getElementById('td-score-b');if(elB)elB.textContent=sB+'/20';
-  var elC=document.getElementById('td-score-c');if(elC)elC.textContent=sC+'/20';
-  var elD=document.getElementById('td-score-d');if(elD)elD.textContent=sD+'/20';
-  var elE=document.getElementById('td-score-e');if(elE)elE.textContent=sE+'/20';
-  var total=sA+sB+sC+sD+sE;
+  var sA=calcGroup('td-cl-a',25);
+  // B/C: 선택된 쪽만 계산
+  var sBC=0;
+  if(_tdBCSelected==='b') sBC=calcGroup('td-cl-b',25);
+  else if(_tdBCSelected==='c') sBC=calcGroup('td-cl-c',25);
+  var sE=calcGroup('td-cl-e',25);
+
+  var elA=document.getElementById('td-score-a');if(elA)elA.textContent=sA+'/25';
+  var elB=document.getElementById('td-score-b');if(elB)elB.textContent=sBC+'/25';
+  var elE=document.getElementById('td-score-e');if(elE)elE.textContent=sE+'/25';
+
+  var total=sA+sBC+sE;
   var scoreEl=document.getElementById('td-cl-score');
-  if(scoreEl)scoreEl.textContent='총점: '+total+'/100';
+  if(scoreEl)scoreEl.textContent='총점: '+total+'/75';
 }
 document.addEventListener('change',function(e){
-  if(e.target&&e.target.matches('.td-cl-a,.td-cl-b,.td-cl-c,.td-cl-d,.td-cl-e')){
+  if(e.target&&e.target.matches('.td-cl-a,.td-cl-b,.td-cl-c,.td-cl-e')){
     updateTDScore();
   }
 });
@@ -5956,18 +6037,22 @@ function saveTradeDiary(){
   if(!title&&!badTxt&&!contentTxt&&!state.tempTradeDiaryImgs.length){alert('종목명 또는 내용을 입력해주세요');return;}
   if(!state.tradeDiaries)state.tradeDiaries=[];
 
-  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-b-4','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-c-4','td-cl-d-1','td-cl-d-2','td-cl-d-3','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
+  var clIds=['td-cl-a-1','td-cl-a-2','td-cl-a-3','td-cl-a-4','td-cl-b-1','td-cl-b-2','td-cl-b-3','td-cl-b-4','td-cl-c-1','td-cl-c-2','td-cl-c-3','td-cl-c-4','td-cl-e-1','td-cl-e-2','td-cl-e-3','td-cl-e-4'];
   var cl={};
   clIds.forEach(function(id){var el=document.getElementById(id);if(el)cl[id]=el.checked;});
-  function calcScore(cls){
+  cl._bcSelected=_tdBCSelected||null;
+  function calcScore(cls,max){
     var els=document.querySelectorAll('.'+cls);
     if(!els.length)return 0;
     var checked=0;
     els.forEach(function(el){if(el.checked)checked++;});
-    return Math.round(checked/els.length*20);
+    return Math.round(checked/els.length*(max||25));
   }
-  var clScore={a:calcScore('td-cl-a'),b:calcScore('td-cl-b'),c:calcScore('td-cl-c'),d:calcScore('td-cl-d'),e:calcScore('td-cl-e')};
-  clScore.total=clScore.a+clScore.b+clScore.c+clScore.d+clScore.e;
+  var sBC=0;
+  if(_tdBCSelected==='b') sBC=calcScore('td-cl-b',25);
+  else if(_tdBCSelected==='c') sBC=calcScore('td-cl-c',25);
+  var clScore={a:calcScore('td-cl-a',25),b:sBC,c:0,d:0,e:calcScore('td-cl-e',25)};
+  clScore.total=clScore.a+clScore.b+clScore.e;
 
   var obj={
     id:window._tdEditId||Date.now(),
@@ -6025,8 +6110,12 @@ function renderTDiaries(){
       var sc=d.clScore;
       var scColor=sc.total>=80?'var(--green)':sc.total>=50?'var(--accent)':'var(--red)';
       scoreHtml='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;padding:8px 10px;background:#f5f0e8;border-radius:9px">';
-      scoreHtml+='<span style="font-size:11px;font-weight:700;color:'+scColor+'">📊 복기점수 '+sc.total+'/100</span>';
-      scoreHtml+='<span style="font-size:10px;color:var(--text2)">(A진입'+sc.a+' B손절'+sc.b+' C익절'+sc.c+' D시장'+sc.d+' E심리'+sc.e+')</span>';
+      var maxScore=(sc.total!==undefined&&sc.total>75)?100:75;
+      var scColor=sc.total>=(maxScore*0.8)?'var(--green)':sc.total>=(maxScore*0.5)?'var(--accent)':'var(--red)';
+      var bcLabel=(sc.c>0)?'C익절':'B손절';
+      var bcScore=(sc.c>0)?sc.c:sc.b;
+      scoreHtml+='<span style="font-size:11px;font-weight:700;color:'+scColor+'">📊 복기점수 '+sc.total+'/75</span>';
+      scoreHtml+='<span style="font-size:10px;color:var(--text2)">(A진입'+sc.a+' '+bcLabel+bcScore+' D심리'+sc.e+')</span>';
       scoreHtml+='</div>';
     }
     return `<div class="j-card">
