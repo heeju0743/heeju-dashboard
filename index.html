@@ -8,16 +8,16 @@
         @import url('https://jsdelivr.net');
         
         :root {
-            --bg-color: #f8fafc;
+            --bg-color: #f3f4f6;
             --sidebar-bg: #ffffff;
             --card-bg: #ffffff;
-            --primary-purple: #7c3aed;
-            --primary-light: #f3e8ff;
+            --primary-purple: #6366f1;
+            --primary-light: #e0e7ff;
             --profit-red: #ef4444;
             --loss-blue: #3b82f6;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
         }
 
         body {
@@ -29,9 +29,9 @@
             display: flex;
         }
 
-        /* 사이드바 스타일 (원본 메뉴 구조 100% 구현) */
+        /* 사이드바 UI (원본 스타일 그대로 복원) */
         .sidebar {
-            width: 240px;
+            width: 250px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
             height: 100vh;
@@ -43,73 +43,72 @@
             box-sizing: border-box;
         }
 
-        .sidebar-brand { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
-        .sidebar-sync { font-size: 11px; color: var(--text-muted); margin-bottom: 24px; display: flex; align-items: center; gap: 4px; }
-        .sidebar-quote { font-size: 13px; italic; color: #475569; margin-bottom: 24px; padding-left: 4px; font-style: italic; }
+        .sidebar-brand { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+        .sidebar-sync { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
+        .sidebar-quote { font-size: 12px; color: #4b5563; font-style: italic; margin-bottom: 24px; padding-left: 2px; }
         
-        .menu-group { margin-bottom: 20px; }
-        .menu-group-title { font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; padding-left: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .menu-item { display: flex; align-items: center; padding: 10px 12px; color: #334155; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; margin-bottom: 4px; cursor: pointer; transition: all 0.2s; }
-        .menu-item:hover, .menu-item.active { background-color: #f1f5f9; color: var(--primary-purple); font-weight: 700; }
-        .menu-item .icon { margin-right: 10px; font-size: 16px; }
+        .menu-group { margin-bottom: 16px; }
+        .menu-group-title { font-size: 11px; font-weight: 700; color: #9ca3af; margin-bottom: 6px; padding-left: 4px; text-transform: uppercase; }
+        .menu-item { display: flex; align-items: center; padding: 8px 12px; color: #4b5563; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 500; margin-bottom: 2px; cursor: pointer; transition: all 0.15s; }
+        .menu-item:hover, .menu-item.active { background-color: #f3f4f6; color: var(--primary-purple); font-weight: 700; }
+        .menu-item .icon { margin-right: 8px; font-size: 14px; }
 
         /* 메인 콘텐츠 구조 */
-        .main-container { margin-left: 240px; padding: 40px; width: calc(100% - 240px); box-sizing: border-box; }
-        .section-header { margin-bottom: 32px; }
-        .section-header h1 { margin: 0 0 8px 0; font-size: 26px; font-weight: 800; }
-        .section-header p { margin: 0; color: var(--text-muted); font-size: 15px; }
-
+        .main-container { margin-left: 250px; padding: 30px; width: calc(100% - 250px); box-sizing: border-box; min-height: 100vh; }
+        
         /* 카드 컴포넌트 */
-        .card { background-color: var(--card-bg); border-radius: 12px; padding: 24px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-bottom: 24px; }
-        .card-title { margin-top: 0; margin-bottom: 20px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .card { background-color: var(--card-bg); border-radius: 8px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.04); margin-bottom: 20px; }
+        .card-title { margin-top: 0; margin-bottom: 16px; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
         
         /* 레이아웃 그리드 */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-        .sub-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .grid-button-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
 
         /* 폼 컨트롤 */
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-        .form-item { display: flex; flex-direction: column; margin-bottom: 14px; }
-        .form-item label { font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
-        .form-item input, .form-item select, .form-item textarea { padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; background-color: #f8fafc; color: var(--text-main); font-family: inherit; box-sizing: border-box; }
-        .form-item textarea { height: 80px; resize: none; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .form-item { display: flex; flex-direction: column; margin-bottom: 12px; }
+        .form-item label { font-size: 12px; font-weight: 600; color: #4b5563; margin-bottom: 4px; }
+        .form-item input, .form-item select, .form-item textarea { padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; background-color: #fafafa; color: var(--text-main); font-family: inherit; box-sizing: border-box; }
+        .form-item textarea { height: 70px; resize: none; }
         
         /* 테이블 리디자인 */
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
-        th, td { padding: 12px; border: 1px solid var(--border-color); text-align: center; }
-        th { background-color: #f8fafc; font-weight: 600; color: var(--text-muted); }
+        table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12px; }
+        th, td { padding: 10px; border: 1px solid var(--border-color); text-align: center; }
+        th { background-color: #fafafa; font-weight: 600; color: var(--text-muted); }
 
         /* 공통 버튼 */
-        button { background-color: var(--primary-purple); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        button:hover { background-color: #6d28d9; }
+        button { background-color: var(--primary-purple); color: white; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+        button:hover { background-color: #4f46e5; }
         .btn-block { width: 100%; display: block; }
-        .btn-secondary { background-color: #64748b; }
-        .btn-secondary:hover { background-color: #475569; }
-        .btn-inline { width: auto; padding: 6px 12px; font-size: 12px; }
+        .btn-secondary { background-color: #6b7280; }
+        .btn-secondary:hover { background-color: #55585d; }
+        .btn-inline { width: auto; padding: 5px 10px; font-size: 12px; }
+        .btn-tab { background-color: #e5e7eb; color: #374151; font-size: 12px; padding: 4px 10px; }
+        .btn-tab.active { background-color: var(--primary-purple); color: white; }
 
-        /* 월별 수치 수기 차트 그래프 시각화 구조 */
-        .chart-container { display: flex; align-items: flex-end; justify-content: space-around; height: 160px; padding: 20px 10px 10px 10px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 15px; }
-        .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; width: 60px; }
-        .chart-bar { width: 24px; border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.5s ease-in-out; position: relative; }
+        /* 월별 차트 그래프 시각화 */
+        .chart-container { display: flex; align-items: flex-end; justify-content: space-around; height: 140px; padding: 16px 10px 6px 10px; background: #fafafa; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 10px; }
+        .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; width: 50px; }
+        .chart-bar { width: 20px; border-radius: 3px 3px 0 0; min-height: 4px; transition: height 0.4s ease-in-out; position: relative; }
         .chart-bar.plus { background-color: var(--profit-red); }
         .chart-bar.minus { background-color: var(--loss-blue); }
-        .chart-label { font-size: 11px; color: var(--text-muted); margin-top: 6px; font-weight: 600; }
-        .chart-tooltip { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; white-space: nowrap; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+        .chart-label { font-size: 10px; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
+        .chart-tooltip { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #111827; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px; font-weight: bold; white-space: nowrap; opacity: 0; transition: opacity 0.15s; pointer-events: none; }
         .chart-bar-wrapper:hover .chart-tooltip { opacity: 1; }
 
-        /* 섹션 제어 토글러 */
+        /* 섹션 보기 제어 엔진 */
         .section-view { display: none; }
         .section-view.active { display: block; }
         
-        .badge { padding: 4px 6px; border-radius: 4px; font-weight: 700; font-size: 11px; }
-        .bg-win { background-color: #ffeeef; color: var(--profit-red); }
-        .bg-loss { background-color: #eff6ff; color: var(--loss-blue); }
+        .badge { padding: 3px 5px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+        .bg-win { background-color: #fee2e2; color: var(--profit-red); }
+        .bg-loss { background-color: #dbeafe; color: var(--loss-blue); }
     </style>
 </head>
 <body>
 
-    <!-- ================= SIDEBAR AREA ================= -->
+    <!-- ================= SIDEBAR NAV (메뉴 완전 구현) ================= -->
     <div class="sidebar">
         <div class="sidebar-brand">희주 대시보드</div>
         <div class="sidebar-sync">☁ 모든 기기에 동기화됨</div>
@@ -117,52 +116,48 @@
         
         <div class="menu-group">
             <div class="menu-group-title">홈</div>
-            <a class="menu-item active" onclick="nav('home')"><span class="icon">🏠</span>대시보드</a>
+            <a id="menu-home" class="menu-item active" onclick="nav('home')"><span class="icon">🏠</span>대시보드</a>
         </div>
         <div class="menu-group">
             <div class="menu-group-title">플래너</div>
-            <a class="menu-item" onclick="nav('daily')"><span class="icon">📋</span>데일리 플래너</a>
-            <a class="menu-item" onclick="nav('todo')"><span class="icon">✅</span>To Do List</a>
-            <a class="menu-item" onclick="nav('sched')"><span class="icon">📅</span>스케쥴러</a>
+            <a id="menu-daily" class="menu-item" onclick="nav('daily')"><span class="icon">📋</span>데일리 플래너</a>
+            <a id="menu-todo" class="menu-item" onclick="nav('todo')"><span class="icon">✅</span>To Do List</a>
+            <a id="menu-sched" class="menu-item" onclick="nav('sched')"><span class="icon">📅</span>스케쥴러</a>
         </div>
         <div class="menu-group">
             <div class="menu-group-title">성장</div>
-            <a class="menu-item" onclick="nav('books')"><span class="icon">📚</span>독서 노트</a>
+            <a id="menu-books" class="menu-item" onclick="nav('books')"><span class="icon">📚</span>독서 노트</a>
         </div>
         <div class="menu-group">
             <div class="menu-group-title">투자</div>
-            <a class="menu-item" onclick="nav('stocks-study')"><span class="icon">📊</span>주식 공부 노트</a>
-            <a class="menu-item" onclick="nav('stocks-log')"><span class="icon">💹</span>투자 일지 v4.5</a>
+            <a id="menu-stocks-study" class="menu-item" onclick="nav('stocks-study')"><span class="icon">📊</span>주식 공부 노트</a>
+            <a id="menu-stocks-log" class="menu-item" onclick="nav('stocks-log')"><span class="icon">💹</span>투자 일지 v4.8</a>
         </div>
         <div class="menu-group">
             <div class="menu-group-title">자기계발</div>
-            <a class="menu-item" onclick="nav('dev-invest')"><span class="icon">💰</span>투자 공부</a>
-            <a class="menu-item" onclick="nav('dev-blog')"><span class="icon">📝</span>블로그</a>
-            <a class="menu-item" onclick="nav('dev-yt')"><span class="icon">📺</span>유튜브</a>
-            <a class="menu-item" onclick="nav('dev-side')"><span class="icon">💼</span>부업</a>
-            <a class="menu-item" onclick="nav('dev-lang')"><span class="icon">🌍</span>외국어</a>
-            <a class="menu-item" onclick="nav('dev-comp')"><span class="icon">💻</span>컴퓨터</a>
+            <a id="menu-dev-invest" class="menu-item" onclick="nav('dev-invest')"><span class="icon">💰</span>투자 공부</a>
+            <a id="menu-dev-blog" class="menu-item" onclick="nav('dev-blog')"><span class="icon">📝</span>블로그</a>
+            <a id="menu-dev-yt" class="menu-item" onclick="nav('dev-yt')"><span class="icon">📺</span>유튜브</a>
+            <a id="menu-dev-side" class="menu-item" onclick="nav('dev-side')"><span class="icon">💼</span>부업</a>
+            <a id="menu-dev-lang" class="menu-item" onclick="nav('dev-lang')"><span class="icon">🌍</span>외국어</a>
+            <a id="menu-dev-comp" class="menu-item" onclick="nav('dev-comp')"><span class="icon">💻</span>컴퓨터</a>
         </div>
         <div class="menu-group">
             <div class="menu-group-title">라이프</div>
-            <a class="menu-item" onclick="nav('life-diary')"><span class="icon">📖</span>일기</a>
-            <a class="menu-item" onclick="nav('life-cook')"><span class="icon">🍳</span>요리</a>
-            <a class="menu-item" onclick="nav('life-run')"><span class="icon">💪</span>운동</a>
-            <a class="menu-item" onclick="nav('life-msg')"><span class="icon">🤲</span>마사지</a>
-            <a class="menu-item" onclick="nav('life-medi')"><span class="icon">🧘</span>명상</a>
-            <a class="menu-item" onclick="nav('life-money')"><span class="icon">💰</span>가계부</a>
+            <a id="menu-life-diary" class="menu-item" onclick="nav('life-diary')"><span class="icon">📖</span>일기</a>
+            <a id="menu-life-cook" class="menu-item" onclick="nav('life-cook')"><span class="icon">🍳</span>요리</a>
+            <a id="menu-life-run" class="menu-item" onclick="nav('life-run')"><span class="icon">💪</span>운동</a>
+            <a id="menu-life-msg" class="menu-item" onclick="nav('life-msg')"><span class="icon">🤲</span>마사지</a>
+            <a id="menu-life-medi" class="menu-item" onclick="nav('life-medi')"><span class="icon">🧘</span>명상</a>
+            <a id="menu-life-money" class="menu-item" onclick="nav('life-money')"><span class="icon">💰</span>가계부</a>
         </div>
     </div>
 
-    <!-- ================= MAIN CONTAINER ================= -->
+    <!-- ================= MAIN DISPLAY CONTAINER ================= -->
     <div class="main-container">
         
         <!-- [TAB 1] 홈 대시보드 -->
         <div id="view-home" class="section-view active">
-            <div class="section-header">
-                <h1>안녕하세요, 희주님 👋</h1>
-            </div>
+            <h2 style="margin-top:0; font-size:22px; font-weight:800;">안녕하세요, 희주님 👋</h2>
             <div class="grid-3">
                 <div class="card"><div class="card-title">📝 오늘의 할 일</div><p style="font-size:22px; font-weight:800; margin:0;">0 / 0</p><span style="font-size:12px; color:var(--text-muted);">완료/전체</span></div>
-                <div class="card"><div class="card-title">📅 이번 달 일정</div><p style="font-size:22px; font-weight:800; margin:0;">0</p><span style="font-size:12px; color:var(--text-muted);">등록된 이벤트 수</span></div>
-                <div class="card"><div class="card-title">📚 독서 진행</div><p style="font-size:22px; font-weight:800; margin:0;">0</p><span style="font-size:12px; color:var(--text-muted);">읽는 중인 책 항목</span></div>
